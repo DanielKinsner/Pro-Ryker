@@ -288,7 +288,9 @@ async function boot() {
   };
   game.events.on('rider_detached', () => hud.toast('INCIDENT RECORDED', 'Press BACKSPACE for the replay', 'info'));
 
-  (window as any).__game = { game, stage, phys, park, rig, ryker, cam, hud, menus, audio, comedy, replay, fx, attract, crowd, dev: null as unknown, THREE };
+  // Dev-only console hooks (scripted testing); not exposed in production builds.
+  const hooks = { game, stage, phys, park, rig, ryker, cam, hud, menus, audio, comedy, replay, fx, attract, crowd, dev: null as unknown, THREE };
+  if (import.meta.env.DEV) (window as any).__game = hooks;
 
   // Title screen over an orbiting view of the park.
   loading.done();
@@ -337,7 +339,7 @@ async function boot() {
     frameOf,
     startRun,
   };
-  (window as any).__game.dev = dev;
+  hooks.dev = dev;
 
   let acc = 0;
   let last = performance.now();

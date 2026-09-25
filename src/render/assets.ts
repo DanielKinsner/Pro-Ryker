@@ -33,11 +33,18 @@ export async function loadGLB(path: string, onProgress?: (f: number) => void): P
         reject,
       ),
     );
+  // Production: the model host first (the build ships without the licensed binaries).
+  if (MODEL_BASE) {
+    try {
+      return await tryUrl(MODEL_BASE + (HOST_PATHS[path] ?? path));
+    } catch {
+      /* fall through to a local copy */
+    }
+  }
   try {
     return await tryUrl(BASE + path);
-  } catch (e) {
-    if (!MODEL_BASE) throw new Error(`Model missing: ${path}. Run "npm run import-models".`);
-    return tryUrl(MODEL_BASE + (HOST_PATHS[path] ?? path));
+  } catch {
+    throw new Error(`Model missing: ${path}. Run "npm run import-models".`);
   }
 }
 
