@@ -711,7 +711,11 @@ export class Vehicle {
     return hit;
   }
 
-  /** Chassis or nose touching static world geometry (walls, ledges, kerbs) — not props or the rider. */
+  /**
+   * Chassis or nose hitting a *wall-like* static surface (ledge face, kerb, post) — not props, not the
+   * rider, and not the curved floor under you (riding up a bowl wall sheds horizontal speed fast and
+   * used to read as a crash).
+   */
   chassisHitStatic() {
     const w = this.phys.world;
     let hit = false;
@@ -719,7 +723,9 @@ export class Vehicle {
       w.contactPairsWith(c, (other) => {
         if (hit || !this.phys.tags.has(other.handle)) return;
         w.contactPair(c, other, (m) => {
-          if (m.numContacts() > 0) hit = true;
+          if (m.numContacts() === 0) return;
+          const n = m.normal();
+          if (Math.abs(n.y) < 0.55) hit = true;
         });
       });
       if (hit) return true;

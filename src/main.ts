@@ -5,6 +5,7 @@ import { createStage } from './render/scene';
 import { buildPark } from './park/build';
 import { buildStructures } from './park/structures';
 import { Props } from './park/props';
+import { Crowd } from './park/crowd';
 import { buildRyker } from './render/vehicleModel';
 import { loadGLB, loadJSON, MODELS } from './render/assets';
 import { RiderRig, type RiderFit } from './rider/rig';
@@ -89,6 +90,7 @@ async function boot() {
   const cam = new ChaseCam(stage.camera, phys);
   const game = new Game(phys, park, ryker, rig, stage.scene, cam, input);
   game.props = new Props(stage.scene, phys, game.events, park.heightAt);
+  const crowd = new Crowd(stage.scene, phys, game);
   bump(0.86);
 
   // Audio: load the essentials now, voices in the background.
@@ -230,6 +232,7 @@ async function boot() {
     runBails = 0;
     replay.clear();
     fx.clear();
+    crowd.reset();
     controlsHintT = 0;
     hud.root.classList.remove('hint-faded');
   });
@@ -285,7 +288,7 @@ async function boot() {
   };
   game.events.on('rider_detached', () => hud.toast('INCIDENT RECORDED', 'Press BACKSPACE for the replay', 'info'));
 
-  (window as any).__game = { game, stage, phys, park, rig, ryker, cam, hud, menus, audio, comedy, replay, fx, attract, dev: null as unknown, THREE };
+  (window as any).__game = { game, stage, phys, park, rig, ryker, cam, hud, menus, audio, comedy, replay, fx, attract, crowd, dev: null as unknown, THREE };
 
   // Title screen over an orbiting view of the park.
   loading.done();
@@ -372,6 +375,7 @@ async function boot() {
     }
     if (app === 'replay') replay.update(dt);
     else {
+      crowd.update(dt);
       if (app === 'run' && !game.paused) fx.update(dt * (game.slomoActive() ? 0.35 : 1));
       fx.setViewport(stage.renderer.domElement.height, stage.camera.fov);
       game.render(dt, acc / SIM.dt);

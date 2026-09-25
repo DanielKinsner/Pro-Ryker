@@ -9,30 +9,32 @@ interface Waypoint {
   x: number;
   z: number;
   /** Actions when reaching this point: ollie (hold then pop), flip, grind press. */
-  act?: 'ollie-flip' | 'grind' | 'ollie-grab';
+  act?: 'ollie-flip' | 'ollie-grind' | 'ollie-grab';
   speed?: number;
 }
 
 const LOOP: Waypoint[] = [
-  { x: -52, z: -4, speed: 1 },
-  { x: -47.4, z: -4, act: 'ollie-flip', speed: 1 },
-  { x: -34, z: -4, speed: 0.7 },
-  { x: -35, z: 24, speed: 0.8 },
-  { x: 8, z: 27, speed: 0.9 },
-  { x: 12, z: 2, speed: 0.8 },
-  { x: 21.5, z: 2, act: 'grind', speed: 1 },
-  { x: 50, z: 2, speed: 0.8 },
-  { x: 52, z: -24, speed: 0.8 },
-  { x: 38, z: -24, act: 'ollie-grab', speed: 1 },
+  { x: -52, z: -4, speed: 0.85 },
+  { x: -47.4, z: -4, act: 'ollie-flip', speed: 0.85 },
+  { x: -38, z: 6, speed: 0.6 },
+  { x: -36, z: 24, speed: 0.8 },
+  { x: 8, z: 28, speed: 0.9 },
+  { x: 15, z: 14, speed: 0.7 },
+  { x: 16, z: 2, speed: 0.7 },
+  { x: 20.8, z: 2, act: 'ollie-grind', speed: 1 },
+  { x: 50, z: 2, speed: 0.7 },
+  { x: 52, z: -26, speed: 0.8 },
+  { x: 38, z: -26, act: 'ollie-grab', speed: 1 },
   { x: -34, z: -23, speed: 0.9 },
   { x: -60, z: -8, speed: 0.6 },
-];
+]
 
 export class Attract {
   private i = 0;
   private hold = 0;
   private flipAt = -1;
   private grabT = 0;
+  private grindT = 0;
   private stuckT = 0;
   private lastPos = new THREE.Vector3();
   active = false;
@@ -90,16 +92,21 @@ export class Attract {
       pressed: {},
       released: {},
     };
-    // Actions
-    if (wp.act && dist < 5.5 && v.grounded) {
-      if (wp.act === 'grind') f.pressed.grind = 1;
-      else f.held.ollie = true;
-    }
-    if ((wp.act === 'ollie-flip' || wp.act === 'ollie-grab') && dist < 0.9 && v.grounded) {
+    // Actions: charge the ollie on the approach, pop at the mark.
+    if (wp.act && dist < 5.5 && v.grounded) f.held.ollie = true;
+    if (wp.act && dist < 0.9 && v.grounded) {
       f.released.ollie = 1;
-      this.flipAt = g.simTime + (wp.act === 'ollie-flip' ? 0.12 : 0.1);
+      if (wp.act === 'ollie-flip') this.flipAt = g.simTime + 0.12;
       if (wp.act === 'ollie-grab') this.grabT = 0.5;
+      if (wp.act === 'ollie-grind') this.grindT = 0.7;
     }
+    if (this.grindT > 0) {
+      this.grindT -= 1 / 120;
+      if (!v.grounded && Math.round(this.grindT * 120) % 6 === 0) f.pressed.grind = 1;
+      if (g.tricks.grind) this.grindT = 0;
+    }
+    // No steering in the air (A/D would spin it and land sideways).
+    if (!v.grounded) f.steer = 0;
     if (this.flipAt > 0 && g.simTime >= this.flipAt && !v.grounded) {
       f.pressed.flip = 1;
       this.flipAt = -1;
