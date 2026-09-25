@@ -1,6 +1,6 @@
 # PRO RYKER — Handoff
 
-_Last updated: 2026-09-25, end of build session 1. Repo: https://github.com/DanielKinsner/Pro-Ryker (**public**), branch `main`._
+_Last updated: 2026-09-25, after playtest round 1. Repo: https://github.com/DanielKinsner/Pro-Ryker (**public**), branch `main`._
 
 ## Where it is and how to run it
 
@@ -10,7 +10,7 @@ Project: `C:\Users\SM - Dan\Documents\GitHub\Pro Ryker`
 npm install
 npm run import-models   # licensed GLBs → public/assets/models/ (git-ignored; from SEND IT checkout or its model host)
 npm run dev             # http://localhost:5210
-npm test                # vitest: 34 unit + headless-physics tests
+npm test                # vitest: 39 unit + headless-physics tests
 npm run build           # static dist/, relative base; strips the local clip always and model binaries by default
 ```
 
@@ -49,9 +49,10 @@ Dev console hooks (dev server only): `window.__game` → `{ game, stage, cam, au
 
 ## Verified (by running it)
 
-- `npm test` → 34/34: combo rules, landing classification, save sanitising, park geometry, grind rails; headless vehicle
+- `npm test` → 39/39: combo rules, landing classification, save sanitising, park geometry, grind rails; headless vehicle
   regressions on the real park colliders (straight-line stability, brake→reverse, determinism, funbox launch lands clean,
-  bowl run no tumble, low-speed bump, vert on the Overcommit lands clean fakie back on the wall).
+  bowl run no tumble, low-speed bump, vert on the Overcommit and on a 3 m perimeter QP lands clean fakie back on the
+  wall, steering onto a lip does not spin you, planter gap clears at full throttle, an early-released spin finishes).
 - Scripted in-browser (real game code): funbox 14.5 m/s pop → 5.6 m air → kickflip lands clean; hang → death grip 16→20 m/s →
   brake + mash → recovered → FACE MANUAL + STILL COUNTS banked; 20 m CHASSIS GRIND; rear manual ~16°; No-Hander held through
   touchdown → slam + helmet off (every time); 50 hang/bail/reset cycles leak no bodies/joints/scene objects; a full 2-minute
@@ -61,6 +62,17 @@ Dev console hooks (dev server only): `window.__game` → `{ game, stage, cam, au
 - Performance (RTX 4080, Chrome/ANGLE D3D11, 1573×1250, DPR 1): ~3.3 ms render median without AO (~1.7 ms with AO on a lighter
   view), 0.3 ms per 120 Hz physics step, ~425 draw calls, ~2.4 M triangles (the Ryker alone ~0.9 M).
 - Runtime captures in `docs/screens/`.
+
+## Playtest round 1 (Dan, 2026-09-25) → fixes
+
+| Dan said | Cause found | Fix (verified) |
+|---|---|---|
+| "Too easy to fall off the first time" / "going off a ramp instantly sends you into the 2-hand hang" | Steering held onto a lip became a 540°/s spin → sideways landing; W re-pressed mid-air nose-dived; planter gap put you into the landing table's back wall; the 3 m perimeter QPs couldn't be ridden (chassis ploughed into the face, or you launched over the deck out of the park); flying off the pad/hump met QP faces nose-first; QP wings had a hidden 0.7 m wall | A/D latched at takeoff; spin auto-finishes; W/S = bounded lean; flight-path landing assist; body follows transitions; vert judged from the recent wall + capped ~8 m; wings rebuilt; gap table moved. `npx vite-node scripts/landing-sweep.ts`: thrown off **0/72** player-habit jumps (was 11/48); 16/18 deliberate spins land. In-game: every QP straight-on, the gap and the funbox land clean and seated. Attract bot 90 s: 27 big landings / 6 hangs (old code: 15 / 8). |
+| "Only a couple of space bar mashes should bring you back" | ~7 fast taps needed at drag speed | 3 taps (two hands), 4 (one hand); drag always shows ≥0.5 s. In-game: 3 taps → back on at 0.55 s. |
+| "In SFX you can only raise the values" | ◀ ▶ were CSS decoration; clicks judged by row half and both arrows sit on the right half, so ◀ raised it | Real buttons; verified ◀ 90→80→70 %, saved |
+| "The original footage needs to be included" | — | **Waiting on Dan's decision** (see gaps). ViralHog licenses the clip (not public domain); its own YouTube upload `ieCOgCEtXfY` allows embedding. |
+
+Also checked: the rider's head after the helmet pops off renders as a full head (not hollow).
 
 ## Not done / not verified (honest list)
 
@@ -76,8 +88,14 @@ Dev console hooks (dev server only): `window.__game` → `{ game, stage, cam, au
 7. Environment: this PC's `GITHUB_TOKEN` env var is invalid (breaks `gh` and the GitHub MCP); `gh`'s keyring login works.
    The ElevenLabs key was pasted in chat — consider rotating it; it's only in `.env.local` (git-ignored).
 
+8. Driving off the end of a perimeter QP's wing at speed can launch you out of the park into the streets
+   (open world by design); hitting a parked car there throws you, legitimately.
+9. Spins still fail if you're mid-spin when you run out of air (e.g. a 0.3 s spin off the tiny hump) — the
+   intended skill part.
+
 ## Next highest-value tasks
 
+0. Dan's call on the original footage: YouTube embed of ViralHog's upload (recommended) vs committing the mp4.
 1. Play 3–4 career runs and list what feels wrong (air height, spin speed, flip duration, how often you get thrown, mash rate).
 2. Listen with sound on; re-generate any voice line that lands flat (`npm run gen-audio -- vo` after deleting the file).
 3. Decide on a public deploy (Vercel like SEND IT) and whether the rider/Ryker rights allow it.
