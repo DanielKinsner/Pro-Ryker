@@ -95,6 +95,10 @@ export class RiderController {
   step(dt: number, input: { haulPressed: boolean; letGo: boolean; brake: number }) {
     const v = this.vehicle;
     this.stateT += dt;
+    // Grab/pose blend runs at sim rate: it decides landing outcomes, so it can't depend on frame rate.
+    const g = this.grab;
+    const rate = g.pose === 'hangL' || g.pose === 'hangR' ? 0.12 : 0.14;
+    g.weight += Math.sign(g.target - g.weight) * Math.min(Math.abs(g.target - g.weight), dt / rate);
     this.protectT = Math.max(0, this.protectT - dt);
 
     this.prevVel.copy(v.vel);
@@ -481,10 +485,6 @@ export class RiderController {
       this.bobVel += (bobT - this.bob) * 90 * dt;
       this.bobVel *= Math.exp(-10 * dt);
       this.bob += this.bobVel * dt;
-      // Grab + crouch + unsettled blend
-      const g = this.grab;
-      const rate = g.pose === 'hangL' || g.pose === 'hangR' ? 0.12 : 0.14;
-      g.weight += Math.sign(g.target - g.weight) * Math.min(Math.abs(g.target - g.weight), dt / rate);
     }
     const p = this.cur;
     lerpParams(p, this.poses.seated, this.poses.seated, 0);
