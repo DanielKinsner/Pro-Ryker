@@ -97,7 +97,9 @@ export const FEATURES: Feature[] = [
   { type: 'qp', id: 'west-wall', x: -58, z: 14, dirDeg: 270, width: 22, height: 2.4, radius: 3.0, deck: 2.4, backDeg: 84, wingDeg: 35 },
   // Planter gap: kicker → table landing.
   { type: 'bank', id: 'gap-kicker', x: 12, z: 30, dirDeg: 90, width: 7, height: 1.7, angleDeg: 27, deck: 1.0, backDeg: 70 },
-  { type: 'bank', id: 'gap-landing', x: 46, z: 30, dirDeg: 270, width: 9, height: 1.7, angleDeg: 17, deck: 3, backDeg: 70 },
+  // Close enough that full throttle clears it (it used to put you into the table's back wall = slam);
+  // the back is a 30° bank so an undershoot is a rough landing, not a wall.
+  { type: 'bank', id: 'gap-landing', x: 42, z: 30, dirDeg: 270, width: 9, height: 1.8, angleDeg: 13, deck: 2, backDeg: 30 },
   // Bank up to the upper plaza.
   { type: 'bank', id: 'plaza-bank', x: -47, z: -26, dirDeg: 0, width: 14, height: 1.6, angleDeg: 18, deck: 2.2, backDeg: 60 },
   // Roof kicker on the plaza (to reach the pavilion eave).
@@ -115,7 +117,7 @@ export const BOXES: BoxDef[] = [
   { id: 'manual-pad', kind: 'pad', x: 50, z: -4, sx: 3.2, sz: 12, h: 0.3, grind: 'long', name: 'MANUAL PAD' },
   { id: 'pad-west', kind: 'pad', x: -52, z: 18, sx: 12, sz: 2.6, h: 0.3, grind: 'long', name: 'PLAZA PAD' },
   // Planter in the gap.
-  { id: 'gap-planter', kind: 'planter', x: 29, z: 30, sx: 7, sz: 4, h: 0.7, grind: 'none' },
+  { id: 'gap-planter', kind: 'planter', x: 25.5, z: 30, sx: 7, sz: 4, h: 0.7, grind: 'none' },
   // Benches
   { id: 'bench-1', kind: 'bench', x: 22, z: -14, sx: 4, sz: 0.6, h: 0.48, grind: 'long', name: 'BENCH' },
   { id: 'bench-2', kind: 'bench', x: -44, z: -36, sx: 4, sz: 0.6, h: 0.48, grind: 'long', name: 'BENCH', y: PLAZA.h },
@@ -171,7 +173,7 @@ export const LETTERS: { letter: string; x: number; y: number; z: number }[] = [
 ];
 
 export const GAPS: GapDef[] = [
-  { id: 'planter', name: 'PLANTER GAP', points: 500, from: { x: 16, z: 30, hx: 3.5, hz: 4 }, to: { x: 40, z: 30, hx: 5, hz: 5 } },
+  { id: 'planter', name: 'PLANTER GAP', points: 500, from: { x: 16, z: 30, hx: 3.5, hz: 4 }, to: { x: 37.5, z: 30, hx: 6, hz: 5 } },
   { id: 'stairs', name: 'MUNICIPAL STAIR SET', points: 250, from: { x: -36, z: -42, hx: 2.5, hz: 4.5, minY: 1.2 }, to: { x: -24, z: -42, hx: 8, hz: 8 } },
   { id: 'roof', name: 'ROOF ACCESS', points: 1000, from: { x: -50, z: -42, hx: 20, hz: 20 }, to: { x: -50, z: -42, hx: 5.2, hz: 5.2, minY: 4 } },
   { id: 'hip', name: 'HIP TRANSFER', points: 300, from: { x: -20, z: -8, hx: 7, hz: 7 }, to: { x: -14, z: 10, hx: 7, hz: 7 } },

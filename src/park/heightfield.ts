@@ -113,11 +113,16 @@ function bankProfile(u: number, H: number, angleDeg: number, deck: number, backD
   return Math.max(0, H - (u - run - deck) * back);
 }
 
-function withWings(h: number, v: number, hw: number, wingDeg: number) {
+/**
+ * Side wings: the ramp clipped by a plane sloping away sideways (a real skatepark wing). Shifting the
+ * whole profile down instead kept a quarterpipe's near-vertical top as a little wall out on the wing,
+ * which you drove into along the end of the ramp.
+ */
+function withWings(h: number, v: number, hw: number, wingDeg: number, H: number) {
   const av = Math.abs(v);
   if (av <= hw) return h;
   const s = Math.tan(rad(Math.min(wingDeg, 84)));
-  return Math.min(h, Math.max(0, h - (av - hw) * s));
+  return Math.min(h, Math.max(0, H - (av - hw) * s));
 }
 
 export function featureHeight(f: Feature, x: number, z: number): number {
@@ -138,7 +143,7 @@ export function featureHeight(f: Feature, x: number, z: number): number {
       const u = px * dx + pz * dz;
       const v = px * -dz + pz * dx;
       if (u < -0.01) return 0;
-      return withWings(qpProfile(u, f.height, f.radius, f.deck, f.backDeg), v, f.width / 2, f.wingDeg);
+      return withWings(qpProfile(u, f.height, f.radius, f.deck, f.backDeg), v, f.width / 2, f.wingDeg, f.height);
     }
     case 'bank': {
       const [dx, dz] = dirVec(f.dirDeg);
@@ -147,7 +152,7 @@ export function featureHeight(f: Feature, x: number, z: number): number {
       const u = px * dx + pz * dz;
       const v = px * -dz + pz * dx;
       if (u < -0.01) return 0;
-      return withWings(bankProfile(u, f.height, f.angleDeg, f.deck, f.backDeg), v, f.width / 2, f.angleDeg);
+      return withWings(bankProfile(u, f.height, f.angleDeg, f.deck, f.backDeg), v, f.width / 2, f.angleDeg, f.height);
     }
     case 'pyramid': {
       const c = Math.cos(rad(f.yawDeg));

@@ -238,7 +238,7 @@ function buildSigns(g: THREE.Group, phys: PhysicsWorld) {
     { bg: '#1f4a36', fg: '#f1ead7', w: 768, h: 384, sw: 2.8, sh: 1.4, font: 'Archivo Black, sans-serif' },
   );
   sign(['MUNICIPAL LIABILITY', 'SKATE PARK'], -46, -31.2, 180, { bg: '#e8e1cf', fg: '#222', border: '#222', y: PLAZA.h, sw: 3.2, sh: 1.3 });
-  sign(['SLOW', 'CHILDREN AT PLAY'], 55, 30, -90, { bg: '#ffd23f', fg: '#111' });
+  sign(['SLOW', 'CHILDREN AT PLAY'], 55, 37.5, -90, { bg: '#ffd23f', fg: '#111' }); // beside the planter-gap run-out, not in it
   sign(['PLEASE REMAIN', 'SEATED'], 44.5, -20, -30, { bg: '#f4f1e8', fg: '#1b1b1b', border: '#e3242b' });
 }
 
