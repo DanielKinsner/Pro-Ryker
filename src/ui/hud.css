@@ -420,3 +420,13 @@
 .hud-controls.hidden {
   display: none;
 }
+
+.hud.no-controls .hud-controls {
+  display: none;
+}
+.hud-controls {
+  transition: opacity 1.2s;
+}
+.hud.hint-faded .hud-controls {
+  opacity: 0;
+}

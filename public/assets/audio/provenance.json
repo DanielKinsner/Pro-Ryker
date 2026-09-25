@@ -1,0 +1,549 @@
+{
+  "sfx/engine-mid.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "three-cylinder motorcycle engine held at 6000 rpm under load, raspy triple howl, steady, seamless loop",
+    "loop": true,
+    "created": "2026-09-25T16:56:41.398Z"
+  },
+  "sfx/engine-low.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "three-cylinder roadster motorcycle engine at low constant revs, around 3000 rpm, throaty triple, steady cruise, seamless loop",
+    "loop": true,
+    "created": "2026-09-25T16:56:41.841Z"
+  },
+  "sfx/engine-idle.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "close mic recording of a three-cylinder motorcycle engine idling, lumpy triple burble, steady, seamless loop",
+    "loop": true,
+    "created": "2026-09-25T16:56:42.098Z"
+  },
+  "sfx/wind.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "strong wind rushing past a rider at speed, steady whoosh, seamless loop",
+    "loop": true,
+    "created": "2026-09-25T16:56:44.399Z"
+  },
+  "sfx/tire-squeal.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "car tyres squealing continuously on smooth concrete during a powerslide, steady screech, seamless loop",
+    "loop": true,
+    "created": "2026-09-25T16:56:44.668Z"
+  },
+  "sfx/engine-high.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "three-cylinder motorcycle engine screaming near redline at constant high rpm, aggressive triple wail, steady, seamless loop",
+    "loop": true,
+    "created": "2026-09-25T16:56:44.923Z"
+  },
+  "sfx/grind-metal.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "heavy metal vehicle underside grinding along a steel handrail, continuous harsh scrape with sparks, seamless loop",
+    "loop": true,
+    "created": "2026-09-25T16:56:46.787Z"
+  },
+  "sfx/grind-concrete.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "heavy steel scraping along a concrete ledge, continuous gritty grind, seamless loop",
+    "loop": true,
+    "created": "2026-09-25T16:56:47.203Z"
+  },
+  "sfx/drag-scrape.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "leather jacket and boots being dragged along rough concrete at speed, continuous scraping and shuffling, seamless loop",
+    "loop": true,
+    "created": "2026-09-25T16:56:47.302Z"
+  },
+  "sfx/land-soft.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "small three-wheeled motorcycle landing a small jump, suspension compresses with a soft thunk and tyre chirp",
+    "loop": false,
+    "created": "2026-09-25T16:56:48.632Z"
+  },
+  "sfx/land-hard.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "heavy three-wheeled motorcycle landing hard after a big jump on concrete, suspension bottoms out with a deep thud and rattle",
+    "loop": false,
+    "created": "2026-09-25T16:56:48.641Z"
+  },
+  "sfx/slam.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "motorcycle crashing onto concrete, plastic body panels crunching and scraping, metal clatter, comedic but not gory",
+    "loop": false,
+    "created": "2026-09-25T16:56:49.116Z"
+  },
+  "sfx/ollie.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "vehicle suspension springing up quickly with a short engine rev blip, pop",
+    "loop": false,
+    "created": "2026-09-25T16:56:50.033Z"
+  },
+  "sfx/whoosh.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "fast swoosh of a heavy object spinning through the air",
+    "loop": false,
+    "created": "2026-09-25T16:56:50.234Z"
+  },
+  "sfx/body-thud-1.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "person in a leather jacket tumbling onto concrete, dull body thud, non-gory, slapstick",
+    "loop": false,
+    "created": "2026-09-25T16:56:50.587Z"
+  },
+  "sfx/body-thud-2.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "body rolling and slapping on concrete, two soft thuds, non-gory, slapstick",
+    "loop": false,
+    "created": "2026-09-25T16:56:51.576Z"
+  },
+  "sfx/helmet-bounce.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "hollow plastic motorcycle helmet bouncing and rolling across concrete, several light knocks",
+    "loop": false,
+    "created": "2026-09-25T16:56:51.798Z"
+  },
+  "sfx/cone-hit.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "plastic traffic cone knocked over and bouncing on concrete, hollow plastic thwack",
+    "loop": false,
+    "created": "2026-09-25T16:56:52.074Z"
+  },
+  "sfx/chair-clink.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "single metal folding chair falling over onto concrete, one clink, silence",
+    "loop": false,
+    "created": "2026-09-25T16:56:53.238Z"
+  },
+  "sfx/letter.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "bright arcade collectible pickup chime, sparkly ascending bell, video game",
+    "loop": false,
+    "created": "2026-09-25T16:56:53.573Z"
+  },
+  "sfx/bin-hit.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "metal trash can knocked over on concrete, loud clang and rattle",
+    "loop": false,
+    "created": "2026-09-25T16:56:54.493Z"
+  },
+  "sfx/goal.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "punk rock guitar power chord hit with crash cymbal, short triumphant sting",
+    "loop": false,
+    "created": "2026-09-25T16:56:55.315Z"
+  },
+  "sfx/combo.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "satisfying arcade score cash register ding with a short sparkle, video game combo landed",
+    "loop": false,
+    "created": "2026-09-25T16:56:55.429Z"
+  },
+  "sfx/special.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "power up whoosh rising into a bright shimmer, video game special meter full",
+    "loop": false,
+    "created": "2026-09-25T16:56:56.525Z"
+  },
+  "sfx/crowd-cheer.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "small crowd of skaters cheering and whooping at a skatepark, short burst",
+    "loop": false,
+    "created": "2026-09-25T16:56:57.007Z"
+  },
+  "sfx/crowd-ooh.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "small group of teenagers at a skatepark going ooooh in unison, impressed",
+    "loop": false,
+    "created": "2026-09-25T16:56:57.502Z"
+  },
+  "sfx/crowd-gasp.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "small crowd gasping in shock at a skatepark, short",
+    "loop": false,
+    "created": "2026-09-25T16:56:57.856Z"
+  },
+  "sfx/crowd-laugh.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "small group of teenagers bursting out laughing at a skatepark",
+    "loop": false,
+    "created": "2026-09-25T16:56:58.902Z"
+  },
+  "sfx/board-tap.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "skateboard tail tapped twice on concrete, respectful, sparse",
+    "loop": false,
+    "created": "2026-09-25T16:56:58.925Z"
+  },
+  "sfx/glove-creak.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "leather motorcycle gloves squeezing handlebar grips tightly, leather creak",
+    "loop": false,
+    "created": "2026-09-25T16:56:59.419Z"
+  },
+  "sfx/record-scratch.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "classic vinyl record scratch stop, comedic",
+    "loop": false,
+    "created": "2026-09-25T16:57:00.177Z"
+  },
+  "sfx/horn.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "motorcycle horn, two short beeps",
+    "loop": false,
+    "created": "2026-09-25T16:57:00.276Z"
+  },
+  "sfx/ambience.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "outdoor city skatepark ambience on an autumn afternoon, distant skateboard wheels rolling and clacking, distant traffic from a highway overpass, light breeze in trees, seamless loop",
+    "loop": true,
+    "created": "2026-09-25T16:57:03.545Z"
+  },
+  "vo/backflip.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "Very normal way to use handlebars.",
+    "created": "2026-09-25T16:57:04.958Z"
+  },
+  "vo/first_flip.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "That's a kickflip. Apparently.",
+    "created": "2026-09-25T16:57:05.177Z"
+  },
+  "vo/varial.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "Several axes of poor judgment.",
+    "created": "2026-09-25T16:57:06.101Z"
+  },
+  "vo/first_flip.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "That's a kickflip. On a fucking Ryker.",
+    "created": "2026-09-25T16:57:06.320Z"
+  },
+  "vo/big_air.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Dude. Dude!",
+    "created": "2026-09-25T16:57:06.389Z"
+  },
+  "vo/big_air.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Dude. What the fuck.",
+    "created": "2026-09-25T16:57:07.428Z"
+  },
+  "vo/nice.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Okay. That was genuinely good.",
+    "created": "2026-09-25T16:57:07.691Z"
+  },
+  "vo/clean_land.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "Excellent landing. Questionable everything else.",
+    "created": "2026-09-25T16:57:07.943Z"
+  },
+  "vo/grind.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "The rail wasn't expecting a whole vehicle.",
+    "created": "2026-09-25T16:57:08.934Z"
+  },
+  "vo/grind2.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "That scrape had several parts to it.",
+    "created": "2026-09-25T16:57:08.967Z"
+  },
+  "vo/bench.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Dave)",
+    "text": "It's a bench. You're taking the instruction too literally.",
+    "created": "2026-09-25T16:57:10.013Z"
+  },
+  "vo/rear.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "That's two perfectly good wheels you're ignoring.",
+    "created": "2026-09-25T16:57:10.419Z"
+  },
+  "vo/nose.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "He brought three wheels and used the front two.",
+    "created": "2026-09-25T16:57:10.708Z"
+  },
+  "vo/respect.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "I hate that you actually landed that.",
+    "created": "2026-09-25T16:57:11.365Z"
+  },
+  "vo/respect.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "I hate how fucking good that was.",
+    "created": "2026-09-25T16:57:11.495Z"
+  },
+  "vo/cooking.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Oh, he's cooking now.",
+    "created": "2026-09-25T16:57:11.776Z"
+  },
+  "vo/still_driving.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Still driving. Technically.",
+    "created": "2026-09-25T16:57:12.960Z"
+  },
+  "vo/accessory.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "He is no longer the operator. He is an accessory.",
+    "created": "2026-09-25T16:57:13.702Z"
+  },
+  "vo/hostage.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "That's not a Superman. That's a hostage situation.",
+    "created": "2026-09-25T16:57:14.472Z"
+  },
+  "vo/selfie.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Laura)",
+    "text": "Is he... filming himself? He is filming himself.",
+    "created": "2026-09-25T16:57:14.712Z"
+  },
+  "vo/seat_customer.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "The seat has lost its largest customer.",
+    "created": "2026-09-25T16:57:15.218Z"
+  },
+  "vo/oh_no.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Laura)",
+    "text": "Oh no. Oh no no no no.",
+    "created": "2026-09-25T16:57:15.617Z"
+  },
+  "vo/oh_no.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Laura)",
+    "text": "Oh shit. Oh shit oh shit oh shit.",
+    "created": "2026-09-25T16:57:16.201Z"
+  },
+  "vo/sir.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Dave)",
+    "text": "Sir. Sir! SIR.",
+    "created": "2026-09-25T16:57:16.639Z"
+  },
+  "vo/taking_him.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "At this point the bike is taking him somewhere.",
+    "created": "2026-09-25T16:57:17.384Z"
+  },
+  "vo/one_hand.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "That's a lot of vehicle for one hand.",
+    "created": "2026-09-25T16:57:17.537Z"
+  },
+  "vo/meant_that.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "Meant that. Shut up.",
+    "created": "2026-09-25T16:57:18.595Z"
+  },
+  "vo/meant_that.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "Absolutely meant that. No further questions.",
+    "created": "2026-09-25T16:57:19.175Z"
+  },
+  "vo/pretend.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "I'm going to need you to pretend that was skill.",
+    "created": "2026-09-25T16:57:20.081Z"
+  },
+  "vo/pretend.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "That was skill. Probably. Fuck it, it counts.",
+    "created": "2026-09-25T16:57:21.495Z"
+  },
+  "vo/system.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "He has a system. It appears to be panic.",
+    "created": "2026-09-25T16:57:21.827Z"
+  },
+  "vo/one_hand_save.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "One hand was enough. Somehow.",
+    "created": "2026-09-25T16:57:22.991Z"
+  },
+  "vo/third_wheel.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "You added a third wheel and somehow reduced your options.",
+    "created": "2026-09-25T16:57:23.495Z"
+  },
+  "vo/endings.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "Strong opening. Several unrelated endings.",
+    "created": "2026-09-25T16:57:24.528Z"
+  },
+  "vo/good_time.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Bike's still having a good time.",
+    "created": "2026-09-25T16:57:24.963Z"
+  },
+  "vo/left_rider.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "The ride has left the rider.",
+    "created": "2026-09-25T16:57:25.734Z"
+  },
+  "vo/one_hand.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "One hand. Entire fucking vehicle.",
+    "created": "2026-09-25T16:57:26.409Z"
+  },
+  "vo/momentum.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "The plan stopped. The momentum didn't.",
+    "created": "2026-09-25T16:57:26.475Z"
+  },
+  "vo/got_it.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Laura)",
+    "text": "I got it. I got ALL of it.",
+    "created": "2026-09-25T16:57:27.056Z"
+  },
+  "vo/got_it.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Laura)",
+    "text": "I got all of that. Holy shit.",
+    "created": "2026-09-25T16:57:27.676Z"
+  },
+  "vo/continue_without.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "Your vehicle would like to continue without you.",
+    "created": "2026-09-25T16:57:28.460Z"
+  },
+  "vo/well.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "Well. That happened.",
+    "created": "2026-09-25T16:57:28.888Z"
+  },
+  "vo/well.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "Well, shit.",
+    "created": "2026-09-25T16:57:29.349Z"
+  },
+  "vo/park_man.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Dave)",
+    "text": "You can't park the man there.",
+    "created": "2026-09-25T16:57:30.114Z"
+  },
+  "vo/hat.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Laura)",
+    "text": "His hat! Where did his hat go?",
+    "created": "2026-09-25T16:57:31.226Z"
+  },
+  "vo/not_that_kind.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Dave)",
+    "text": "No. Not that kind of three-wheeler.",
+    "created": "2026-09-25T16:57:31.238Z"
+  },
+  "vo/write_down.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "Somebody write that down.",
+    "created": "2026-09-25T16:57:32.111Z"
+  },
+  "vo/cones.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Dave)",
+    "text": "Those are municipal cones.",
+    "created": "2026-09-25T16:57:32.145Z"
+  },
+  "vo/r_whoa.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Austin Knox)",
+    "text": "Whoa whoa whoa WHOA—",
+    "created": "2026-09-25T16:57:33.371Z"
+  },
+  "vo/valet.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "Valet parking. The rider was not consulted.",
+    "created": "2026-09-25T16:57:33.584Z"
+  },
+  "vo/r_nope.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Austin Knox)",
+    "text": "Nope. Nope nope nope!",
+    "created": "2026-09-25T16:57:34.837Z"
+  },
+  "vo/r_got_it.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Austin Knox)",
+    "text": "I got it! I got it! I do not got it!",
+    "created": "2026-09-25T16:57:35.263Z"
+  },
+  "vo/staffing.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "The bike has completed the trick. Staffing remains unresolved.",
+    "created": "2026-09-25T16:57:36.025Z"
+  },
+  "vo/r_im_good.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Austin Knox)",
+    "text": "...I'm good. I'm good!",
+    "created": "2026-09-25T16:57:37.171Z"
+  },
+  "vo/r_meant.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Austin Knox)",
+    "text": "Meant to do that.",
+    "created": "2026-09-25T16:57:37.265Z"
+  },
+  "vo/r_yeehaw.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Austin Knox)",
+    "text": "YEEHAW!",
+    "created": "2026-09-25T16:57:38.248Z"
+  },
+  "vo/r_oof.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Austin Knox)",
+    "text": "Ohhh... that was the good jacket.",
+    "created": "2026-09-25T16:57:38.897Z"
+  },
+  "vo/r_okay.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Austin Knox)",
+    "text": "Heh. Okay. Okay.",
+    "created": "2026-09-25T16:57:39.974Z"
+  },
+  "vo/r_hold_on.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Austin Knox)",
+    "text": "Hold on. HOLD ON!",
+    "created": "2026-09-25T16:57:40.275Z"
+  },
+  "vo/r_wont_stop.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Austin Knox)",
+    "text": "It won't stop! Why won't it stop?!",
+    "created": "2026-09-25T16:57:43.185Z"
+  },
+  "music/title-theme.mp3": {
+    "source": "ElevenLabs music",
+    "prompt": "Fast, raw late-1990s skate punk anthem for a skateboarding video game's title screen. Driving drums around 185 bpm, crunchy distorted guitars, melodic bass, snotty punk lead vocal telling the story of a middle-aged biker who took his three-wheeled motorcycle to the skatepark, and a huge shouted gang-vocal chorus: 'Hold on! It gets worse!' Energetic, funny, no profanity.",
+    "created": "2026-09-25T16:57:54.719Z"
+  },
+  "music/run-punk.mp3": {
+    "source": "ElevenLabs music",
+    "prompt": "Instrumental late-1990s Californian skate punk for a skateboarding video game. Fast double-time drums around 180 bpm, palm-muted power chords, melodic lead guitar hooks, punchy bass, relentless energy, loopable, no vocals.",
+    "created": "2026-09-25T16:57:57.217Z"
+  },
+  "music/run-hiphop.mp3": {
+    "source": "ElevenLabs music",
+    "prompt": "Instrumental late-1990s East Coast boom-bap hip-hop beat for a skateboarding video game. Dusty sampled drum break at 92 bpm, heavy bass line, vinyl scratches and turntable cuts, jazzy horn stabs, head-nodding groove, loopable, no vocals.",
+    "created": "2026-09-25T16:58:09.176Z"
+  },
+  "music/run-ska.mp3": {
+    "source": "ElevenLabs music",
+    "prompt": "Instrumental 1990s ska-punk for a skateboarding video game. Upstroke guitar skank, bright punchy horn section riffs, fast walking bass, energetic drums, goofy and fun, loopable, no vocals.",
+    "created": "2026-09-25T16:58:11.454Z"
+  },
+  "music/results-sting.mp3": {
+    "source": "ElevenLabs music",
+    "prompt": "Short punk rock ending sting for a video game results screen: drum fill, big power chord hit with crash cymbal, guitar feedback squeal, then silence. No vocals.",
+    "created": "2026-09-25T16:58:15.460Z"
+  },
+  "sfx/ui-select.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "crisp punchy user interface click, arcade menu select",
+    "loop": false,
+    "created": "2026-09-25T16:59:09.913Z"
+  },
+  "sfx/phone-shutter.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "smartphone camera shutter click",
+    "loop": false,
+    "created": "2026-09-25T16:59:09.961Z"
+  },
+  "sfx/ui-back.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "soft low user interface click, arcade menu back",
+    "loop": false,
+    "created": "2026-09-25T16:59:10.106Z"
+  },
+  "sfx/ui-tick.mp3": {
+    "source": "ElevenLabs sound-generation",
+    "prompt": "tiny tick sound for a menu cursor moving",
+    "loop": false,
+    "created": "2026-09-25T16:59:11.356Z"
+  }
+}

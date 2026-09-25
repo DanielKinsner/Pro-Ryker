@@ -69,7 +69,7 @@ export class Hud {
     this.controls.innerHTML = `
       <b>W/S</b> gas · brake/reverse &nbsp; <b>A/D</b> steer · spin &nbsp; <b>SPACE</b> hold+release: ollie<br>
       <b>J</b>+dir flip trick &nbsp; <b>K</b>+dir hold grab &nbsp; <b>L</b> grind (near rail) · manual &nbsp; <b>SHIFT</b> revert / powerslide<br>
-      <b>R</b> reset &nbsp; <b>X</b> let go &nbsp; <b>ESC</b> pause &nbsp; <b>H</b> hide this`;
+      <b>R</b> reset &nbsp; <b>X</b> let go &nbsp; <b>H</b> horn &nbsp; <b>ESC</b> pause (controls &amp; options)`;
   }
 
   private set(key: string, el: HTMLElement, text: string) {

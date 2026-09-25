@@ -6,7 +6,8 @@ import { loadSave, writeSave, type SaveData, type Cheats } from '../core/save';
 import { PhysicsWorld } from '../physics/world';
 import { Vehicle } from '../physics/vehicle';
 import type { Park } from '../park/build';
-import { GAPS, LETTERS, SPAWNS, type GapDef } from '../park/layout';
+import { GAPS, LETTERS, SPAWNS, PARKING_BAYS, type GapDef } from '../park/layout';
+import type { Props } from '../park/props';
 import type { RykerVisual } from '../render/vehicleModel';
 import type { RiderRig } from '../rider/rig';
 import { RiderController } from '../rider/rider';
@@ -146,6 +147,9 @@ export class Game {
     });
   }
   bikeLandedAlone = false;
+  props: Props | null = null;
+  private emptyStillT = 0;
+  private emptyReported = false;
 
   // ---------------------------------------------------------------- run control
 
@@ -166,6 +170,7 @@ export class Game {
       c.mesh.visible = !c.taken;
     }
     this.save.runs++;
+    this.props?.reset();
     const s = SPAWNS[0];
     this.respawn(s.x, s.z, s.yawDeg);
     this.events.emit('run_start', { mode });
@@ -193,6 +198,8 @@ export class Game {
     this.safe.yaw = yawDeg;
     this.bailT = 0;
     this.bikeLandedAlone = false;
+    this.emptyStillT = 0;
+    this.emptyReported = false;
     this.takeoff = null;
     this.cam.snap(this.vehicle.pos.clone().add(new THREE.Vector3(0, 0.9, 0)), this.vehicle.fwd);
     this.events.emit('run_reset', {});
@@ -245,6 +252,17 @@ export class Game {
     this.phys.step();
     v.postStep();
     this.tricks.tickSpecial(dt);
+    this.props?.update();
+
+    // The empty Ryker coming to rest on its own (VALET PARKING if it's upright in a service bay).
+    if (r.state === 'detached' && !this.emptyReported) {
+      this.emptyStillT = v.speed < 0.3 ? this.emptyStillT + dt : 0;
+      if (this.emptyStillT > 1) {
+        this.emptyReported = true;
+        const inBay = PARKING_BAYS.some((b) => Math.abs(v.pos.x - b.x) < b.hx && Math.abs(v.pos.z - b.z) < b.hz);
+        this.events.emit('empty_bike_settled', { upright: v.up.y > 0.8, inParkingBay: inBay });
+      }
+    }
 
     // Head meets concrete while seated → immediate bail (no forced warning delay).
     if (r.attached && r.state !== 'recovering' && v.riderTouching() && v.speed > 1.5) {

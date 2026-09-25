@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { Sky } from 'three/examples/jsm/objects/Sky.js';
+import { makeSky } from './sky';
 
 export interface Stage {
+  tick(dt: number): void;
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
@@ -16,7 +17,7 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = 0.95;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -24,40 +25,28 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
   const camera = new THREE.PerspectiveCamera(62, 1, 0.1, 1200);
 
   // Late-afternoon autumn sun (warm, fairly low → long shadows, like the clip).
-  const sunDir = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(58), THREE.MathUtils.degToRad(215));
-  const sky = new Sky();
-  sky.scale.setScalar(4500);
-  const u = sky.material.uniforms;
-  u.turbidity.value = 3.2;
-  u.rayleigh.value = 1.35;
-  u.mieCoefficient.value = 0.004;
-  u.mieDirectionalG.value = 0.82;
-  u.sunPosition.value.copy(sunDir);
+  const sunDir = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(50), THREE.MathUtils.degToRad(215));
+  const sky = makeSky(sunDir);
   scene.add(sky);
 
-  // Environment for PBR reflections (paint, chrome, visor).
+  // Environment for PBR reflections (paint, chrome, visor): the same sky, plus a warm ground bounce.
   const pmrem = new THREE.PMREMGenerator(renderer);
   const envScene = new THREE.Scene();
-  const envSky = new Sky();
-  envSky.scale.setScalar(4500);
-  Object.assign(envSky.material.uniforms.turbidity, { value: 3.2 });
-  envSky.material.uniforms.rayleigh.value = 1.35;
-  envSky.material.uniforms.mieCoefficient.value = 0.004;
-  envSky.material.uniforms.mieDirectionalG.value = 0.82;
-  envSky.material.uniforms.sunPosition.value.copy(sunDir);
+  const envSky = makeSky(sunDir, 60);
+  envSky.onBeforeRender = () => {};
   envScene.add(envSky);
-  // A warm ground bounce so undersides aren't black.
-  const groundEnv = new THREE.Mesh(new THREE.CircleGeometry(4000, 16).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#9c7a70' }));
-  groundEnv.position.y = -10;
+  const groundEnv = new THREE.Mesh(new THREE.CircleGeometry(80, 24).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#b08a80' }));
+  groundEnv.position.y = -2;
   envScene.add(groundEnv);
-  scene.environment = pmrem.fromScene(envScene, 0.02).texture;
-  scene.environmentIntensity = 0.7;
+  scene.environment = pmrem.fromScene(envScene, 0.02, 0.1, 200).texture;
+  scene.environmentIntensity = 0.85;
+  const skyMat = sky.material as THREE.ShaderMaterial;
 
-  scene.fog = new THREE.Fog('#c9d6e3', 140, 900);
+  scene.fog = new THREE.Fog('#cfdff0', 180, 1000);
 
-  const hemi = new THREE.HemisphereLight('#cfe0ff', '#8a6a5c', 0.55);
+  const hemi = new THREE.HemisphereLight('#c4dcff', '#a88a7c', 0.6);
   scene.add(hemi);
-  const sun = new THREE.DirectionalLight('#fff0dc', 3.1);
+  const sun = new THREE.DirectionalLight('#fff0dc', 2.75);
   sun.position.copy(sunDir).multiplyScalar(120);
   sun.castShadow = true;
   sun.shadow.mapSize.set(4096, 4096);
@@ -79,7 +68,12 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
   resize();
 
   const texel = (2 * S) / 4096;
+  let skyT = 0;
   return {
+    tick(dt: number) {
+      skyT += dt;
+      skyMat.uniforms.time.value = skyT;
+    },
     renderer,
     scene,
     camera,

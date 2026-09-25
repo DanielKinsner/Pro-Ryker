@@ -15,7 +15,7 @@ export interface Park {
   ledgeMat: THREE.MeshStandardMaterial;
 }
 
-const PINK = new THREE.Color('#e9b5a8');
+const PINK = new THREE.Color('#ffffff'); // the texture itself carries the salmon-pink (the clip)
 const LEDGE = new THREE.Color('#d9ccc6');
 
 export function buildPark(phys: PhysicsWorld, scene: THREE.Scene): Park {
@@ -24,12 +24,19 @@ export function buildPark(phys: PhysicsWorld, scene: THREE.Scene): Park {
   scene.add(group);
   const grid = sampleHeights(FEATURES, BOUNDS.minX, BOUNDS.minZ, BOUNDS.sizeX, BOUNDS.sizeZ, BOUNDS.cell);
 
+  // Codex-generated tileable pink concrete (photo-like) for the flowing concrete; procedural detail
+  // breaks up tiling. Ledges/plaza use a paler grey concrete.
+  const loader = new THREE.TextureLoader();
+  const pinkTex = loader.load(`${import.meta.env.BASE_URL}assets/art/concrete-pink.jpg`);
+  pinkTex.colorSpace = THREE.SRGBColorSpace;
+  pinkTex.wrapS = pinkTex.wrapT = THREE.RepeatWrapping;
+  pinkTex.anisotropy = 8;
   const tex = concreteTexture(7);
   const detail = concreteTexture(19, 512);
   const concrete = triplanar(
-    new THREE.MeshStandardMaterial({ color: PINK, map: tex, roughness: 0.86, metalness: 0, vertexColors: true }),
-    0.22,
-    { detail, detailScale: 0.031 },
+    new THREE.MeshStandardMaterial({ color: PINK, map: pinkTex, roughness: 0.84, metalness: 0, vertexColors: true }),
+    0.16,
+    { detail, detailScale: 0.027 },
   );
   const ledgeMat = triplanar(new THREE.MeshStandardMaterial({ color: LEDGE, map: tex, roughness: 0.8 }), 0.35);
 

@@ -1,0 +1,2 @@
+// Generated SFX ids (see scripts/audioPrompts.ts).
+export const SFX_IDS = ['engine-idle', 'engine-low', 'engine-mid', 'engine-high', 'wind', 'tire-squeal', 'grind-metal', 'grind-concrete', 'drag-scrape', 'land-soft', 'land-hard', 'slam', 'ollie', 'whoosh', 'body-thud-1', 'body-thud-2', 'helmet-bounce', 'cone-hit', 'bin-hit', 'chair-clink', 'letter', 'goal', 'combo', 'special', 'crowd-ooh', 'crowd-cheer', 'crowd-gasp', 'crowd-laugh', 'board-tap', 'phone-shutter', 'glove-creak', 'record-scratch', 'horn', 'ui-select', 'ui-back', 'ui-tick', 'ambience'] as const;
