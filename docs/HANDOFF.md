@@ -103,6 +103,22 @@ Verification for this pass:
 - These checks do not replace a hands-on keyboard/controller playtest or listening pass. Driving/landing physics and
   existing scoring rules were not retuned. Licensed assets and public deployment remain outside this pass.
 
+## Open world + secrets (2026-09-25, after "I fell off the world when exploring")
+
+- **Cause:** no fence around the park, physical ground ended 400 m out while the grass ran to 1100 m, and only scenery
+  within 15 m of the park had collision. **Fix:** ground to 1200 m; buildings, far city, towers, the elevated highway
+  (deck, girders, piers, parapets), every lamp and tree and parked car are solid (tagged `building`/`highway`/`car`).
+  City layout numbers live in `src/park/city.ts`.
+- **On-ramp easter egg:** a concrete on-ramp climbs beside the highway (x 100→172, z 81–87) to a merge through a gap in
+  the north parapet; stalled jam, WRONG WAY sign, "NO RYKERS (PLEASE)" sign, cardboard kid on the deck, cardboard troll
+  under the bridge. Respawn (R) finds the surface under your safe spot, so it works up there.
+- **Secrets** (`src/game/explore.ts`; once per run for points/voice/toast, saved forever, listed on the Goals screen):
+  JAYWALKER, UNDER THE BRIDGE, WRONG WAY ON THE INTERSTATE, INSURANCE CLAIM, APARTMENT HUNTING, RETURNED TO SENDER (the
+  560 m county line sends you home). Safety net: below y=-25 → back to the start ("FELL OFF THE MAP").
+- **Verified in-game:** all six fire with toast + caption; 700+ m drives east/west never drop below ground; R on the deck
+  respawns at y=9; physics 0.10 ms/step in the park, 0.18 ms on the highway (557 colliders); 58/58 tests.
+- **Not verified:** the 11 new voice lines were generated (durations 2–5 s) but nobody has listened to them.
+
 ## Not done / not verified (honest list)
 
 1. **Nobody has played it with hands.** Everything was scripted input. Trick timing, ollie height, spin speed, balance
@@ -118,7 +134,9 @@ Verification for this pass:
    The ElevenLabs key was pasted in chat — consider rotating it; it's only in `.env.local` (git-ignored).
 
 8. Driving off the end of a perimeter QP's wing at speed can launch you out of the park into the streets
-   (open world by design); hitting a parked car there throws you, legitimately.
+   (open world by design); hitting a parked car there throws you, legitimately (and counts as INSURANCE CLAIM).
+10. Scripted tests that run past 2 minutes of sim time in career mode end the run and hand control back to the
+    title-screen demo (`game.demo = true`), where secrets/records are off by design — reset `demo` before testing.
 9. Spins still fail if you're mid-spin when you run out of air (e.g. a 0.3 s spin off the tiny hump) — the
    intended skill part.
 
