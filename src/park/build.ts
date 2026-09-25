@@ -132,8 +132,9 @@ export function addParkColliders(phys: PhysicsWorld, grid: HeightGrid) {
     ),
     'concrete',
   );
-  // Flat ground around the park (outside the heightfield).
-  const E = 400;
+  // Flat ground around the park (outside the heightfield), past the edge of the visible grass
+  // (1100 m) — it used to stop at 400 m and you drove off the world.
+  const E = 1200;
   const x0 = BOUNDS.minX;
   const x1 = BOUNDS.minX + BOUNDS.sizeX;
   const z0 = BOUNDS.minZ;

@@ -2,12 +2,14 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { RAPIER, type PhysicsWorld } from '../physics/world';
 import { asphaltTexture, concreteTexture, grassTexture } from '../render/textures';
+import { EW, NS, HWY, ON_RAMP } from './city';
 
 // The world beyond the skate area, after the clip: an ordinary sunny autumn afternoon.
 // Sidewalk ring → lawns full of red maples → two streets with parked cars → an elevated highway
 // to the south, mid-rise apartment blocks all round and a hazy downtown skyline to the north.
 // All static: geometry is merged per material or instanced (~27 meshes, ~160k triangles), textures
-// are painted on canvases, and only things you can actually hit from the park get colliders.
+// are painted on canvases. The park has no fence, so everything you can drive to is solid: buildings,
+// the highway (and its on-ramp), lamps, trees and parked cars (colliders tagged for the secrets).
 // Axes: +X east, +Z south, y up. The park is x∈[-64,64], z∈[-52,52]; nothing here goes inside it.
 
 const PARK = { x0: -64, x1: 64, z0: -52, z1: 52 };
@@ -15,10 +17,7 @@ const RING = 5; // concrete sidewalk band hugging the park
 const GROUND_R = 1100; // grass disc radius (inside the camera's far plane; fog is total well before)
 const RUN = 1000; // streets and the highway run out into the fog
 const CURB = 0.1; // street sidewalks sit a kerb above the asphalt (visual only)
-const EW = { z0: 64, z1: 76 }; // south street asphalt: parking lane + 2 lanes + parking lane
-const NS = { x0: 76, x1: 88 }; // east street asphalt
-const HWY = { z: 95, half: 7, top: 9 };
-const NEAR = 15; // within this of the park: casts shadows and gets colliders
+const NEAR = 15; // within this of the park: casts shadows (everything you can reach is solid)
 
 type Rand = () => number;
 type Tint = THREE.ColorRepresentation | ((p: THREE.Vector3, n: THREE.Vector3) => THREE.ColorRepresentation);
@@ -1021,7 +1020,7 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
   group.matrixAutoUpdate = false;
   scene.add(group);
   const r = rng(20260925);
-  const collide = (desc: ReturnType<typeof RAPIER.ColliderDesc.cuboid>) => phys.addStatic(desc, 'scenery');
+  const collide = (desc: ReturnType<typeof RAPIER.ColliderDesc.cuboid>, tag = 'scenery') => phys.addStatic(desc, tag);
   const yawQ = (yaw: number) => new THREE.Quaternion().setFromAxisAngle(UP, yaw);
 
   // ---------- Materials (shared)
@@ -1173,9 +1172,22 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
   const girderBot = deckBot - 1.3;
   B.concrete.add(box(-RUN, RUN, deckBot, HWY.top, HWY.z - HWY.half, HWY.z + HWY.half), null, '#dedbd5');
   for (const dz of [-3.9, 3.9]) B.concrete.add(box(-RUN, RUN, girderBot, deckBot, HWY.z + dz - 1.3, HWY.z + dz + 1.3), null, '#bab6af');
+  collide(RAPIER.ColliderDesc.cuboid(RUN, (HWY.top - deckBot) / 2, HWY.half).setTranslation(0, (HWY.top + deckBot) / 2, HWY.z), 'highway');
+  for (const dz of [-3.9, 3.9]) collide(RAPIER.ColliderDesc.cuboid(RUN, (deckBot - girderBot) / 2, 1.3).setTranslation(0, (deckBot + girderBot) / 2, HWY.z + dz), 'highway');
   const jersey = new THREE.Shape([V2(-0.3, 0), V2(0.3, 0), V2(0.3, 0.08), V2(0.18, 0.3), V2(0.12, 1.05), V2(-0.12, 1.05), V2(-0.18, 0.3), V2(-0.3, 0.08)]);
-  const parapet = new THREE.ExtrudeGeometry(jersey, { depth: 2 * RUN, bevelEnabled: false });
-  for (const s of [-1, 1]) B.concrete.add(parapet, new THREE.Matrix4().makeRotationY(Math.PI / 2).setPosition(-RUN, HWY.top, HWY.z + s * (HWY.half - 0.32)), '#e4e1db');
+  const parapetRun = (xa: number, xb: number, z: number, y = HWY.top, slope = 0) => {
+    const len = (xb - xa) / Math.cos(slope);
+    const m = new THREE.Matrix4().makeRotationZ(slope).multiply(new THREE.Matrix4().makeRotationY(Math.PI / 2)).setPosition(xa, y, z);
+    B.concrete.add(new THREE.ExtrudeGeometry(jersey, { depth: len, bevelEnabled: false }), m, '#e4e1db');
+    const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), slope);
+    const mid = V(xa, y, z).add(V(len / 2, 0.52, 0).applyQuaternion(q));
+    collide(RAPIER.ColliderDesc.cuboid(len / 2, 0.52, 0.28).setTranslation(mid.x, mid.y, mid.z).setRotation(q), 'highway');
+  };
+  // North parapet has a gap where the on-ramp merges; the south one runs the whole way.
+  const zN = HWY.z - (HWY.half - 0.32);
+  parapetRun(-RUN, ON_RAMP.x1, zN);
+  parapetRun(ON_RAMP.x2, RUN, zN);
+  parapetRun(-RUN, RUN, HWY.z + (HWY.half - 0.32));
   const column = new THREE.CylinderGeometry(1, 1, 1, 8, 1).rotateY(Math.PI / 8);
   const cap = new THREE.ExtrudeGeometry(new THREE.Shape([V2(-1.7, 0), V2(1.7, 0), V2(5.9, 1.0), V2(5.9, 1.45), V2(-5.9, 1.45), V2(-5.9, 1.0)]), {
     depth: 1.8,
@@ -1190,6 +1202,36 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
     if (Math.abs(x - nsMid) < 12) continue; // leave the east street clear
     B.concrete.add(column, new THREE.Matrix4().compose(V(x, (colTop - 0.3) / 2, HWY.z), new THREE.Quaternion(), V(0.85, colTop + 0.3, 1.4)), pierTint);
     B.concrete.add(cap, place(x, colTop, HWY.z), '#d6d3cd');
+    collide(RAPIER.ColliderDesc.cuboid(0.78, (colTop + 0.3) / 2, 1.3).setTranslation(x, (colTop - 0.3) / 2, HWY.z), 'highway');
+    collide(RAPIER.ColliderDesc.cuboid(0.9, 0.72, 5.9).setTranslation(x, colTop + 0.72, HWY.z), 'highway');
+  }
+
+  // ---------- The on-ramp: a concrete embankment climbing to deck height beside the highway, a flat
+  // merge where the north parapet stops, jersey barriers on the open sides. (Nothing says "skatepark"
+  // like an interstate on-ramp.)
+  {
+    const R = ON_RAMP;
+    const run = R.x1 - R.x0;
+    const slope = Math.atan2(R.top, run);
+    const wedge = new THREE.ExtrudeGeometry(new THREE.Shape([V2(0, 0), V2(run, 0), V2(run, R.top)]), { depth: R.z1 - R.z0, bevelEnabled: false });
+    B.concrete.add(wedge.translate(R.x0, 0, R.z0), null, (_p, n) => (Math.abs(n.z) > 0.5 ? '#cbc6be' : '#d9d5ce'));
+    B.concrete.add(box(R.x1, R.x2, 0, R.top, R.z0, HWY.z - HWY.half), null, (_p, n) => (Math.abs(n.y) > 0.5 ? '#d9d5ce' : '#cbc6be'));
+    // Asphalt on top (a hair above the concrete).
+    const len = run / Math.cos(slope);
+    B.asphalt.add(new THREE.PlaneGeometry(len, R.z1 - R.z0).rotateX(-Math.PI / 2).rotateZ(slope).translate((R.x0 + R.x1) / 2, R.top / 2 + 0.02, (R.z0 + R.z1) / 2), null);
+    B.asphalt.add(rect(R.x1, R.x2, R.z0, HWY.z - HWY.half, R.top + 0.02), null);
+    const pts: number[] = [];
+    for (const z of [R.z0, R.z1]) pts.push(R.x0, 0, z, R.x1, 0, z, R.x1, R.top, z);
+    const hull = RAPIER.ColliderDesc.convexHull(new Float32Array(pts));
+    if (hull) collide(hull, 'highway');
+    collide(RAPIER.ColliderDesc.cuboid((R.x2 - R.x1) / 2, R.top / 2, (HWY.z - HWY.half - R.z0) / 2).setTranslation((R.x1 + R.x2) / 2, R.top / 2, (R.z0 + HWY.z - HWY.half) / 2), 'highway');
+    // Barriers: both sides of the climb, the outside of the merge, and across the dead end.
+    parapetRun(R.x0, R.x1, R.z0 + 0.3, 0, slope);
+    parapetRun(R.x0, R.x1, R.z1 - 0.3, 0, slope);
+    parapetRun(R.x1, R.x2, R.z0 + 0.3);
+    const cap = new THREE.ExtrudeGeometry(jersey, { depth: HWY.z - HWY.half - R.z0, bevelEnabled: false });
+    B.concrete.add(cap, new THREE.Matrix4().setPosition(R.x2 - 0.3, R.top, R.z0), '#e4e1db');
+    collide(RAPIER.ColliderDesc.cuboid(0.28, 0.52, (HWY.z - HWY.half - R.z0) / 2).setTranslation(R.x2 - 0.3, R.top + 0.52, (R.z0 + HWY.z - HWY.half) / 2), 'highway');
   }
 
   // ---------- Buildings
@@ -1215,6 +1257,7 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
       const uz = range(r, b.z0 + 2, b.z1 - 3);
       B.trim.add(box(ux, ux + 2.2, H + 0.9, H + 2.2, uz, uz + 1.6), null, '#b4b8bb');
     }
+    collide(RAPIER.ColliderDesc.cuboid((b.x1 - b.x0) / 2 + 0.2, (H + 0.9) / 2, (b.z1 - b.z0) / 2 + 0.2).setTranslation((b.x0 + b.x1) / 2, (H + 0.9) / 2, (b.z0 + b.z1) / 2), 'building');
   }
   for (const t of TOWERS) {
     const bay = t.style === 'glass' ? 4 : 3;
@@ -1229,6 +1272,7 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
       y = top + 1.4;
     }
     if (t.spire) B.trim.add(new THREE.CylinderGeometry(0.12, 0.7, t.spire, 6).translate(t.x, y + t.spire / 2, t.z), null, '#9aa2aa');
+    collide(RAPIER.ColliderDesc.cuboid(t.w / 2, t.h / 2, t.d / 2).setTranslation(t.x, t.h / 2, t.z), 'building');
   }
   // A ring of simple far blocks so the horizon reads as city, not a lawn that stops.
   const styles: Style[] = ['brick', 'grey', 'white', 'grey'];
@@ -1248,6 +1292,7 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
     const H = 3 * Math.round(range(r, 4, 13));
     facadeWalls(B.facade[st], x - w / 2, x + w / 2, z - d / 2, z + d / 2, 0, H, 3, 3, r, '#ffffff');
     B.trim.add(box(x - w / 2 - 0.3, x + w / 2 + 0.3, H, H + 0.9, z - d / 2 - 0.3, z + d / 2 + 0.3), null, (_p, n) => (n.y > 0.5 ? ROOF : TRIM[st]));
+    collide(RAPIER.ColliderDesc.cuboid(w / 2, (H + 0.9) / 2, d / 2).setTranslation(x, (H + 0.9) / 2, z), 'building');
   }
 
   // ---------- Street furniture: lamps, benches, planters, bus shelters
@@ -1263,7 +1308,7 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
     b.add(new THREE.CylinderGeometry(0.05, 0.05, 1.7, 6, 1, true).rotateZ(-Math.PI / 2 + 0.12).translate(0.85, h - 0.2, 0), m, P);
     b.add(cube(0.95, 0.16, 0.42, 1.68, h - 0.02, 0), m, P);
     b.add(cube(0.75, 0.03, 0.3, 1.68, h - 0.11, 0), m, '#f3efe0');
-    if (near) collide(RAPIER.ColliderDesc.cylinder(h / 2, 0.16).setTranslation(x, y + h / 2, z));
+    collide(RAPIER.ColliderDesc.cylinder(h / 2, 0.16).setTranslation(x, y + h / 2, z));
   };
   const lampSpots: [number, number, number, number, number][] = [
     [-45, 0, pz1 + 4.3, 0, -1],
@@ -1380,10 +1425,16 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
     [NS.x0 + 1.25, 14, -Math.PI / 2, 'sedan', CAR_COLOURS[9]],
     [NS.x1 - 1.25, 30, Math.PI / 2, 'sedan', CAR_COLOURS[1]],
   ];
-  for (const [x, z, yaw0, kind, colour] of cars) {
+  // Up on the interstate: a stalled jam just past the merge (westbound lane — you arrive the wrong way).
+  const jam: [number, number, number, 'sedan' | 'suv', string][] = [
+    [226, HWY.z - 3.2, Math.PI, 'suv', CAR_COLOURS[3]],
+    [234.5, HWY.z - 3.4, Math.PI, 'sedan', CAR_COLOURS[9]],
+    [251, HWY.z + 3.3, 0, 'sedan', CAR_COLOURS[2]],
+  ];
+  for (const [x, z, yaw0, kind, colour, y = 0] of [...cars, ...jam.map((c): [number, number, number, 'sedan' | 'suv', string, number] => [...c, HWY.top])]) {
     const k = kits[kind];
     const yaw = yaw0 + range(r, -0.025, 0.025);
-    const m = place(x, 0, z, yaw);
+    const m = place(x, y, z, yaw);
     for (const g of k.body) B.paint.add(g, m, colour);
     for (const [g, c] of k.fixed) B.paint.add(g, m, c);
     for (const [a, b, t] of k.pillars) beam(B.paint, a, b, t, m, k.pillarColour ?? colour);
@@ -1393,7 +1444,7 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
       B.props.add(new THREE.CylinderGeometry(w.r * 0.62, w.r * 0.62, w.w + 0.012, 12).rotateX(Math.PI / 2).translate(w.x, w.r, w.z), m, '#b5b9bd');
     }
     B.aoHard.add(new THREE.PlaneGeometry(k.L * 1.12, k.W * 1.45).rotateX(-Math.PI / 2).translate(0, 0.01, 0), m);
-    collide(RAPIER.ColliderDesc.cuboid(k.L / 2, k.H / 2, k.W / 2).setTranslation(x, k.H / 2, z).setRotation(yawQ(yaw)));
+    collide(RAPIER.ColliderDesc.cuboid(k.L / 2, k.H / 2, k.W / 2).setTranslation(x, y + k.H / 2, z).setRotation(yawQ(yaw)), 'car');
   }
 
   // ---------- Trees
@@ -1403,6 +1454,7 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
     [-Infinity, Infinity, EW.z0 - 3.8, EW.z1 + 3.8],
     [NS.x0 - 3.8, NS.x1 + 3.8, -Infinity, Infinity],
     [-Infinity, Infinity, HWY.z - 11, HWY.z + 11],
+    [ON_RAMP.x0 - 4, ON_RAMP.x2 + 4, ON_RAMP.z0 - 4, HWY.z],
     [-Infinity, NS.x0, -89, -84],
     [-Infinity, px0, -2.5, 2.5],
     ...BLOCKS.map((b): [number, number, number, number] => [b.x0 - 5, b.x1 + 5, b.z0 - 5, b.z1 + 5]),
@@ -1454,7 +1506,7 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
     }
     const ar = Math.min(R * 1.25, parkDist(s.x, s.z) - 0.3);
     B.aoSoft.add(new THREE.PlaneGeometry(ar * 2, ar * 2).rotateX(-Math.PI / 2).translate(s.x, 0.008, s.z), null);
-    if (near) collide(RAPIER.ColliderDesc.cylinder(2.5, s.pine ? 0.24 : 0.3).setTranslation(s.x, 2.5, s.z));
+    collide(RAPIER.ColliderDesc.cylinder(2.5, s.pine ? 0.24 : 0.3).setTranslation(s.x, 2.5, s.z));
   }
 
   // Distant trees filling the gaps between far blocks: a bare trunk under a few big low-poly clumps.
@@ -1472,6 +1524,7 @@ export function buildBackdrop(scene: THREE.Scene, phys: PhysicsWorld): THREE.Gro
     const h = range(r, 7, 12);
     const s = h * range(r, 0.3, 0.4);
     limb(B.barkFar, V(x, -0.3, z), V(x, h - s * 0.6, z), 0.35, 0.2, 5, barkTint);
+    collide(RAPIER.ColliderDesc.cylinder(h / 2, 0.35).setTranslation(x, h / 2, z));
     for (let k = 0; k < 3; k++) {
       const p = V(x + range(r, -0.5, 0.5) * s, h - s * 0.45 + range(r, -0.2, 0.25) * s, z + range(r, -0.5, 0.5) * s);
       clumps.push({

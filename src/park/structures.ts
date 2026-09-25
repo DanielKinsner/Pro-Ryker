@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { RAPIER, type PhysicsWorld } from '../physics/world';
 import { PAVILION, PLAZA } from './layout';
+import { HWY, ON_RAMP } from './city';
 import { signTexture } from '../render/textures';
 import { MATS } from '../render/materials';
 
@@ -240,6 +241,17 @@ function buildSigns(g: THREE.Group, phys: PhysicsWorld) {
   sign(['MUNICIPAL LIABILITY', 'SKATE PARK'], -46, -31.2, 180, { bg: '#e8e1cf', fg: '#222', border: '#222', y: PLAZA.h, sw: 3.2, sh: 1.3 });
   sign(['SLOW', 'CHILDREN AT PLAY'], 55, 37.5, -90, { bg: '#ffd23f', fg: '#111' }); // beside the planter-gap run-out, not in it
   sign(['PLEASE REMAIN', 'SEATED'], 44.5, -20, -30, { bg: '#f4f1e8', fg: '#1b1b1b', border: '#e3242b' });
+  // Out in the city (the secrets): the foot of the on-ramp, and what greets you at the merge.
+  sign(['NO PEDESTRIANS', 'NO BICYCLES', 'NO RYKERS (PLEASE)'], ON_RAMP.x0 - 3, ON_RAMP.z0 - 1.5, -135, {
+    bg: '#f4f1e8',
+    fg: '#111',
+    border: '#111',
+    h: 384,
+    sw: 2.0,
+    sh: 1.5,
+    font: 'Archivo Black, sans-serif',
+  });
+  sign(['WRONG', 'WAY'], ON_RAMP.x2 + 14, HWY.z - HWY.half + 1.3, -90, { bg: '#c8102e', fg: '#ffffff', border: '#ffffff', y: HWY.top });
 }
 
 function buildGraffiti(g: THREE.Group) {

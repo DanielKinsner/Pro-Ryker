@@ -26,6 +26,9 @@ const PLACES: { who: Who; x: number; y?: number; z: number; face: [number, numbe
   { who: 'filmer', x: 13, z: -31, face: [28, -40] },
   { who: 'kid', x: 37, z: 39, face: [30, 30] },
   { who: 'skater2', x: -64, z: -2, face: [-44, -4] },
+  // Out in the city: someone already up on the interstate, and a troll under the bridge.
+  { who: 'kid', x: 214, y: 9, z: 99.5, face: [190, 90] },
+  { who: 'employee', x: 38, z: 95, face: [30, 70] },
 ];
 
 const W = 0.9;
