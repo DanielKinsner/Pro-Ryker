@@ -111,7 +111,7 @@ export class RiderController {
           const hd = _v2.set(v.fwd.x, 0, v.fwd.z).normalize();
           const dv = this.decelHist[0].clone().sub(this.decelHist[3]).dot(hd); // + = slowed down
           const decel = dv / (3 * dt);
-          if (decel > 42) this.addStrain((decel - 42) * 0.006, 'hit something');
+          if (decel > 42 && v.chassisHitStatic()) this.addStrain((decel - 42) * 0.006, 'hit something');
         }
         // A roof/side contact with the rider collider means he's between the Ryker and the floor.
         this.strain = Math.max(0, this.strain - RIDER.strainDecay * dt * (v.grounded ? 1 : 0.2));

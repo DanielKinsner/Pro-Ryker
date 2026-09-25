@@ -49,6 +49,7 @@ const _v2 = new THREE.Vector3();
 const _v3 = new THREE.Vector3();
 const _q = new THREE.Quaternion();
 const _q2 = new THREE.Quaternion();
+const _vI = new THREE.Vector3();
 const UP = new THREE.Vector3(0, 1, 0);
 
 export class Vehicle {
@@ -132,6 +133,8 @@ export class Vehicle {
     const bd = RAPIER.RigidBodyDesc.dynamic()
       .setTranslation(0, 1, 0)
       .setCcdEnabled(true)
+      // Props (cones, bins) and the ragdoll can't shove the Ryker: it plows through them (arcade).
+      .setDominanceGroup(1)
       .setLinearDamping(0.02)
       .setAngularDamping(0.6)
       .setCanSleep(false);
@@ -334,6 +337,11 @@ export class Vehicle {
   postStep() {
     if (this.frozen) return;
     this.readPose();
+    if (this.kinematic) {
+      // Kinematic bodies (grinding) don't report velocity: derive it from the motion.
+      this.vel.subVectors(this.pos, this.prevPos).divideScalar(SIM.dt);
+      this.speed = this.vel.length();
+    }
     // Wheel spin visuals
     for (const w of this.wheels) {
       const v = _v.copy(this.vel);
@@ -368,8 +376,11 @@ export class Vehicle {
   }
 
   private applySuspension(dt: number) {
+    const manual = this.ctl.manual;
     for (const w of this.wheels) {
       if (!w.contact) continue;
+      // During a manual the lifted end's springs are off (so it can actually come up).
+      if ((manual === 'rear' && w.front) || (manual === 'nose' && !w.front)) continue;
       // Preload so the static ride height is the modelled one (compression = suspensionRest).
       const x0 = VEHICLE.suspensionRest - (this.mass * -SIM.gravity) / 3 / VEHICLE.springK;
       const x = w.compression;
@@ -462,9 +473,21 @@ export class Vehicle {
     this.rpm += (targetRpm - this.rpm) * Math.min(1, 6 * dt);
   }
 
+  /**
+   * Moment of inertia about a world axis. Rapier reports inertia in the body's *principal* frame,
+   * which is rotated relative to the model — so it must be rotated back, not read per-component.
+   */
+  inertiaAbout(axisWorld: THREE.Vector3) {
+    const pi = this.body.principalInertia();
+    const pf = this.body.principalInertiaLocalFrame();
+    const r = this.body.rotation();
+    const q = _q.set(r.x, r.y, r.z, r.w).multiply(_q2.set(pf.x, pf.y, pf.z, pf.w));
+    const l = _vI.copy(axisWorld).applyQuaternion(q.invert());
+    return pi.x * l.x * l.x + pi.y * l.y * l.y + pi.z * l.z * l.z;
+  }
+
   private yawInertia() {
-    // Local principal inertia about Y (the body's principal axes are ~aligned with the model axes).
-    return this.body.principalInertia().y;
+    return this.inertiaAbout(this.groundNormal);
   }
 
   private applyGroundAssists(dt: number, m: number) {
@@ -494,15 +517,16 @@ export class Vehicle {
   private applyManualTorque(dt: number, m: number) {
     const c = this.ctl;
     const n = this.groundNormal;
-    // Target pitch: nose up (rear manual) or tail up (nose manual), offset by balance.
+    // Target pitch: nose up (rear manual) or tail up (nose manual), offset by the balance needle.
     const base = c.manual === 'rear' ? 0.36 : -0.3;
     const target = base + c.manualBalance * 0.34 * (c.manual === 'rear' ? 1 : -1);
-    const f = _v.copy(this.fwd);
-    const pitch = Math.asin(Math.max(-1, Math.min(1, f.dot(n))));
-    const err = target - pitch;
+    const pitch = Math.asin(Math.max(-1, Math.min(1, this.fwd.dot(n))));
+    // Drive the pitch rate (velocity-level, scaled by the real inertia) — stable, and strong enough
+    // to beat gravity's torque about the axle the Ryker is balancing on.
+    const wantRate = Math.max(-3.5, Math.min(3.5, (target - pitch) * 9));
     const wR = this.angVel.dot(this.right);
-    const tq = _v2.copy(this.right).multiplyScalar((err * 60 - wR * 9) * m * 0.5 * dt);
-    this.body.applyTorqueImpulse(tq, true);
+    const Ip = this.inertiaAbout(this.right);
+    this.body.applyTorqueImpulse(_v2.copy(this.right).multiplyScalar(Ip * (wantRate - wR) * 0.35), true);
     // Keep roll level to the surface.
     const axis = _v3.crossVectors(this.up, n);
     axis.addScaledVector(this.right, -axis.dot(this.right));
@@ -658,6 +682,22 @@ export class Vehicle {
       });
     });
     return hit;
+  }
+
+  /** Chassis or nose touching static world geometry (walls, ledges, kerbs) — not props or the rider. */
+  chassisHitStatic() {
+    const w = this.phys.world;
+    let hit = false;
+    for (const c of [this.chassis, this.nose]) {
+      w.contactPairsWith(c, (other) => {
+        if (hit || !this.phys.tags.has(other.handle)) return;
+        w.contactPair(c, other, (m) => {
+          if (m.numContacts() > 0) hit = true;
+        });
+      });
+      if (hit) return true;
+    }
+    return false;
   }
 
   /** Is the chassis/nose/rider collider in actual contact with static geometry or props? */

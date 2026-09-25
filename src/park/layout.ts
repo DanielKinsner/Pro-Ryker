@@ -145,9 +145,9 @@ export const PROPS: PropDef[] = [
   { kind: 'cone', x: -57, z: -34.5, y: PLAZA.h },
   { kind: 'cone', x: -59, z: -48, y: PLAZA.h },
   // Cones around the flat bars
-  { kind: 'cone', x: 46, z: -8 },
-  { kind: 'cone', x: 46, z: 2 },
-  { kind: 'cone', x: 22, z: -8 },
+  { kind: 'cone', x: 46.5, z: -10.5 },
+  { kind: 'cone', x: 46.5, z: 4.5 },
+  { kind: 'cone', x: 21, z: -11.5 },
   { kind: 'cone', x: 34, z: -2.6 },
   { kind: 'cone', x: -30, z: 24 },
   { kind: 'cone', x: -52, z: 6 },
