@@ -175,8 +175,8 @@ export class Fx {
         0.7,
         alpha,
         size * (0.7 + this.rand() * 0.6),
-        0.8 + this.rand() * 0.8,
-        1.4,
+        0.6 + this.rand() * 0.6,
+        0.45,
       );
     }
   }
@@ -185,7 +185,7 @@ export class Fx {
     for (let k = 0; k < n; k++) {
       const a = this.rand() * Math.PI * 2;
       const s = speed * (0.4 + this.rand() * 0.6);
-      this.spawn(this.dust, at.x, at.y + 0.2, at.z, Math.cos(a) * s, 0.8 + this.rand() * 1.5, Math.sin(a) * s, rgb[0], rgb[1], rgb[2], 0.45, size * (0.6 + this.rand() * 0.8), 1 + this.rand(), 1.2);
+      this.spawn(this.dust, at.x, at.y + 0.2, at.z, Math.cos(a) * s, 0.8 + this.rand() * 1.5, Math.sin(a) * s, rgb[0], rgb[1], rgb[2], 0.32, size * (0.4 + this.rand() * 0.5), 0.8 + this.rand() * 0.6, 0.5);
     }
   }
 
@@ -196,7 +196,7 @@ export class Fx {
       for (let k = 0; k < 8; k++) {
         const a = (k / 8) * Math.PI * 2 + this.rand();
         const s = 1.4 * strength * (0.6 + this.rand() * 0.5);
-        this.spawn(this.dust, w.point.x, w.point.y + 0.05, w.point.z, Math.cos(a) * s + v.vel.x * 0.2, 0.3 + this.rand() * 0.5, Math.sin(a) * s + v.vel.z * 0.2, 0.88, 0.76, 0.72, 0.35, 0.45 * strength + 0.2, 0.9 + this.rand() * 0.6, 1.6);
+        this.spawn(this.dust, w.point.x, w.point.y + 0.05, w.point.z, Math.cos(a) * s + v.vel.x * 0.2, 0.3 + this.rand() * 0.5, Math.sin(a) * s + v.vel.z * 0.2, 0.88, 0.76, 0.72, 0.28, 0.22 * strength + 0.12, 0.6 + this.rand() * 0.5, 0.5);
       }
     }
   }
@@ -236,7 +236,7 @@ export class Fx {
       const n = Math.floor(this.acc.dust);
       this.acc.dust -= n;
       const rear = v.wheels[2];
-      if (rear.contact && n) this.dustAt(rear.point, v.vel, n, 0.6, 0.3);
+      if (rear.contact && n) this.dustAt(rear.point, v.vel, n, 0.35, 0.22);
       for (let k = 0; k < 3; k++) {
         const w = v.wheels[k];
         if (w.contact) this.skidAt(k, w.point, v.fwd);
@@ -254,7 +254,7 @@ export class Fx {
         this.acc.dust += dt * (8 + v.speed * 1.5);
         const n = Math.floor(this.acc.dust);
         this.acc.dust -= n;
-        if (n) this.dustAt(p.setY(p.y - 0.2), v.vel, n, 0.55, 0.3);
+        if (n) this.dustAt(p.setY(p.y - 0.2), v.vel, n, 0.32, 0.22);
         if (this.rand() < dt * 6) this.sparkAt(p, _v2.copy(v.vel).normalize().negate(), v.speed * 0.5, 4);
       }
     }

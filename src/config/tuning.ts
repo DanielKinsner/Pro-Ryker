@@ -39,7 +39,7 @@ export const VEHICLE = {
   ollieCharge: 2.8,
   chargeTime: 0.55,
   coyoteTime: 0.16,
-  vertNormalY: 0.42, // lips steeper than this give vert air (straight up and back into the ramp)
+  vertNormalY: 0.6, // launches off transitions steeper than ~53° are vert air (straight up, back into the ramp)
 };
 
 export const AIR = {

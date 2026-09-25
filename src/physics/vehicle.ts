@@ -153,10 +153,11 @@ export class Vehicle {
         .setCollisionGroups(COL.vehicle),
       this.body,
     );
-    // Front axle + fenders (wide).
+    // Front axle + fenders (wide). Kept high and tucked behind the tyre faces so the approach angle
+    // is generous (~55°): a low nose used to hit every ramp toe face-first and read as a crash.
     this.nose = w.createCollider(
-      RAPIER.ColliderDesc.roundCuboid(0.56, 0.1, 0.3, 0.08)
-        .setTranslation(0, 0.4, -0.86)
+      RAPIER.ColliderDesc.roundCuboid(0.56, 0.08, 0.2, 0.08)
+        .setTranslation(0, 0.5, -0.8)
         .setMass(VEHICLE.massKg * 0.18)
         .setFriction(0.12)
         .setFrictionCombineRule(RAPIER.CoefficientCombineRule.Min)
@@ -297,18 +298,20 @@ export class Vehicle {
       this.groundNormal.normalize();
     }
 
-    // Skate-game transitions: while rolling, velocity turns with the surface as it curves (instead of
-    // asking the springs for 7 g of centripetal force at the foot of a quarterpipe).
+    // Skate-game transitions: rolling into a curving surface (a ramp toe, a bowl wall) redirects the
+    // velocity along it with the speed kept, instead of asking the springs to absorb the impact.
+    // Motion *away* from the surface (lips, ollies) is untouched so launches still happen naturally.
     if (nowGrounded && wasGrounded && this.contacts >= 2 && !this.empty) {
-      const turn = this.prevGroundNormal.dot(this.groundNormal);
-      if (turn < 0.99999 && turn > 0.93) {
-        _q.setFromUnitVectors(this.prevGroundNormal, this.groundNormal);
-        const vIn = this.vel.dot(this.groundNormal);
-        const nv = _v.copy(this.vel).applyQuaternion(_q);
-        // Only redirect the along-surface part; keep whatever real normal motion there is.
-        nv.addScaledVector(this.groundNormal, vIn - nv.dot(this.groundNormal));
-        this.body.setLinvel(nv, true);
-        this.vel.copy(nv);
+      const n = this.groundNormal;
+      const vn = this.vel.dot(n);
+      if (vn < -0.45) {
+        const speed = this.vel.length();
+        const vt = _v.copy(this.vel).addScaledVector(n, -vn);
+        if (vt.lengthSq() > 0.25) {
+          vt.setLength(speed * 0.985 + vt.length() * 0.015);
+          this.body.setLinvel(vt, true);
+          this.vel.copy(vt);
+        }
       }
     }
     if (nowGrounded) this.prevGroundNormal.copy(this.groundNormal);
@@ -618,6 +621,24 @@ export class Vehicle {
     this.flipVel += Math.sign(wantFlip - this.flipVel) * Math.min(Math.abs(wantFlip - this.flipVel), (pitch ? AIR.flipAccel : AIR.damp * 2) * dt);
     this.airYaw += this.spinVel * dt;
     this.airFlip += this.flipVel * dt;
+    // Bounded landing assist: ease pitch/roll to match the surface you're falling toward (never yaw,
+    // never while you're leaning with W/S). Stronger on the way down in vert air.
+    if (pitch === 0 && this.airTime > 0.15) {
+      const dir = this.vertAir && this.vel.y < 0 ? _v3.copy(this.vel).normalize() : _v3.set(0, -1, 0);
+      const c = this.body.worldCom();
+      const hit = this.phys.rayGround(c.x, c.y, c.z, dir.x, dir.y, dir.z, this.vertAir ? 9 : 7);
+      if (hit && hit.ny > 0.2) {
+        const upNow = _v.set(0, 1, 0).applyQuaternion(this.airBase);
+        const target = _v2.set(hit.nx, hit.ny, hit.nz);
+        const ang = Math.acos(Math.max(-1, Math.min(1, upNow.dot(target))));
+        if (ang > 0.01 && ang < 1.9) {
+          const rate = (this.vertAir ? 2.4 : 1.1) * dt;
+          _q.setFromUnitVectors(upNow, target);
+          _q2.identity().slerp(_q, Math.min(1, rate / ang));
+          this.airBase.premultiply(_q2).normalize();
+        }
+      }
+    }
     _q.setFromAxisAngle(UP, this.spinVel * dt);
     this.airBase.premultiply(_q);
     const rightW = _v.set(1, 0, 0).applyQuaternion(this.airBase);

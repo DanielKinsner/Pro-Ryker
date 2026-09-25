@@ -1,5 +1,5 @@
 import { defineConfig, type Plugin } from 'vite';
-import { rmSync, existsSync, readdirSync } from 'node:fs';
+import { rmSync, existsSync, readdirSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
@@ -26,6 +26,27 @@ function stripPrivate(): Plugin {
   };
 }
 
+/** Dev-only: POST /__capture?name=foo with a PNG data URL → docs/screens/foo.png (real runtime frames). */
+function captureEndpoint(): Plugin {
+  return {
+    name: 'dev-capture',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use('/__capture', (req, res) => {
+        const name = new URL(req.url ?? '', 'http://x').searchParams.get('name')?.replace(/[^a-z0-9-_]/gi, '') || 'capture';
+        let body = '';
+        req.on('data', (c) => (body += c));
+        req.on('end', () => {
+          const b64 = body.replace(/^data:image\/\w+;base64,/, '');
+          mkdirSync('docs/screens', { recursive: true });
+          writeFileSync(`docs/screens/${name}.png`, Buffer.from(b64, 'base64'));
+          res.end('ok');
+        });
+      });
+    },
+  };
+}
+
 export default defineConfig({
   base: './',
   server: { port: 5210, strictPort: false },
@@ -35,6 +56,6 @@ export default defineConfig({
     chunkSizeWarningLimit: 4000,
     assetsInlineLimit: 0,
   },
-  plugins: [stripPrivate()],
+  plugins: [stripPrivate(), captureEndpoint()],
   optimizeDeps: { exclude: ['@dimforge/rapier3d-compat'] },
 });
