@@ -73,8 +73,8 @@ export class Input {
     if (!a) return;
     // Never steal browser shortcuts.
     if (e.ctrlKey || e.metaKey || e.altKey) return;
-    // Let focused UI buttons activate natively instead of also jumping in the game.
-    if ((e.code === 'Enter' || e.code === 'Space') && (e.target as HTMLElement | null)?.closest?.('button')) return;
+    // Let buttons activate natively, but release keys held before focus moved to a button.
+    if ((e.code === 'Enter' || e.code === 'Space') && (e.target as HTMLElement | null)?.closest?.('button') && (down || !this.keys.has(e.code))) return;
     e.preventDefault();
     this.device = 'keyboard';
     if (down) {
@@ -163,13 +163,16 @@ export class Input {
       for (const [i, b] of map) {
         const now = !!p.buttons[i]?.pressed;
         const was = !!this.padPrev[i];
+        // Menu callbacks can sample again when starting/resuming a run.
+        // Commit this edge first so that nested sample cannot dispatch it twice.
+        this.padPrev[i] = now;
+        this.padBtnHeld[b] = now;
         if (now) held[b] = true;
         if (now && !was) {
           this.pressedCount[b]++;
           this.onPress?.(b);
         }
         if (!now && was) this.releasedCount[b]++;
-        this.padBtnHeld[b] = now;
       }
       // Stick flicks count as direction taps for special combos.
       for (const [i, d, v] of [
@@ -180,11 +183,12 @@ export class Input {
       ] as [number, Dir, boolean][]) {
         const now = v || !!p.buttons[i]?.pressed;
         const key = 20 + i;
-        if (now && !this.padPrev[key]) {
+        const was = !!this.padPrev[key];
+        this.padPrev[key] = now;
+        if (now && !was) {
           this.dirTaps.push({ d, t: performance.now() });
           this.onPress?.(d as 'up');
         }
-        this.padPrev[key] = now;
       }
       p.buttons.forEach((b, i) => (this.padPrev[i] = b.pressed));
       break; // first connected pad only

@@ -1,6 +1,6 @@
 # PRO RYKER — Handoff
 
-_Last updated: 2026-09-25, after the First Ride / HUD pass. Repo: https://github.com/DanielKinsner/Pro-Ryker (**public**). Latest pass is local on `codex/first-ride-hud`; no push or deployment._
+_Last updated: 2026-09-25, after the First Ride / HUD pass and input regression review. Repo: https://github.com/DanielKinsner/Pro-Ryker (**public**). Changes verified locally; no push or deployment._
 
 ## Where it is and how to run it
 
@@ -10,7 +10,7 @@ Project: `C:\Users\SM - Dan\Documents\GitHub\Pro Ryker`
 npm install
 npm run import-models   # licensed GLBs → public/assets/models/ (git-ignored; from SEND IT checkout or its model host)
 npm run dev             # http://localhost:5210
-npm test                # vitest: 48 unit + headless-physics tests
+npm test                # vitest: 51 unit + headless-physics tests
 npm run build           # static dist/, relative base; strips the local clip always and model binaries by default
 ```
 
@@ -80,7 +80,9 @@ Also checked: the rider's head after the helmet pops off renders as a full head 
   Practice also bypasses run counts, best scores, combos, gaps, bails, drag totals and goals. Normal play still records them.
   Starting a run clears special charge and stale score feedback from the previous session.
 - **Input correction:** one gamepad A press activates a menu item once. Keyboard Enter/Space activates focused lesson
-  buttons without also triggering game actions. How to Play now correctly identifies H as the horn.
+  buttons without also triggering game actions. Moving focus to a button still releases an already-held gameplay key.
+  Gamepad buttons and stick directions cannot dispatch twice when menu callbacks sample input again (including Start
+  to resume). How to Play now correctly identifies H as the horn.
 - **HUD:** responsive score/timer/letters header; balance, combo and controls have separate space; contextual control
   hints; shorter combo strings; captions moved away from scoring; compact rescue guidance and small-screen layouts.
 - **FIRST RIDE:** optional, replayable practice mode using normal physics in a safe flat stretch of the park. Four
@@ -91,12 +93,12 @@ Also checked: the rider's head after the helmet pops off renders as a full head 
 
 Verification for this pass:
 
-- `npm test`: 48 tests, including event-driven progress isolation, actual menu/input dispatch, save compatibility and
+- `npm test`: 51 tests, including event-driven progress isolation, actual menu/input dispatch, save compatibility and
   lesson progression/retry regressions. `npm run build` and `git diff --check` pass.
 - Scripted browser play using real game physics completed all four lessons, a clean flip landing and the recovery;
   career records stayed unchanged. Starting Career afterward showed 2:00, zero special charge and cleared feedback.
 - Browser interactions verified retry, resume and skip. A scripted gamepad A press changed a menu value exactly once;
-  a 30-second attract run left save data unchanged. Screenshots checked desktop, narrow portrait and short landscape
+  gamepad Start paused and resumed exactly once; a 30-second attract run left save data unchanged. Screenshots checked desktop, narrow portrait and short landscape
   HUDs, including the balance meter, long combos and recovery guidance. No browser console errors were observed.
 - These checks do not replace a hands-on keyboard/controller playtest or listening pass. Driving/landing physics and
   existing scoring rules were not retuned. Licensed assets and public deployment remain outside this pass.

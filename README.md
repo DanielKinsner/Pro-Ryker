@@ -14,7 +14,7 @@ npm run dev             # http://localhost:5210
 ```
 
 ```bash
-npm test                # 48 unit + headless-physics tests
+npm test                # 51 unit + headless-physics tests
 npm run build           # static build in dist/ (relative base: works at / or nested)
 npm run gen-audio -- vo # (re)generate ElevenLabs audio; needs ELEVENLABS_API_KEY in .env.local
 ```
