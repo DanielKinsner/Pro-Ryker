@@ -545,5 +545,25 @@
     "prompt": "tiny tick sound for a menu cursor moving",
     "loop": false,
     "created": "2026-09-25T16:59:11.356Z"
+  },
+  "vo/volunteer.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Dave)",
+    "text": "That was a volunteer.",
+    "created": "2026-09-25T17:26:13.801Z"
+  },
+  "vo/kevin.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Dude. You fucking flattened Kevin.",
+    "created": "2026-09-25T17:26:14.351Z"
+  },
+  "vo/kevin.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Dude, you flattened Kevin. Somebody's gonna have to re-glue Kevin.",
+    "created": "2026-09-25T17:26:15.116Z"
+  },
+  "vo/budget.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "The crowd is cardboard. The budget went on the cones.",
+    "created": "2026-09-25T17:26:26.515Z"
   }
 }

@@ -18,6 +18,7 @@ import { AudioEngine } from './audio/audio';
 import { SoundDirector, ComedyDirector } from './audio/director';
 import { LETTERS } from './park/layout';
 import { Replay } from './game/replay';
+import { Fx } from './render/fx';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const ui = document.getElementById('ui')!;
@@ -135,6 +136,7 @@ async function boot() {
   game.onGoal = (_id, name) => hud.toast(name, '', 'goal');
   game.onCheatUnlocked = (name, desc) => hud.toast(name, desc, 'cheat');
   const replay = new Replay(game, stage, ui);
+  const fx = new Fx(stage.scene, game);
 
   type App = 'title' | 'menu' | 'run' | 'paused' | 'results' | 'replay';
   let app: App = 'title';
@@ -153,6 +155,7 @@ async function boot() {
     comedy.language = s.language;
     cam.shakeScale = s.shake ? 1 : 0;
     hud.root.classList.toggle('no-controls', !s.showControls);
+    stage.setQuality(s.quality);
     game.persist();
   };
 
@@ -227,6 +230,7 @@ async function boot() {
     runDrag = 0;
     runBails = 0;
     replay.clear();
+    fx.clear();
     controlsHintT = 0;
     hud.root.classList.remove('hint-faded');
   });
@@ -261,6 +265,17 @@ async function boot() {
       else if (b === 'back' && game.rider.state === 'detached' && replay.available) startReplay();
     }
   };
+  // Losing focus mid-run pauses (never let the Ryker drive off while you're in another window).
+  const autoPause = () => {
+    if (app === 'run') {
+      app = 'paused';
+      game.paused = true;
+      audio.stopLoops();
+      menus.show('pause');
+    }
+  };
+  window.addEventListener('blur', autoPause);
+  document.addEventListener('visibilitychange', () => document.hidden && autoPause());
   let replayReturn: App = 'run';
   const startReplay = () => {
     replayReturn = app;
@@ -271,7 +286,7 @@ async function boot() {
   };
   game.events.on('rider_detached', () => hud.toast('INCIDENT RECORDED', 'Press BACKSPACE for the replay', 'info'));
 
-  (window as any).__game = { game, stage, phys, park, rig, ryker, cam, hud, menus, audio, comedy, replay, dev: null as unknown, THREE };
+  (window as any).__game = { game, stage, phys, park, rig, ryker, cam, hud, menus, audio, comedy, replay, fx, dev: null as unknown, THREE };
 
   // Title screen over an orbiting view of the park.
   loading.done();
@@ -346,6 +361,8 @@ async function boot() {
     }
     if (app === 'replay') replay.update(dt);
     else {
+      if (app === 'run' && !game.paused) fx.update(dt * (game.slomoActive() ? 0.35 : 1));
+      fx.setViewport(stage.renderer.domElement.height, stage.camera.fov);
       game.render(dt, acc / SIM.dt);
       if (cam.mode === 'orbit') cam.update(dt, new THREE.Vector3(-8, 0, 0), game.vehicle.fwd, game.vehicle.vel, { airborne: false, vert: false, wide: 0 });
     }

@@ -131,12 +131,14 @@ export function makePoses(rig: RiderRig): Record<PoseName, PoseParams> {
     }),
     // CAN-CAN: one leg kicked across and out the other side.
     cancan: P((p) => {
-      p.pelvis.set(0.05, 0.1, 0.05);
-      p.pelvisRot.set(0, 0, -0.2);
-      p.spine.set(0.1, 0, 0.18);
+      p.pelvis.set(-0.1, 0.16, 0.08);
+      p.pelvisRot.set(-0.15, 0.25, 0.35);
+      p.spine.set(-0.2, -0.2, 0.3);
+      p.head.set(0.1, -0.3, 0);
+      // Left leg kicked high over the tank and out the right side.
       p.foot.left.attach = 0;
-      p.foot.left.pos.set(0.85, 1.05, -0.35);
-      p.foot.left.pole.set(0.6, 1.6, -1.2);
+      p.foot.left.pos.set(0.95, 1.45, -0.75);
+      p.foot.left.pole.set(0.4, 2.1, -1.4);
     }),
     // SEAT STAND: standing on the seat, surfing it, arms out.
     seatstand: P((p) => {

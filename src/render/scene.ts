@@ -10,6 +10,7 @@ export interface Stage {
   sunDir: THREE.Vector3;
   resize(): void;
   followShadow(target: THREE.Vector3): void;
+  setQuality(q: 'high' | 'low'): void;
 }
 
 export function createStage(canvas: HTMLCanvasElement): Stage {
@@ -69,7 +70,18 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
 
   const texel = (2 * S) / 4096;
   let skyT = 0;
+  let quality: 'high' | 'low' = 'high';
   return {
+    setQuality(q: 'high' | 'low') {
+      if (q === quality) return;
+      quality = q;
+      renderer.setPixelRatio(q === 'high' ? Math.min(window.devicePixelRatio, 2) : 1);
+      const size = q === 'high' ? 4096 : 2048;
+      sun.shadow.mapSize.set(size, size);
+      sun.shadow.map?.dispose();
+      (sun.shadow as { map: THREE.WebGLRenderTarget | null }).map = null;
+      resize();
+    },
     tick(dt: number) {
       skyT += dt;
       skyMat.uniforms.time.value = skyT;

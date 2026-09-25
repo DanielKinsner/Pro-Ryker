@@ -8,6 +8,7 @@ export interface Settings {
   language: 'clean' | 'salty';
   shake: boolean;
   showControls: boolean;
+  quality: 'high' | 'low';
 }
 
 export interface Cheats {
@@ -45,7 +46,7 @@ export const DEFAULT_SAVE: SaveData = {
   gaps: [],
   cheatsUnlocked: [],
   cheats: { bigHead: false, moonGravity: false, perfectBalance: false, slomo: false, slingmodsParts: false, specialAlways: false },
-  settings: { music: 0.7, sfx: 0.9, voice: 0.9, language: 'salty', shake: true, showControls: true },
+  settings: { music: 0.7, sfx: 0.9, voice: 0.9, language: 'salty', shake: true, showControls: true, quality: 'high' },
   runs: 0,
   bails: 0,
   dragMetres: 0,
@@ -77,6 +78,7 @@ export function sanitize(raw: unknown): SaveData {
       language: s.language === 'clean' ? 'clean' : 'salty',
       shake: bool(s.shake, true),
       showControls: bool(s.showControls, true),
+      quality: s.quality === 'low' ? 'low' : 'high',
     },
     runs: num(r.runs, 0),
     bails: num(r.bails, 0),

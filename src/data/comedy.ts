@@ -67,6 +67,9 @@ export const LINES: Line[] = [
   { id: 'cones', speaker: 'employee', clean: 'Those are municipal cones.' },
   { id: 'write_down', speaker: 'witness', clean: 'Somebody write that down.' },
   { id: 'valet', speaker: 'witness', clean: 'Valet parking. The rider was not consulted.' },
+  { id: 'volunteer', speaker: 'employee', clean: 'That was a volunteer.' },
+  { id: 'kevin', speaker: 'kid', clean: "Dude, you flattened Kevin. Somebody's gonna have to re-glue Kevin.", salty: 'Dude. You fucking flattened Kevin.' },
+  { id: 'budget', speaker: 'witness', clean: 'The crowd is cardboard. The budget went on the cones.' },
   // --- the rider himself
   { id: 'r_whoa', speaker: 'rider', clean: 'Whoa whoa whoa WHOA—', tags: '[panicked]' },
   { id: 'r_got_it', speaker: 'rider', clean: 'I got it! I got it! I do not got it!', tags: '[strained]' },
@@ -108,6 +111,7 @@ export const BARKS: Bark[] = [
   { event: 'run_start', lines: ['not_that_kind'], priority: 40 },
   { event: 'cones', lines: ['cones'], priority: 35 },
   { event: 'valet', lines: ['valet'], priority: 80 },
+  { event: 'cutout', lines: ['kevin', 'volunteer', 'budget'], priority: 60 },
 ];
 
 /** The rider's own exclamations (short, own cooldown — they're effort sounds, not commentary). */

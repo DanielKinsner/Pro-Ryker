@@ -69,6 +69,12 @@ export class ChaseCam {
     const lookWant = target.clone().addScaledVector(this.heading, CAMERA.lookAhead).add(new THREE.Vector3(0, 0.6, 0));
     this.look.lerp(lookWant, 1 - Math.exp(-dt * 10));
     this.shake = Math.max(0, this.shake - dt * 2.5);
+    // Speed widens the lens a touch (feels faster without moving the camera).
+    const fov = CAMERA.fov + Math.min(9, Math.max(0, vel.length() - 8) * 0.45) + (opts.airborne ? 2 : 0);
+    if (Math.abs(this.camera.fov - fov) > 0.05) {
+      this.camera.fov += (fov - this.camera.fov) * (1 - Math.exp(-dt * 3));
+      this.camera.updateProjectionMatrix();
+    }
     this.apply();
   }
 

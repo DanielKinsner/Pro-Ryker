@@ -327,6 +327,15 @@ export class Menus {
         },
       },
       {
+        label: 'GRAPHICS',
+        sub: 'LOW = sharper frame rate on laptops',
+        value: () => (s.quality === 'high' ? 'HIGH' : 'LOW'),
+        adjust: () => {
+          s.quality = s.quality === 'high' ? 'low' : 'high';
+          this.hooks.applySettings();
+        },
+      },
+      {
         label: 'CONTROLS HINT',
         value: () => (s.showControls ? 'ON' : 'OFF'),
         adjust: () => {

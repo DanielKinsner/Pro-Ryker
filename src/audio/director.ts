@@ -51,7 +51,7 @@ export class SoundDirector {
     });
     ev.on('helmet_off', () => a.play('sfx/helmet-bounce.mp3', { vol: 0.8, delay: 0.35 }));
     ev.on('prop_hit', (e) => {
-      const file = e.kind === 'cone' || e.kind === 'barrier' ? 'cone-hit' : e.kind === 'bin' ? 'bin-hit' : 'chair-clink';
+      const file = e.kind === 'cone' || e.kind === 'barrier' || e.kind === 'cutout' ? 'cone-hit' : e.kind === 'bin' ? 'bin-hit' : 'chair-clink';
       a.play(`sfx/${file}.mp3`, { vol: Math.min(1, 0.4 + e.speed * 0.06), rate: 0.92 + Math.random() * 0.16 });
     });
     ev.on('letter', () => a.play('sfx/letter.mp3', { vol: 0.9 }));
@@ -190,6 +190,7 @@ export class ComedyDirector {
       else this.bark('empty_settled');
     });
     ev.on('prop_hit', (e) => {
+      if (e.kind === 'cutout') this.bark('cutout', 0.4);
       if (e.kind === 'cone' && game.conesDown.size >= 3 && !this.conesSaid) {
         this.conesSaid = true;
         this.bark('cones');
