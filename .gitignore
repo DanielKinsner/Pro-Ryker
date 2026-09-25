@@ -4,6 +4,7 @@ dist/
 *.log
 .env
 .env.*
+!.env.production
 !.env.example
 # Licensed / purchased models: never commit (npm run import-models)
 public/assets/models/*.glb

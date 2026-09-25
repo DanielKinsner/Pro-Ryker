@@ -60,16 +60,31 @@ export class Hud {
     const hb = h('div', 'hud-bar', this.hang);
     h('span', 'hud-bar-label', hb, 'HAUL');
     this.haulFill = h('div', 'hud-bar-fill haul', hb);
-    h('div', 'hud-hang-hint', this.hang, 'MASH SPACE TO PULL YOURSELF BACK ON');
+    h('div', 'hud-hang-hint', this.hang, 'BRAKE + MASH SPACE TO PULL YOURSELF BACK ON');
     this.hangWarn = h('div', 'hud-hang-warn', this.hang, 'HIS WEIGHT IS ON THE THROTTLE — BRAKE!');
     this.stateTag = h('div', 'hud-state', this.root);
     this.toasts = h('div', 'hud-toasts', this.root);
     this.bailMsg = h('div', 'hud-bail', this.root);
     this.controls = h('div', 'hud-controls', this.root);
-    this.controls.innerHTML = `
-      <b>W/S</b> gas · brake/reverse &nbsp; <b>A/D</b> steer · spin &nbsp; <b>SPACE</b> hold+release: ollie<br>
+    this.setControls('keyboard');
+  }
+
+  private device: 'keyboard' | 'gamepad' | '' = '';
+
+  /** Show key or pad glyphs depending on what the player last touched. */
+  private setControls(device: 'keyboard' | 'gamepad') {
+    if (device === this.device) return;
+    this.device = device;
+    this.controls.innerHTML =
+      device === 'keyboard'
+        ? `<b>W/S</b> gas · brake/reverse &nbsp; <b>A/D</b> steer · spin &nbsp; <b>SPACE</b> hold+release: ollie<br>
       <b>J</b>+dir flip trick &nbsp; <b>K</b>+dir hold grab &nbsp; <b>L</b> grind (near rail) · manual &nbsp; <b>SHIFT</b> revert / powerslide<br>
-      <b>R</b> reset &nbsp; <b>X</b> let go &nbsp; <b>H</b> horn &nbsp; <b>ESC</b> pause (controls &amp; options)`;
+      <b>R</b> reset &nbsp; <b>X</b> let go &nbsp; <b>H</b> horn &nbsp; <b>ESC</b> pause (controls &amp; options)`
+        : `<b>RT/LT</b> gas · brake/reverse &nbsp; <b>L-STICK</b> steer · spin &nbsp; <b>A</b> hold+release: ollie<br>
+      <b>X</b>+dir flip trick &nbsp; <b>B</b>+dir hold grab &nbsp; <b>Y</b> grind · manual &nbsp; <b>RB</b> revert / powerslide<br>
+      <b>BACK</b> reset &nbsp; <b>LB</b> let go &nbsp; <b>START</b> pause`;
+    const hang = this.hang.querySelector('.hud-hang-hint');
+    if (hang) hang.textContent = device === 'keyboard' ? 'BRAKE + MASH SPACE TO PULL YOURSELF BACK ON' : 'BRAKE (LT) + MASH A TO PULL YOURSELF BACK ON';
   }
 
   private set(key: string, el: HTMLElement, text: string) {
@@ -99,6 +114,7 @@ export class Hud {
   }
 
   update(g: Game) {
+    this.setControls(g.input.device);
     const tr = g.tricks;
     this.set('score', this.score, (tr.score + (g.runOver ? 0 : 0)).toLocaleString());
     const sp = Math.min(1, tr.special);

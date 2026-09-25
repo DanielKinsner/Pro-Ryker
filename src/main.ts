@@ -381,7 +381,7 @@ async function boot() {
     }
     stage.tick(dt);
     stage.followShadow(cam.mode === 'orbit' ? new THREE.Vector3(-8, 0, 0) : game.vehicle.pos);
-    stage.renderer.render(stage.scene, stage.camera);
+    stage.render();
     if (app === 'run' || app === 'paused') {
       hud.update(game);
       sound.update(dt, app === 'run');

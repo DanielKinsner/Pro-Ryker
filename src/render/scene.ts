@@ -1,5 +1,9 @@
 import * as THREE from 'three';
 import { makeSky } from './sky';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+// @ts-expect-error — n8ao ships without type declarations
+import { N8AOPass } from 'n8ao';
 
 export interface Stage {
   tick(dt: number): void;
@@ -11,6 +15,8 @@ export interface Stage {
   resize(): void;
   followShadow(target: THREE.Vector3): void;
   setQuality(q: 'high' | 'low'): void;
+  /** Render a frame (with ambient occlusion on HIGH). */
+  render(): void;
 }
 
 export function createStage(canvas: HTMLCanvasElement): Stage {
@@ -58,12 +64,25 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
   scene.add(sun);
   scene.add(sun.target);
 
+  // Ambient occlusion (contact shadows under the Ryker, bowl corners, ledge bases). Half-res N8AO,
+  // then tone mapping + sRGB in the final OutputPass.
+  const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 });
+  const composer = new EffectComposer(renderer, rt);
+  const ao = new N8AOPass(scene, camera, 1, 1);
+  Object.assign(ao.configuration, { aoRadius: 2.2, distanceFalloff: 1.2, intensity: 2.4, halfRes: true, gammaCorrection: false, aoSamples: 16, denoiseSamples: 8, denoiseRadius: 10 });
+  composer.addPass(ao);
+  composer.addPass(new OutputPass());
+
   const resize = () => {
     const w = canvas.clientWidth || window.innerWidth;
     const h = canvas.clientHeight || window.innerHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    const pr = renderer.getPixelRatio();
+    composer.setPixelRatio(pr);
+    composer.setSize(w, h);
+    ao.setSize(w * pr, h * pr);
   };
   window.addEventListener('resize', resize);
   resize();
@@ -72,6 +91,10 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
   let skyT = 0;
   let quality: 'high' | 'low' = 'high';
   return {
+    render() {
+      if (quality === 'high') composer.render();
+      else renderer.render(scene, camera);
+    },
     setQuality(q: 'high' | 'low') {
       if (q === quality) return;
       quality = q;

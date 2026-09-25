@@ -25,7 +25,32 @@ export function buildStructures(scene: THREE.Scene, phys: PhysicsWorld) {
   buildRoofKicker(g, phys);
   buildSigns(g, phys);
   buildGraffiti(g);
+  buildSponsor(g, phys);
   return g;
+}
+
+function buildSponsor(g: THREE.Group, phys: PhysicsWorld) {
+  // One restrained sponsor banner along the top of the Overcommit deck, facing into the park.
+  const logo = tex('assets/brand/slingmods-logo-wide.webp');
+  const w = 12;
+  const h = w * (304 / 1921) + 0.5;
+  const y = 4.6 + 0.35;
+  const z = -46.6;
+  const board = new THREE.Mesh(new THREE.PlaneGeometry(w + 0.6, h), new THREE.MeshStandardMaterial({ color: '#f4f1e8', roughness: 0.7 }));
+  board.position.set(30, y + h / 2 + 0.6, z);
+  board.castShadow = true;
+  g.add(board);
+  const art = new THREE.Mesh(new THREE.PlaneGeometry(w, w * (304 / 1921)), new THREE.MeshStandardMaterial({ map: logo, transparent: true, roughness: 0.6 }));
+  art.position.set(30, y + h / 2 + 0.6, z + 0.02);
+  g.add(art);
+  const steel = MATS.darkSteel();
+  for (const x of [30 - w / 2, 30, 30 + w / 2]) {
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, h + 0.6, 8), steel);
+    post.position.set(x, y + (h + 0.6) / 2, z - 0.05);
+    post.castShadow = true;
+    g.add(post);
+    phys.addStatic(RAPIER.ColliderDesc.cylinder((h + 0.6) / 2, 0.07).setTranslation(x, y + (h + 0.6) / 2, z - 0.05), 'post');
+  }
 }
 
 function buildPavilion(g: THREE.Group, phys: PhysicsWorld) {
