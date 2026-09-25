@@ -76,9 +76,10 @@ export const RIDER = {
   strainDecay: 0.55, // per second when riding clean
   recoverSettle: 0.8, // seconds of protection after a recovery
   // Hanging-on minigame
-  haulPerTap: 0.16,
-  haulDecayBase: 0.18,
-  haulDecayPerMps: 0.028,
+  haulPerTap: 0.4, // two hands: 3 taps and you're back on (one hand: 4)
+  haulDecayBase: 0.12,
+  haulDecayPerMps: 0.01,
+  minHang: 0.5, // s: the drag always shows for at least this long before a haul-back lands
   gripDrainBase: 0.07,
   gripDrainPerMps: 0.012,
   gripDrainImpact: 0.12,

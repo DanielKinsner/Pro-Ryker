@@ -163,6 +163,8 @@ export class RiderController {
     this.hangTime += dt;
     if (this.entryT > 0) {
       this.entryT -= dt;
+      // Mashing starts the moment he goes over the side — don't eat those taps.
+      if (input.haulPressed) this.haul = Math.min(0.9, this.haul + RIDER.haulPerTap);
       v.ctl.forcedThrottle = RIDER.deathGripThrottle;
       v.ctl.steerAuthority = RIDER.hangSteer;
       if (this.entryT <= 0) this.activateHang();
@@ -176,7 +178,7 @@ export class RiderController {
     v.ctl.steerAuthority = RIDER.hangSteer;
     // Haul yourself back: mash. Harder the faster you're being dragged. (Decay first, then taps,
     // so a full meter is actually reachable.)
-    this.haul = Math.max(0, this.haul - (RIDER.haulDecayBase + RIDER.haulDecayPerMps * speed) * dt);
+    if (this.haul < 1) this.haul = Math.max(0, this.haul - (RIDER.haulDecayBase + RIDER.haulDecayPerMps * speed) * dt);
     if (input.haulPressed) this.haul = Math.min(1, this.haul + RIDER.haulPerTap * (this.hands === 2 ? 1 : 0.7));
     // Grip drains with speed and impacts.
     const pv = this.ragdoll.pelvisVel(_v2);
@@ -214,7 +216,7 @@ export class RiderController {
     }
     // Upside-down Ryker: nothing to climb back onto.
     if (v.up.y < 0.2 && !v.grounded && this.hangTime > 0.3) this.grip -= dt * 0.8;
-    if (this.haul >= 1) {
+    if (this.haul >= 1 && this.hangTime >= RIDER.minHang) {
       const pel = this.ragdoll.pelvisPos(_v);
       const seat = v.worldPoint(_v2.set(0, 0.8, 0.43));
       if (pel.distanceTo(seat) < 3.2 && v.up.y > 0.45) this.recover();
