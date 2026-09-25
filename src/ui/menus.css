@@ -105,13 +105,21 @@
   font-style: normal;
   letter-spacing: 0.08em;
 }
-.m-item .m-value::before {
-  content: '\25C0  ';
-  opacity: 0.35;
+.m-item .m-arrow {
+  display: inline-block;
+  padding: 0 9px;
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 0.08s, transform 0.08s;
 }
-.m-item .m-value::after {
-  content: '  \25B6';
-  opacity: 0.35;
+.m-item .m-arrow:hover {
+  opacity: 1;
+  transform: scale(1.25);
+}
+.m-item .m-num {
+  display: inline-block;
+  min-width: 3.4em;
+  text-align: center;
 }
 .m-item.sel {
   color: #fff;

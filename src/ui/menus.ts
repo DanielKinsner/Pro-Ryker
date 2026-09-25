@@ -182,7 +182,22 @@ export class Menus {
       const li = el('li', `m-item${it.disabled ? ' disabled' : ''}`, ul);
       const lab = el('span', 'm-label', li, it.label);
       void lab;
-      if (it.value) el('span', 'm-value', li, it.value());
+      if (it.value && it.adjust) {
+        // Real ◀ ▶ buttons. (They used to be decoration: a click counted by which half of the row it
+        // landed on, and both arrows sit on the right half — so ◀ turned the volume *up*.)
+        const val = el('span', 'm-value', li);
+        const arrow = (glyph: string, d: -1 | 1) =>
+          el('span', 'm-arrow', val, glyph).addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (it.disabled) return;
+            this.idx = i;
+            this.highlight();
+            this.adjust(d);
+          });
+        arrow('&#9664;', -1);
+        el('span', 'm-num', val, it.value());
+        arrow('&#9654;', 1);
+      } else if (it.value) el('span', 'm-value', li, it.value());
       if (it.sub) el('span', 'm-sub', li, it.sub);
       li.addEventListener('mouseenter', () => {
         if (it.disabled) return;
@@ -211,7 +226,7 @@ export class Menus {
   private refreshValues() {
     if (!this.listEl) return;
     [...this.listEl.children].forEach((c, i) => {
-      const v = c.querySelector('.m-value');
+      const v = c.querySelector('.m-num') ?? c.querySelector('.m-value');
       const it = this.items[i];
       if (v && it?.value) v.textContent = it.value();
     });
@@ -354,7 +369,7 @@ export class Menus {
       'm-howto',
       p,
       `<div><b>W / S</b> gas · brake (hold S to reverse)</div>
-       <div><b>A / D</b> steer · spin in the air</div>
+       <div><b>A / D</b> steer · spin in the air (press it once you're up — steering onto the ramp won't spin you; let go and it finishes the rotation)</div>
        <div><b>SPACE</b> hold to crouch, release to ollie · pop off lips for big air</div>
        <div><b>J</b> + direction — flip tricks (the whole Ryker flips)</div>
        <div><b>K</b> + direction — hold a grab (let go before you land!)</div>
