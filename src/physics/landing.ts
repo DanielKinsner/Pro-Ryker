@@ -16,6 +16,8 @@ export interface LandingInput {
   grabHeld: 'none' | 'hands' | 'legs' | 'body';
   /** Travel speed along the surface. */
   speed: number;
+  /** Coming down from vert air, which the game steers (plane lock) — a sideways result there is ours. */
+  vert?: boolean;
 }
 
 export interface LandingResult {
@@ -60,7 +62,7 @@ export function classifyLanding(i: LandingInput): LandingResult {
     reason = 'landed a bit tilted';
   }
   if (yaw > LANDING.sketchyYawDeg) {
-    score = Math.max(score, 2);
+    score = Math.max(score, i.vert ? 1 : 2);
     reason = 'landed sideways';
   } else if (yaw > LANDING.cleanYawDeg) {
     score = Math.max(score, 1);
@@ -74,8 +76,8 @@ export function classifyLanding(i: LandingInput): LandingResult {
     score = Math.max(score, 1);
     if (reason === 'clean') reason = 'let go of the grab late';
   }
-  // Big impact makes everything one step worse.
-  if (i.impact > LANDING.slamImpact * 0.72 && score > 0) score = Math.min(2, score + 1);
+  // Big impact makes everything one step worse (not after vert air: the game steered that landing).
+  if (i.impact > LANDING.slamImpact * 0.72 && score > 0 && !i.vert) score = Math.min(2, score + 1);
 
   const quality: LandingQuality = score === 0 ? 'clean' : score === 1 ? 'sketchy' : 'bad';
   const strain = quality === 'clean' ? 0.04 : quality === 'sketchy' ? 0.42 + Math.min(0.2, i.impact * 0.01) : 0.9;

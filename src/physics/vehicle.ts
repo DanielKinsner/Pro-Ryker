@@ -47,6 +47,8 @@ export interface LandingEvent extends LandingResult {
 const _v = new THREE.Vector3();
 const _v2 = new THREE.Vector3();
 const _v3 = new THREE.Vector3();
+const _v4 = new THREE.Vector3();
+const _v5 = new THREE.Vector3();
 const _q = new THREE.Quaternion();
 const _q2 = new THREE.Quaternion();
 const _vI = new THREE.Vector3();
@@ -103,9 +105,7 @@ export class Vehicle {
   // Air control (we own orientation while airborne)
   airBase = new THREE.Quaternion();
   spinVel = 0;
-  flipVel = 0;
   airYaw = 0; // unwrapped accumulated yaw this air (rad)
-  airFlip = 0;
   trickRot = new THREE.Quaternion(); // overlay from the trick system
   trickAngVel = new THREE.Vector3();
   vertAir = false;
@@ -117,6 +117,11 @@ export class Vehicle {
   private tumbleReported = false;
   onTumble: ((upY: number) => void) | null = null;
   private pitchLatch = false;
+  private steerLatch = false;
+  private steepN = new THREE.Vector3(0, 1, 0); // steepest recent transition (vert launch detection)
+  private steepAt = -99;
+  private steepP = new THREE.Vector3(); // where the wheels last touched it
+  private lastSpinDir = 0;
   empty = false;
   frozen = false;
   kinematic = false;
@@ -202,7 +207,7 @@ export class Vehicle {
     this.body.setRotation(q, true);
     this.body.setLinvel({ x: 0, y: 0, z: 0 }, true);
     this.body.setAngvel({ x: 0, y: 0, z: 0 }, true);
-    this.spinVel = this.flipVel = 0;
+    this.spinVel = 0;
     this.trickRot.identity();
     this.trickAngVel.set(0, 0, 0);
     this.airTime = 0;
@@ -296,6 +301,22 @@ export class Vehicle {
       this.groundNormal.set(0, 0, 0);
       for (const w of this.wheels) if (w.contact) this.groundNormal.add(w.normal);
       this.groundNormal.normalize();
+      if (this.groundNormal.y < VEHICLE.vertNormalY) {
+        this.steepN.copy(this.groundNormal);
+        this.steepAt = this.time;
+        // The wall point furthest out (only wheels actually on the steep face, not one already on the deck).
+        const nh = _v.set(this.groundNormal.x, 0, this.groundNormal.z).normalize();
+        let best = -Infinity;
+        for (const w of this.wheels) {
+          if (!w.contact || w.normal.y >= VEHICLE.vertNormalY) continue;
+          const d = w.point.dot(nh);
+          if (d > best) {
+            best = d;
+            this.steepP.copy(w.point);
+          }
+        }
+        if (best === -Infinity) this.steepP.copy(this.pos);
+      }
     }
 
     // Skate-game transitions: rolling into a curving surface (a ramp toe, a bowl wall) redirects the
@@ -537,10 +558,36 @@ export class Vehicle {
     }
     const axis = _v.crossVectors(this.up, n);
     const wPerp = _v2.copy(this.angVel).addScaledVector(n, -this.angVel.dot(n));
+    // How fast the surface under the wheels is turning (a transition's curvature × speed), smoothed —
+    // the averaged wheel normal steps across the heightfield's facets.
+    const fresh = this.time - this.curveAt < 1.5 * dt;
+    const turned = fresh ? _v3.crossVectors(this.curveN, n).multiplyScalar(1 / dt) : _v3.set(0, 0, 0);
+    this.curveRate.lerp(turned, 0.3);
+    this.curveN.copy(n);
+    this.curveAt = this.time;
+    if (this.contacts >= 2 && this.skid <= 0 && this.curveRate.length() > VEHICLE.curveFollowMin) {
+      // Tight transitions at speed: turn *with* the surface (velocity-level), like a board follows a
+      // ramp. The spring below can't pitch the Ryker at v/R (≈6 rad/s up a 3.5 m quarterpipe at
+      // 21 m/s), so the chassis used to plough into the ramp face and throw him off.
+      const err = Math.asin(Math.min(1, axis.length()));
+      const want = _v4.copy(axis).normalize().multiplyScalar(err / 0.1).add(this.curveRate);
+      want.addScaledVector(n, -want.dot(n));
+      if (want.length() > 12) want.setLength(12);
+      const dw = want.sub(wPerp);
+      const mag = dw.length();
+      if (mag > 1e-3) {
+        const I = this.inertiaAbout(dw.multiplyScalar(1 / mag));
+        this.body.applyTorqueImpulse(dw.multiplyScalar(I * mag * 0.6), true);
+      }
+      return;
+    }
     const gain = this.skid > 0 ? VEHICLE.uprightAssist * 0.35 : VEHICLE.uprightAssist;
     const tq = axis.multiplyScalar(gain * m).addScaledVector(wPerp, -VEHICLE.uprightDamp * m);
     this.body.applyTorqueImpulse(tq.multiplyScalar(dt), true);
   }
+  private curveN = new THREE.Vector3(0, 1, 0);
+  private curveRate = new THREE.Vector3();
+  private curveAt = -99;
 
   private applyManualTorque(dt: number, m: number) {
     const c = this.ctl;
@@ -581,14 +628,21 @@ export class Vehicle {
   private handleTakeoff() {
     this.airBase.copy(this.quat);
     this.spinVel = 0;
-    this.flipVel = 0;
     this.airYaw = 0;
-    this.airFlip = 0;
     this.trickRot.identity();
     this.launchSpeed = this.speed;
     this.pitchLatch = this.ctl.pitch !== 0;
+    this.steerLatch = this.ctl.steer !== 0;
+    this.lastSpinDir = 0;
     // Vert air: launching off a near-vertical lip → go straight up and come back into the ramp.
-    const n = this.groundNormal;
+    // Judge the launch by the steepest transition you were on in the last moment, not the last wheel's
+    // surface: on the tight 3 m perimeter quarterpipes the wheels are already over the lip on the flat
+    // deck when takeoff registers, which read as a kicker and fired you over the deck and out of the park.
+    // (Only for a steep launch — clipping a rail's side a moment earlier is not a quarterpipe.)
+    const sp = this.vel.length();
+    const steepLaunch = sp > 3 && this.vel.y / sp > 0.7;
+    const recent = steepLaunch && this.time - this.steepAt < 0.3 && this.steepN.y <= this.groundNormal.y;
+    const n = recent ? this.steepN : this.groundNormal;
     this.vertAir = false;
     if (n.y < VEHICLE.vertNormalY && this.vel.y > 1.5) {
       const nh = _v.set(n.x, 0, n.z);
@@ -599,10 +653,15 @@ export class Vehicle {
         // Remove velocity pushing away from (or into) the ramp plane.
         const vOut = this.vel.dot(nh);
         const nv = _v2.copy(this.vel).addScaledVector(nh, -vOut);
+        // Riding a wall properly at full speed would otherwise send you ~14 m above the coping.
+        nv.y = Math.min(nv.y, VEHICLE.vertMaxVy);
         this.body.setLinvel(nv, true);
         // Takeoff registers when the *last* wheel leaves the lip, by which point the body is already
-        // ~0.8 m past it — hold the plane in front of the lip so you come back down onto the wall.
+        // past it — hold the plane in front of the lip so you come back down onto the wall. Riding the
+        // wall properly you leave from the very top, so also keep clear of where the wheels last touched
+        // the wall (or you come down onto the deck).
         this.vertPlaneD = this.pos.dot(nh) + 0.85;
+        if (recent) this.vertPlaneD = Math.max(this.vertPlaneD, this.steepP.dot(nh) + VEHICLE.vertWallGap);
       }
     }
     this.onAirborne?.(this.vertAir);
@@ -611,28 +670,36 @@ export class Vehicle {
   private applyAir(dt: number) {
     if (this.empty) return; // loose bike: Rapier owns everything
     const c = this.ctl;
-    // Spin (A/D) about world up, flip (W/S) about the vehicle's right axis.
-    // W/S held since takeoff (throttle into the ramp) doesn't lean until released once.
+    // Spin (A/D) about world up. W/S held since takeoff (throttle into the ramp) or A/D held since
+    // takeoff (steering onto it) doesn't lean or spin until released once — steering onto a ramp used
+    // to launch you into an accidental sideways landing.
     if (this.pitchLatch && c.pitch === 0) this.pitchLatch = false;
+    if (this.steerLatch && c.steer === 0) this.steerLatch = false;
     const pitch = this.pitchLatch ? 0 : c.pitch;
-    const wantSpin = -c.steer * AIR.spinMax;
-    const wantFlip = -pitch * AIR.flipMax;
-    this.spinVel += Math.sign(wantSpin - this.spinVel) * Math.min(Math.abs(wantSpin - this.spinVel), (c.steer ? AIR.spinAccel : AIR.damp * 2) * dt);
-    this.flipVel += Math.sign(wantFlip - this.flipVel) * Math.min(Math.abs(wantFlip - this.flipVel), (pitch ? AIR.flipAccel : AIR.damp * 2) * dt);
+    const steer = this.steerLatch ? 0 : c.steer;
+    let wantSpin = -steer * AIR.spinMax;
+    if (steer) this.lastSpinDir = Math.sign(wantSpin);
+    else wantSpin = this.spinFinish();
+    this.spinVel += Math.sign(wantSpin - this.spinVel) * Math.min(Math.abs(wantSpin - this.spinVel), (steer ? AIR.spinAccel : AIR.spinStop) * dt);
     this.airYaw += this.spinVel * dt;
-    this.airFlip += this.flipVel * dt;
-    // Bounded landing assist: ease pitch/roll to match the surface you're falling toward (never yaw,
-    // never while you're leaning with W/S). Stronger on the way down in vert air.
-    if (pitch === 0 && this.airTime > 0.15) {
-      const dir = this.vertAir && this.vel.y < 0 ? _v3.copy(this.vel).normalize() : _v3.set(0, -1, 0);
-      const c = this.body.worldCom();
-      const hit = this.phys.rayGround(c.x, c.y, c.z, dir.x, dir.y, dir.z, this.vertAir ? 9 : 7);
-      if (hit && hit.ny > 0.2) {
+    // Bounded landing assist: ease pitch/roll to match the surface you're about to land on (never yaw).
+    // It looks along the flight path first, so flying off the pad or the hump into a quarterpipe face
+    // lands *in* the transition, skate-game style (looking straight down only ever lined you up with
+    // the flat below, and you met the ramp nose-first = slam), and speeds up to be square on arrival.
+    // W/S only *lean* that target, nose down/up by at most AIR.leanMax — W is also the gas and people
+    // press it mid-air, so it must not be able to nose-dive you.
+    if (this.airTime > 0.15) {
+      // Look from under the front and the rear wheels and square up to the average: that's the whole
+      // footprint (on a tight quarterpipe the face under the nose is far steeper than under the tail).
+      const target = this.landingTarget(_v2);
+      if (target) {
+        const arrive = this.arriveT;
         const upNow = _v.set(0, 1, 0).applyQuaternion(this.airBase);
-        const target = _v2.set(hit.nx, hit.ny, hit.nz);
+        if (pitch) target.applyAxisAngle(_v4.set(1, 0, 0).applyQuaternion(this.airBase), -pitch * AIR.leanMax);
         const ang = Math.acos(Math.max(-1, Math.min(1, upNow.dot(target))));
         if (ang > 0.01 && ang < 1.9) {
-          const rate = (this.vertAir ? 2.4 : 1.1) * dt;
+          const base = this.vertAir ? 2.4 : pitch ? AIR.leanRate : 1.1;
+          const rate = Math.max(base, Math.min(AIR.arriveRate, ang / Math.max(0.1, arrive - 0.05))) * dt;
           _q.setFromUnitVectors(upNow, target);
           _q2.identity().slerp(_q, Math.min(1, rate / ang));
           this.airBase.premultiply(_q2).normalize();
@@ -640,13 +707,10 @@ export class Vehicle {
       }
     }
     _q.setFromAxisAngle(UP, this.spinVel * dt);
-    this.airBase.premultiply(_q);
-    const rightW = _v.set(1, 0, 0).applyQuaternion(this.airBase);
-    _q.setFromAxisAngle(rightW, this.flipVel * dt);
     this.airBase.premultiply(_q).normalize();
     const q = _q2.copy(this.airBase).multiply(this.trickRot);
     this.body.setRotation(q, true);
-    const w = _v2.set(0, this.spinVel, 0).addScaledVector(rightW, this.flipVel).add(this.trickAngVel);
+    const w = _v2.set(0, this.spinVel, 0).add(this.trickAngVel);
     this.body.setAngvel(w, true);
 
     // Vert air: hold the ramp plane so you come back into the transition.
@@ -656,6 +720,63 @@ export class Vehicle {
       const corr = -d * 6 - vOut * 3;
       this.body.applyImpulse(_v3.copy(this.vertNormal).multiplyScalar(corr * this.mass * dt), true);
     }
+  }
+
+  private arriveT = Infinity;
+  /** Surface normal to square up to for landing (averaged under both axles), or null; sets arriveT. */
+  private landingTarget(out: THREE.Vector3) {
+    const com = this.body.worldCom();
+    const up = _v3.set(0, 1, 0).applyQuaternion(this.airBase);
+    const fwd = _v4.set(0, 0, -1).applyQuaternion(this.airBase);
+    const speed = this.vel.length();
+    const along = speed > 3 ? _v5.copy(this.vel).multiplyScalar(1 / speed) : null;
+    out.set(0, 0, 0);
+    this.arriveT = Infinity;
+    let hits = 0;
+    for (const s of [0.8, -0.8]) {
+      const ox = com.x + fwd.x * s - up.x * 0.45;
+      const oy = com.y + fwd.y * s - up.y * 0.45;
+      const oz = com.z + fwd.z * s - up.z * 0.45;
+      let hit = along ? this.phys.rayGround(ox, oy, oz, along.x, along.y, along.z, Math.max(this.vertAir ? 9 : 0, speed * 0.5)) : null;
+      if (hit && hit.ny > 0.2) this.arriveT = Math.min(this.arriveT, hit.dist / speed);
+      else hit = this.phys.rayGround(ox, oy, oz, 0, -1, 0, 7);
+      if (hit && hit.ny > 0.2) {
+        out.x += hit.nx;
+        out.y += hit.ny;
+        out.z += hit.nz;
+        hits++;
+      }
+    }
+    return hits ? out.normalize() : null;
+  }
+
+  /**
+   * Arcade spin finish: once A/D is released, keep turning to the nearest straight or fakie heading
+   * (the way you were already spinning, if you let go while sideways) instead of stopping dead, so a
+   * spin released a bit early, or a crooked launch, still lands. Returns the spin rate to aim for.
+   */
+  private spinFinish() {
+    // In vert air you'll come back down the ramp towards the park, plus whatever carve you have along
+    // the wall: that's the direction you'll be travelling when you land.
+    const drop = this.vertAir ? Math.max(5, Math.abs(this.vel.y)) : 0;
+    const vx = this.vel.x + this.vertNormal.x * drop;
+    const vz = this.vel.z + this.vertNormal.z * drop;
+    if (vx * vx + vz * vz < 9) return 0;
+    const f = _v3.set(0, 0, -1).applyQuaternion(this.airBase);
+    const err = Math.atan2(f.z * vx - f.x * vz, f.x * vx + f.z * vz); // turn about +Y onto the travel direction
+    // Choose the landing heading from where the spin would coast to a stop, not where it is now: a spin
+    // released at 180° coasts ~100° further, and pulling it back would look like it un-spins.
+    const coast = (this.spinVel * Math.abs(this.spinVel)) / (2 * AIR.spinStop);
+    let e = err - coast;
+    e = Math.atan2(Math.sin(e), Math.cos(e));
+    const fakie = e - Math.PI * Math.sign(e || 1);
+    const near = Math.PI / 3;
+    let target: number;
+    if (Math.abs(e) <= near) target = e;
+    else if (Math.abs(fakie) <= near) target = fakie;
+    else if (this.lastSpinDir) target = Math.sign(e) === this.lastSpinDir ? e : fakie;
+    else target = Math.abs(e) < Math.abs(fakie) ? e : fakie;
+    return Math.max(-AIR.finishMax, Math.min(AIR.finishMax, (target + coast) * 5));
   }
 
   private handleTouchdown() {
@@ -682,6 +803,7 @@ export class Vehicle {
       grabReleasedAgo: this.time - this.grabReleasedAt,
       grabHeld: this.grabHeld,
       speed,
+      vert: this.vertAir,
     });
     const ev: LandingEvent = { ...res, airTime: this.airTime, impact, speed, normal: n.clone() };
     this.fakie = res.fakie;
@@ -712,7 +834,7 @@ export class Vehicle {
     this.trickRot.identity();
     this.trickAngVel.set(0, 0, 0);
     this.vertAir = false;
-    this.spinVel = this.flipVel = 0;
+    this.spinVel = 0;
     this.readPose();
     this.onLanding?.(ev);
   }

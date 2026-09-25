@@ -35,19 +35,24 @@ export const VEHICLE = {
   stickForce: 0.9, // extra surface adhesion (x gravity) on steep ground at speed
   uprightAssist: 26, // ground alignment torque gain
   uprightDamp: 7,
+  curveFollowMin: 0.8, // rad/s of surface turn-rate before the body follows the curve directly (ramps, bowls)
   ollieBase: 5.6,
   ollieCharge: 2.8,
   chargeTime: 0.55,
   coyoteTime: 0.16,
+  vertMaxVy: 16, // m/s cap on vert launches (~8 m above the coping, ~2 s of air)
+  vertWallGap: 1.0, // vert air: body centre held this far out from where the wheels last touched the wall
   vertNormalY: 0.6, // launches off transitions steeper than ~53° are vert air (straight up, back into the ramp)
 };
 
 export const AIR = {
   spinAccel: 22,
   spinMax: 9.4, // rad/s ≈ 540°/s
-  flipAccel: 9, // W/S in the air is a lean for landings; big flips are J tricks
-  flipMax: 2.6,
-  damp: 7.5, // how fast spin/flip stop when you let go
+  spinStop: 24, // how fast a spin brakes when you let go of A/D
+  finishMax: 8, // rad/s: auto-finish toward a straight/fakie landing after you let go
+  leanMax: 0.35, // rad (~20°): W/S in the air lean the landing attitude; big flips are J tricks
+  leanRate: 1.8, // rad/s toward the leaned attitude
+  arriveRate: 4.5, // rad/s cap when squaring up to a surface you are about to hit (e.g. flying into a QP)
   flipTrickDur: 0.62,
   grabBlendIn: 0.16,
 };

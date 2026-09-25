@@ -14,6 +14,8 @@ describe('landing classification (against the real surface normal)', () => {
   });
   it('sideways is bad (he gets thrown and hangs on)', () => expect(L({ yawErrDeg: 90 }).quality).toBe('bad'));
   it('a bit crooked is sketchy', () => expect(L({ yawErrDeg: 45 }).quality).toBe('sketchy'));
+  it('sideways after vert air (the game steers that) is only sketchy, even landing hard', () =>
+    expect(L({ yawErrDeg: 90, vert: true, impact: 15 }).quality).toBe('sketchy'));
   it('upside down is a slam', () => expect(L({ upDot: -0.9 }).quality).toBe('slam'));
   it('landing mid-flip is at least sketchy', () => expect(L({ trickUnfinished: true }).quality).not.toBe('clean'));
   it('no hands on the bars at touchdown is a slam', () => expect(L({ grabHeld: 'hands' }).quality).toBe('slam'));

@@ -109,6 +109,71 @@ describe('vehicle regression matrix', () => {
     expect(landings.every((l) => l.airTime < 0.3)).toBe(true);
   });
 
+  // Playtest (Dan): "going off a ramp can instantly send you into the hang". Steering held onto the lip
+  // used to become a 540°/s spin → sideways landing. Held A/D is latched at takeoff now.
+  it('steering onto the funbox lip and holding it does not spin you sideways', () => {
+    const { v, step, landings } = world();
+    v.spawn(-60, 0, -4, 90);
+    step(sec(0.5));
+    let air = -1;
+    for (let i = 0; i < sec(6) && air < 0; i++) {
+      step(1, { throttle: 1, steer: v.pos.x > -50 ? 1 : 0 });
+      if (!v.grounded && v.speed > 4) air = i;
+    }
+    step(sec(0.3), { throttle: 1, steer: 1 });
+    step(sec(2.5));
+    const big = landings.find((l) => l.airTime > 0.5);
+    expect(big?.quality).toBe('clean');
+  });
+
+  it('planter gap: full throttle clears the planter and lands on the table', () => {
+    const { v, step, landings } = world();
+    v.spawn(-6, 0, 30, 90);
+    step(sec(0.5));
+    step(sec(5), { throttle: 1 });
+    const big = landings.find((l) => l.airTime > 0.8);
+    expect(big?.quality).toBe('clean'); // it used to fly into the landing table's back wall (slam)
+    expect(big!.normal.y).toBeGreaterThan(0.9);
+  });
+
+  it('a spin let go of early finishes itself to a straight or fakie landing', () => {
+    const { v, step, landings } = world();
+    v.spawn(-6, 0, 30, 90);
+    step(sec(0.5));
+    let air = false;
+    for (let i = 0; i < sec(6) && !air; i++) {
+      step(1, { throttle: 1 });
+      air = !v.grounded && v.speed > 4 && v.pos.x > 10;
+    }
+    let yaw = 0;
+    const log = v.onLanding!;
+    v.onLanding = (e) => {
+      if (e.airTime > 0.8) yaw = v.airYaw;
+      log(e);
+    };
+    step(sec(0.3), { steer: -1 }); // ~180° worth, released well before landing
+    step(sec(2));
+    const big = landings.find((l) => l.airTime > 0.8);
+    expect(big?.quality).toBe('clean');
+    expect(big!.fakie).toBe(true);
+    expect(Math.abs(Math.abs(yaw) - Math.PI)).toBeLessThan(0.5); // scored as a 180
+  });
+
+  it('vert on a tight 3 m perimeter quarterpipe too (not a launch out of the park)', () => {
+    const { v, step, landings } = world();
+    v.spawn(28, 0, -8, 90); // east wall, full speed
+    step(sec(0.5));
+    let vert = false;
+    v.onAirborne = (isVert) => (vert = vert || isVert);
+    for (let i = 0; i < sec(5) && !vert; i++) step(1, { throttle: 1 });
+    expect(vert).toBe(true);
+    step(sec(3.5));
+    const back = landings.find((l) => l.airTime > 1);
+    expect(back?.quality).toBe('clean');
+    expect(back!.fakie).toBe(true);
+    expect(v.pos.x).toBeLessThan(62); // came back into the park, not over the deck
+  });
+
   it('vert: launch off the Overcommit lip, come straight back into the ramp', () => {
     const { v, step, landings } = world();
     v.spawn(30, 0, -14, 0); // facing north, straight at the big quarterpipe
