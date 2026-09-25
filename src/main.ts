@@ -8,7 +8,7 @@ import { Props } from './park/props';
 import { buildRyker } from './render/vehicleModel';
 import { loadGLB, loadJSON, MODELS } from './render/assets';
 import { RiderRig, type RiderFit } from './rider/rig';
-import { Input, type InputFrame, type Btn } from './core/input';
+import { Input, frameOf, type InputFrame } from './core/input';
 import { ChaseCam } from './render/camera';
 import { SIM } from './config/tuning';
 import { Game, type Mode } from './game/game';
@@ -19,33 +19,13 @@ import { SoundDirector, ComedyDirector } from './audio/director';
 import { LETTERS } from './park/layout';
 import { Replay } from './game/replay';
 import { Fx } from './render/fx';
+import { Attract } from './game/attract';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const ui = document.getElementById('ui')!;
 
 // Optional backdrop module (scenery around the park) — picked up automatically when present.
 const backdropMods = import.meta.glob('./park/backdrop.ts', { eager: true }) as Record<string, { buildBackdrop?: (s: THREE.Scene, p: PhysicsWorld) => unknown }>;
-
-const BTNS: Btn[] = ['ollie', 'flip', 'grab', 'grind', 'revert', 'restart', 'pause', 'letgo', 'confirm', 'back', 'horn'];
-/** Build an input frame by hand (scripted tests / bots). */
-export function frameOf(
-  p: Partial<Omit<InputFrame, 'held' | 'pressed' | 'released'>> & { held?: Partial<Record<Btn, boolean>>; pressed?: Partial<Record<Btn, number>>; released?: Partial<Record<Btn, number>> } = {},
-): InputFrame {
-  const z = Object.fromEntries(BTNS.map((b) => [b, 0])) as Record<Btn, number>;
-  const f = Object.fromEntries(BTNS.map((b) => [b, false])) as Record<Btn, boolean>;
-  return {
-    throttle: p.throttle ?? 0,
-    brake: p.brake ?? 0,
-    steer: p.steer ?? 0,
-    pitch: p.pitch ?? 0,
-    dir: p.dir ?? 'none',
-    recentDirs: p.recentDirs ?? [],
-    device: 'keyboard',
-    held: { ...f, ...p.held },
-    pressed: { ...z, ...p.pressed },
-    released: { ...z, ...p.released },
-  };
-}
 
 const TIPS = [
   'Your weight on the handlebar is also your weight on the throttle. Brake. Then mash.',
@@ -137,6 +117,20 @@ async function boot() {
   game.onCheatUnlocked = (name, desc) => hud.toast(name, desc, 'cheat');
   const replay = new Replay(game, stage, ui);
   const fx = new Fx(stage.scene, game);
+  const attract = new Attract(game);
+  const startAttract = () => {
+    game.demo = true;
+    comedy.enabled = false;
+    attract.start();
+    cam.mode = 'follow';
+    audio.sfx.gain.setTargetAtTime(game.save.settings.sfx * 0.3, audio.ctx.currentTime, 0.2);
+  };
+  const stopAttract = () => {
+    attract.stop();
+    game.demo = false;
+    comedy.enabled = true;
+    audio.stopLoops();
+  };
 
   type App = 'title' | 'menu' | 'run' | 'paused' | 'results' | 'replay';
   let app: App = 'title';
@@ -179,6 +173,7 @@ async function boot() {
       toTitleCamera();
       void audio.playMusic('title-theme');
       menus.show('main', false);
+      startAttract();
     },
     applySettings,
     applyCheats: () => {
@@ -191,12 +186,16 @@ async function boot() {
         .then((r) => r.ok && (r.headers.get('content-type') ?? '').includes('video'))
         .catch(() => false),
     onScreen: (name) => {
-      if (name === 'footage') audio.stopMusic(0.5);
+      if (name === 'footage') {
+        audio.stopMusic(0.5);
+        audio.stopLoops();
+      }
       else if ((app === 'menu' || app === 'title') && !audio.musicId) void audio.playMusic('title-theme');
     },
   });
 
   const startRun = (mode: Mode) => {
+    if (attract.active) stopAttract();
     menus.close();
     app = 'run';
     cam.mode = 'follow';
@@ -286,13 +285,14 @@ async function boot() {
   };
   game.events.on('rider_detached', () => hud.toast('INCIDENT RECORDED', 'Press BACKSPACE for the replay', 'info'));
 
-  (window as any).__game = { game, stage, phys, park, rig, ryker, cam, hud, menus, audio, comedy, replay, fx, dev: null as unknown, THREE };
+  (window as any).__game = { game, stage, phys, park, rig, ryker, cam, hud, menus, audio, comedy, replay, fx, attract, dev: null as unknown, THREE };
 
   // Title screen over an orbiting view of the park.
   loading.done();
   toTitleCamera();
   applySettings();
   menus.show('title');
+  startAttract();
   const titleMusic = () => {
     if (app === 'title' || app === 'menu') void audio.playMusic('title-theme');
     window.removeEventListener('keydown', titleMusic);
@@ -355,6 +355,17 @@ async function boot() {
       if (steps >= SIM.maxCatchUp) acc = 0;
       controlsHintT += dt;
       if (controlsHintT > 25) hud.root.classList.add('hint-faded');
+    } else if ((app === 'title' || app === 'menu') && attract.active) {
+      acc += dt;
+      let steps = 0;
+      while (acc >= SIM.dt && steps < SIM.maxCatchUp) {
+        game.step(SIM.dt, attract.frame(frameOf));
+        acc -= SIM.dt;
+        steps++;
+      }
+      if (steps >= SIM.maxCatchUp) acc = 0;
+      input.sample(); // menus own the real input
+      fx.update(dt);
     } else {
       acc = 0;
       if (app !== 'replay') input.sample(); // drain edges while in menus
@@ -365,6 +376,8 @@ async function boot() {
       fx.setViewport(stage.renderer.domElement.height, stage.camera.fov);
       game.render(dt, acc / SIM.dt);
       if (cam.mode === 'orbit') cam.update(dt, new THREE.Vector3(-8, 0, 0), game.vehicle.fwd, game.vehicle.vel, { airborne: false, vert: false, wide: 0 });
+      else if (attract.active) cam.distance = 8.5;
+      else cam.distance = 6.4;
     }
     stage.tick(dt);
     stage.followShadow(cam.mode === 'orbit' ? new THREE.Vector3(-8, 0, 0) : game.vehicle.pos);
@@ -373,7 +386,7 @@ async function boot() {
       hud.update(game);
       sound.update(dt, app === 'run');
       comedy.update();
-    } else if (app !== 'replay') sound.update(dt, false);
+    } else if (app !== 'replay') sound.update(dt, attract.active);
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);

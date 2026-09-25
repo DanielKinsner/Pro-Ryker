@@ -86,6 +86,7 @@ export class Vehicle {
   grounded = false;
   contacts = 0;
   groundNormal = new THREE.Vector3(0, 1, 0);
+  private prevGroundNormal = new THREE.Vector3(0, 1, 0);
   airTime = 0;
   groundTime = 0;
   lastGroundedAt = 0;
@@ -144,7 +145,10 @@ export class Vehicle {
       RAPIER.ColliderDesc.roundCuboid(0.36, 0.2, 0.95, 0.08)
         .setTranslation(0, 0.6, 0.05)
         .setMass(VEHICLE.massKg * 0.82)
-        .setFriction(0.55)
+        // Belly contacts slide (with sparks) rather than brake: high-g transitions used to bottom
+        // out and friction at that load stopped a 24 m/s Ryker dead.
+        .setFriction(0.12)
+        .setFrictionCombineRule(RAPIER.CoefficientCombineRule.Min)
         .setRestitution(0.08)
         .setCollisionGroups(COL.vehicle),
       this.body,
@@ -154,7 +158,8 @@ export class Vehicle {
       RAPIER.ColliderDesc.roundCuboid(0.56, 0.1, 0.3, 0.08)
         .setTranslation(0, 0.4, -0.86)
         .setMass(VEHICLE.massKg * 0.18)
-        .setFriction(0.55)
+        .setFriction(0.12)
+        .setFrictionCombineRule(RAPIER.CoefficientCombineRule.Min)
         .setRestitution(0.08)
         .setCollisionGroups(COL.vehicle),
       this.body,
@@ -292,6 +297,21 @@ export class Vehicle {
       this.groundNormal.normalize();
     }
 
+    // Skate-game transitions: while rolling, velocity turns with the surface as it curves (instead of
+    // asking the springs for 7 g of centripetal force at the foot of a quarterpipe).
+    if (nowGrounded && wasGrounded && this.contacts >= 2 && !this.empty) {
+      const turn = this.prevGroundNormal.dot(this.groundNormal);
+      if (turn < 0.99999 && turn > 0.93) {
+        _q.setFromUnitVectors(this.prevGroundNormal, this.groundNormal);
+        const vIn = this.vel.dot(this.groundNormal);
+        const nv = _v.copy(this.vel).applyQuaternion(_q);
+        // Only redirect the along-surface part; keep whatever real normal motion there is.
+        nv.addScaledVector(this.groundNormal, vIn - nv.dot(this.groundNormal));
+        this.body.setLinvel(nv, true);
+        this.vel.copy(nv);
+      }
+    }
+    if (nowGrounded) this.prevGroundNormal.copy(this.groundNormal);
     if (nowGrounded && !wasGrounded) this.handleTouchdown();
     if (!nowGrounded && wasGrounded) this.handleTakeoff();
     this.grounded = nowGrounded;
@@ -392,8 +412,8 @@ export class Vehicle {
       const dx = -pv.dot(this.up);
       let f = VEHICLE.springK * (x - x0) + VEHICLE.damperC * dx;
       // Bump stop.
-      if (x > VEHICLE.suspensionUp + VEHICLE.suspensionRest * 0.9) f += 60000 * (x - (VEHICLE.suspensionUp + VEHICLE.suspensionRest * 0.9));
-      f = Math.max(0, Math.min(f, 60000));
+      if (x > VEHICLE.suspensionUp + VEHICLE.suspensionRest * 0.85) f += 400000 * (x - (VEHICLE.suspensionUp + VEHICLE.suspensionRest * 0.85));
+      f = Math.max(0, Math.min(f, 160000));
       w.load = f;
       const imp = _v.copy(this.up).multiplyScalar(f * dt);
       const at = _v3.set(w.local.x, w.local.y, w.local.z).applyQuaternion(this.quat).add(this.pos);
@@ -577,7 +597,9 @@ export class Vehicle {
         const vOut = this.vel.dot(nh);
         const nv = _v2.copy(this.vel).addScaledVector(nh, -vOut);
         this.body.setLinvel(nv, true);
-        this.vertPlaneD = this.pos.dot(nh);
+        // Takeoff registers when the *last* wheel leaves the lip, by which point the body is already
+        // ~0.8 m past it — hold the plane in front of the lip so you come back down onto the wall.
+        this.vertPlaneD = this.pos.dot(nh) + 0.85;
       }
     }
     this.onAirborne?.(this.vertAir);

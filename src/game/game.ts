@@ -148,6 +148,8 @@ export class Game {
   }
   bikeLandedAlone = false;
   props: Props | null = null;
+  /** Attract-mode demo: nothing it does counts (goals, records, save). */
+  demo = false;
   private emptyStillT = 0;
   private emptyReported = false;
 
@@ -169,7 +171,7 @@ export class Game {
       c.taken = c.kind === 'tape' ? this.save.goals.includes('tape') : false;
       c.mesh.visible = !c.taken;
     }
-    this.save.runs++;
+    if (!this.demo) this.save.runs++;
     this.props?.reset();
     const s = SPAWNS[0];
     this.respawn(s.x, s.z, s.yawDeg);
@@ -177,7 +179,7 @@ export class Game {
   }
 
   endRun() {
-    if (this.runOver) return;
+    if (this.runOver || this.demo) return;
     this.runOver = true;
     this.running = false;
     if (this.tricks.combo.active && this.rider.attached) this.tricks.bank();
@@ -383,7 +385,7 @@ export class Game {
   }
 
   completeGoal(id: string) {
-    if (this.runGoals.has(id)) return;
+    if (this.demo || this.runGoals.has(id)) return;
     this.runGoals.add(id);
     const def = GOALS.find((g) => g.id === id);
     if (!def) return;
@@ -420,7 +422,7 @@ export class Game {
   }
 
   persist() {
-    writeSave(this.save);
+    if (!this.demo) writeSave(this.save);
   }
 }
 

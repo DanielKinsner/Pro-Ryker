@@ -227,3 +227,25 @@ function dz(v: number) {
 export function clamp(v: number, a: number, b: number) {
   return v < a ? a : v > b ? b : v;
 }
+
+export type FrameSpec = Partial<Omit<InputFrame, 'held' | 'pressed' | 'released'>> & {
+  held?: Partial<Record<Btn, boolean>>;
+  pressed?: Partial<Record<Btn, number>>;
+  released?: Partial<Record<Btn, number>>;
+};
+
+/** Build an input frame by hand (bots, attract mode, scripted tests). */
+export function frameOf(p: FrameSpec = {}): InputFrame {
+  return {
+    throttle: p.throttle ?? 0,
+    brake: p.brake ?? 0,
+    steer: p.steer ?? 0,
+    pitch: p.pitch ?? 0,
+    dir: p.dir ?? 'none',
+    recentDirs: p.recentDirs ?? [],
+    device: 'keyboard',
+    held: { ...off(), ...p.held },
+    pressed: { ...zero(), ...p.pressed },
+    released: { ...zero(), ...p.released },
+  };
+}

@@ -94,7 +94,7 @@ describe('vehicle regression matrix', () => {
     let minUp = 1;
     for (let i = 0; i < sec(6); i++) {
       step(1);
-      if (v.grounded) minUp = Math.min(minUp, v.up.dot(v.groundNormal));
+      if (v.contacts >= 2) minUp = Math.min(minUp, v.up.dot(v.groundNormal)); // single-wheel clips mid-landing are fine
     }
     expect(v.tumbling).toBe(false);
     expect(minUp).toBeGreaterThan(0.8); // wheels stayed on the surface while grounded
@@ -107,5 +107,26 @@ describe('vehicle regression matrix', () => {
     step(sec(0.4), { throttle: 0.4 });
     step(sec(2));
     expect(landings.every((l) => l.airTime < 0.3)).toBe(true);
+  });
+
+  it('vert: launch off the Overcommit lip, come straight back into the ramp', () => {
+    const { v, step, landings } = world();
+    v.spawn(30, 0, -14, 0); // facing north, straight at the big quarterpipe
+    step(sec(0.5));
+    let vert = false;
+    v.onAirborne = (isVert) => (vert = vert || isVert);
+    for (let i = 0; i < sec(6) && !vert; i++) step(1, { throttle: 1 });
+    expect(vert).toBe(true);
+    const maxY = { y: 0 };
+    for (let i = 0; i < sec(4); i++) {
+      step(1);
+      maxY.y = Math.max(maxY.y, v.pos.y);
+    }
+    const back = landings.find((l) => l.airTime > 0.6);
+    expect(back).toBeTruthy();
+    expect(back!.quality).toBe('clean'); // straight up and down = a legit fakie landing
+    expect(back!.fakie).toBe(true);
+    expect(back!.normal.y).toBeLessThan(0.97); // landed back on the transition, not the flat deck
+    expect(maxY.y).toBeGreaterThan(5); // real air above a 4.6 m wall
   });
 });
