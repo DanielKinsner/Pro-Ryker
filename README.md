@@ -20,8 +20,9 @@ npm run gen-audio -- vo # (re)generate ElevenLabs audio; needs ELEVENLABS_API_KE
 ```
 
 **Models are not in Git** (purchased/licensed). `import-models` finds `../SEND IT/slingmods-send-it` or falls back to
-`https://slingmods-send-it-models.vercel.app`. **The original clip is not in Git either**: put it at
-`public/media/original.mp4` to enable the "Based on True Events" unlock locally (it's ViralHog-licensed footage).
+`https://slingmods-send-it-models.vercel.app`. **The original clip is not in Git either** (it's ViralHog-licensed):
+the "Based on True Events" unlock embeds ViralHog's own YouTube upload, so it works everywhere with nothing to copy.
+Optional: a local copy at `public/media/original.mp4` (git-ignored, never deployed) plays instead when you're offline.
 
 ## Controls
 

@@ -29,6 +29,9 @@ export interface MenuHooks {
   onScreen(name: string): void;
 }
 
+/** The real clip on ViralHog's YouTube channel ("Man Wrecks Can-Am at Skatepark || ViralHog"). */
+const FOOTAGE_YT = 'ieCOgCEtXfY';
+
 const el = (tag: string, cls = '', parent?: HTMLElement, html = '') => {
   const e = document.createElement(tag);
   if (cls) e.className = cls;
@@ -256,7 +259,7 @@ export class Menus {
       { label: 'HOW TO PLAY', action: () => this.show('howto') },
       {
         label: tapeGot ? 'BASED ON TRUE EVENTS' : '??? ??? ??? ???',
-        sub: tapeGot ? (this.footageOk ? 'The original footage.' : 'Footage file not found on this machine.') : 'Find the secret tape.',
+        sub: tapeGot ? 'The original footage.' : 'Find the secret tape.',
         disabled: !tapeGot,
         action: () => this.show('footage'),
       },
@@ -387,8 +390,11 @@ export class Menus {
     const wrap = el('div', 'm-footage', this.root);
     el('div', 'm-kicker', wrap, 'HISTORICAL REENACTMENT');
     el('h2', 'm-title', wrap, 'BASED ON TRUE EVENTS');
-    const phone = el('div', 'm-phone', wrap);
-    if (this.footageOk) {
+    // ViralHog's own YouTube upload (they license the clip; embedding is allowed and they get the views).
+    // A local copy (git-ignored, never deployed) only plays when offline.
+    const local = this.footageOk && !navigator.onLine;
+    const phone = el('div', `m-phone${local ? '' : ' landscape'}`, wrap);
+    if (local) {
       const v = document.createElement('video');
       v.src = `${import.meta.env.BASE_URL}media/original.mp4`;
       v.autoplay = true;
@@ -396,9 +402,17 @@ export class Menus {
       v.playsInline = true;
       phone.appendChild(v);
     } else {
-      el('div', 'm-nofootage', phone, 'Footage not found.<br><br>Put the clip at<br><code>public/media/original.mp4</code><br>(it stays on your machine — never committed or deployed).');
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${FOOTAGE_YT}?autoplay=1&rel=0&playsinline=1`;
+      f.title = 'Man Wrecks Can-Am at Skatepark || ViralHog';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      f.referrerPolicy = 'strict-origin-when-cross-origin'; // YouTube refuses embeds that send no referrer
+      phone.appendChild(f);
     }
-    el('div', 'm-legal', wrap, 'Original footage © its owner, licensed via ViralHog. Shown locally only; not part of the game build.');
+    el('div', 'm-legal', wrap, 'Original footage via ViralHog, played from their YouTube channel.');
+    // Once you click into the video, keys go to YouTube, not the game — so a real button.
+    el('button', 'm-back', wrap, '&#9664; BACK').addEventListener('click', () => this.back());
     el('div', 'm-press small', wrap, 'ESC TO GO BACK');
   }
 

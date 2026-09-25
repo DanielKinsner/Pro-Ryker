@@ -43,8 +43,9 @@ clip's setting; it is not a survey of a real location and is never named as one.
    → he gets left behind; legs off the pegs → he's hanging). The hang state emerges from player choices.
 4. **Tony Hawk structure** (the kit's modes were looser): Career = 2-min runs with a persistent 10-goal list,
    Free Skate, gaps list, cheats unlocked by goals (Big Head, Moon Gravity, Perfect Balance, Slo-Mo).
-5. **The original clip is an optional local unlock** ("Based on True Events" / the secret tape goal). Loaded
-   from `public/media/` which is git-ignored — never committed or deployed, because it's ViralHog-licensed footage.
+5. **The original clip is the secret-tape unlock** ("Based on True Events"). It embeds ViralHog's own YouTube
+   upload (`ieCOgCEtXfY`, embedding allowed) in a sideways phone — the clip is ViralHog-licensed, so it is never
+   committed or deployed as a file. A git-ignored local copy in `public/media/` plays instead only when offline.
 
 Everything else in the kit stands: attached whole-assembly flips, seated → unsettled → hanging → recovered/detached,
 no speed-alone ejection, no random bails, fast reset, event-truthful comedy, silence budget, clean/salty dialogue.

@@ -70,7 +70,7 @@ Dev console hooks (dev server only): `window.__game` → `{ game, stage, cam, au
 | "Too easy to fall off the first time" / "going off a ramp instantly sends you into the 2-hand hang" | Steering held onto a lip became a 540°/s spin → sideways landing; W re-pressed mid-air nose-dived; planter gap put you into the landing table's back wall; the 3 m perimeter QPs couldn't be ridden (chassis ploughed into the face, or you launched over the deck out of the park); flying off the pad/hump met QP faces nose-first; QP wings had a hidden 0.7 m wall | A/D latched at takeoff; spin auto-finishes; W/S = bounded lean; flight-path landing assist; body follows transitions; vert judged from the recent wall + capped ~8 m; wings rebuilt; gap table moved. `npx vite-node scripts/landing-sweep.ts`: thrown off **0/72** player-habit jumps (was 11/48); 16/18 deliberate spins land. In-game: every QP straight-on, the gap and the funbox land clean and seated. Attract bot 90 s: 27 big landings / 6 hangs (old code: 15 / 8). |
 | "Only a couple of space bar mashes should bring you back" | ~7 fast taps needed at drag speed | 3 taps (two hands), 4 (one hand); drag always shows ≥0.5 s. In-game: 3 taps → back on at 0.55 s. |
 | "In SFX you can only raise the values" | ◀ ▶ were CSS decoration; clicks judged by row half and both arrows sit on the right half, so ◀ raised it | Real buttons; verified ◀ 90→80→70 %, saved |
-| "The original footage needs to be included" | — | **Waiting on Dan's decision** (see gaps). ViralHog licenses the clip (not public domain); its own YouTube upload `ieCOgCEtXfY` allows embedding. |
+| "The original footage needs to be included" | ViralHog licenses the clip (not public domain) | Dan chose the embed: "Based on True Events" plays ViralHog's YouTube upload `ieCOgCEtXfY` in a sideways phone, with a clickable BACK (keys go to YouTube once you click the video). Verified in-page: autoplays, BACK returns to the menu; build ships no clip. Local copy only plays offline. |
 
 Also checked: the rider's head after the helmet pops off renders as a full head (not hollow).
 
@@ -83,7 +83,7 @@ Also checked: the rider's head after the helmet pops off renders as a full head 
 3. Gamepad is coded (standard mapping) but untested on a real pad; there are no touch controls.
 4. Reference fidelity: the clip was reviewed from frame sheets, not audio. The park is *inspired by* it.
 5. Rights: the Ryker model and purchased rider aren't cleared for public redistribution. The repo is public but contains no
-   binaries; production builds fetch them from the SEND IT model host (public-but-unlisted). The ViralHog clip stays local.
+   binaries; production builds fetch them from the SEND IT model host (public-but-unlisted). The ViralHog clip is never shipped as a file; the game embeds their YouTube upload (needs internet).
 6. Not deployed anywhere (a Vercel deploy would publish the game — ask first).
 7. Environment: this PC's `GITHUB_TOKEN` env var is invalid (breaks `gh` and the GitHub MCP); `gh`'s keyring login works.
    The ElevenLabs key was pasted in chat — consider rotating it; it's only in `.env.local` (git-ignored).
@@ -95,7 +95,6 @@ Also checked: the rider's head after the helmet pops off renders as a full head 
 
 ## Next highest-value tasks
 
-0. Dan's call on the original footage: YouTube embed of ViralHog's upload (recommended) vs committing the mp4.
 1. Play 3–4 career runs and list what feels wrong (air height, spin speed, flip duration, how often you get thrown, mash rate).
 2. Listen with sound on; re-generate any voice line that lands flat (`npm run gen-audio -- vo` after deleting the file).
 3. Decide on a public deploy (Vercel like SEND IT) and whether the rider/Ryker rights allow it.
