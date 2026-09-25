@@ -439,8 +439,8 @@
 .captions {
   position: absolute;
   left: 28px;
-  bottom: 62px;
-  max-width: min(520px, 60vw);
+  top: 128px;
+  max-width: min(340px, calc(100vw - 56px));
   pointer-events: none;
 }
 .caption {
@@ -462,6 +462,8 @@
 .caption.out {
   opacity: 0;
 }
+.hud.practice ~ .captions, .hud.rescue ~ .captions { display: none; }
+.m-intro-copy { font: 14px/1.6 'Space Mono', monospace; max-width: 48ch; }
 @media (max-width: 720px) {
   .m-goals {
     grid-template-columns: 1fr;

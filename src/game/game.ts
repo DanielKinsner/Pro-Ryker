@@ -15,7 +15,7 @@ import { TrickSystem } from './tricks';
 import { GOALS, CHEAT_UNLOCKS, TAPE_POS } from './goals';
 import type { ChaseCam } from '../render/camera';
 
-export type Mode = 'career' | 'free';
+export type Mode = 'career' | 'free' | 'practice';
 
 interface Collectible {
   kind: 'letter' | 'tape';
@@ -114,18 +114,18 @@ export class Game {
     };
     ev.on('rider_detached', () => {
       this.tricks.lose('bailed');
-      this.save.bails++;
+      if (this.recordsEnabled) this.save.bails++;
       this.bailT = 0;
     });
     ev.on('rider_recovered', (e) => {
       this.tricks.onRecovered(e.fromOneHand);
-      this.save.dragMetres += e.dragMetres;
+      if (this.recordsEnabled) this.save.dragMetres += e.dragMetres;
       if (e.dragMetres >= 20) this.completeGoal('reenact');
     });
     ev.on('hang_entered', () => (this.hadFaceManual = true));
     ev.on('combo_banked', (e) => {
       this.runScore = this.tricks.score;
-      if (e.score > this.save.bestCombo) this.save.bestCombo = e.score;
+      if (this.recordsEnabled && e.score > this.save.bestCombo) this.save.bestCombo = e.score;
       if (this.hadFaceManual && e.score >= 10000 && e.names.some((n) => n.includes('FACE MANUAL'))) this.completeGoal('stillcounts');
       this.hadFaceManual = false;
       this.checkScoreGoals();
@@ -134,7 +134,7 @@ export class Game {
     ev.on('gap', (e) => {
       if (e.id === 'roof') this.completeGoal('roof');
       if (e.id === 'planter') this.completeGoal('planter');
-      if (!this.save.gaps.includes(e.id)) {
+      if (this.recordsEnabled && !this.save.gaps.includes(e.id)) {
         this.save.gaps.push(e.id);
         this.persist();
       }
@@ -150,6 +150,9 @@ export class Game {
   props: Props | null = null;
   /** Attract-mode demo: nothing it does counts (goals, records, save). */
   demo = false;
+  get recordsEnabled() {
+    return !this.demo && this.mode !== 'practice';
+  }
   private emptyStillT = 0;
   private emptyReported = false;
 
@@ -163,6 +166,10 @@ export class Game {
     this.finishing = false;
     this.timeLeft = mode === 'career' ? SESSION.runSeconds : Infinity;
     this.tricks.score = 0;
+    this.tricks.special = 0;
+    this.tricks.specialReady = false;
+    this.tricks.pop = { text: '', t: 99, kind: 'trick' };
+    this.hadFaceManual = false;
     this.runScore = 0;
     this.lettersTaken.clear();
     this.conesDown.clear();
@@ -171,7 +178,7 @@ export class Game {
       c.taken = c.kind === 'tape' ? this.save.goals.includes('tape') : false;
       c.mesh.visible = !c.taken;
     }
-    if (!this.demo) this.save.runs++;
+    if (this.recordsEnabled) this.save.runs++;
     this.props?.reset();
     const s = SPAWNS[0];
     this.respawn(s.x, s.z, s.yawDeg);
@@ -179,7 +186,7 @@ export class Game {
   }
 
   endRun() {
-    if (this.runOver || this.demo) return;
+    if (this.runOver || !this.recordsEnabled) return;
     this.runOver = true;
     this.running = false;
     if (this.tricks.combo.active && this.rider.attached) this.tricks.bank();
@@ -385,7 +392,7 @@ export class Game {
   }
 
   completeGoal(id: string) {
-    if (this.demo || this.runGoals.has(id)) return;
+    if (!this.recordsEnabled || this.runGoals.has(id)) return;
     this.runGoals.add(id);
     const def = GOALS.find((g) => g.id === id);
     if (!def) return;

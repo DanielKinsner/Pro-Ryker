@@ -4,7 +4,7 @@
 export type LandingQuality = 'clean' | 'sketchy' | 'bad' | 'slam';
 
 export interface GameEvents {
-  run_start: { mode: 'career' | 'free' };
+  run_start: { mode: 'career' | 'free' | 'practice' };
   run_reset: {};
   run_end: { score: number };
   airborne: { vert: boolean; speed: number };

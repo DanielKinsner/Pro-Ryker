@@ -6,10 +6,15 @@
   --stroke: 0 2px 0 #000, 2px 0 0 #000, -2px 0 0 #000, 0 -2px 0 #000, 2px 2px 0 #000, -2px 2px 0 #000, 2px -2px 0 #000, -2px -2px 0 #000,
     4px 5px 0 rgba(0, 0, 0, 0.45);
 }
-.hud-tl {
+.hud-top {
   position: absolute;
-  left: 28px;
+  left: 24px;
+  right: 24px;
   top: 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
 }
 .hud-score {
   font-family: Anton, Impact, sans-serif;
@@ -23,7 +28,7 @@
 }
 .hud-special {
   position: relative;
-  width: 250px;
+  width: min(250px, 23vw);
   height: 16px;
   margin-top: 8px;
   background: rgba(0, 0, 0, 0.55);
@@ -33,10 +38,11 @@
 }
 .hud-special-fill {
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 0;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: left;
   background: linear-gradient(90deg, #ffd23f, #ff7a1a 70%, #e3242b);
-  transition: width 0.15s linear;
+  transition: transform 0.15s linear;
 }
 .hud-special-label {
   position: absolute;
@@ -51,7 +57,7 @@
   animation: specialPulse 0.5s infinite alternate;
 }
 .hud-special.ready .hud-special-label::after {
-  content: '   \2191\2193 + J   \2190\2192 + K';
+  content: '   READY';
   letter-spacing: 0.1em;
   color: #fff;
 }
@@ -64,10 +70,8 @@
   }
 }
 .hud-timer {
-  position: absolute;
-  top: 18px;
-  left: 50%;
-  transform: translateX(-50%) skewX(-6deg);
+  transform: skewX(-6deg);
+  white-space: nowrap;
   font-family: Anton, Impact, sans-serif;
   font-size: 44px;
   font-style: italic;
@@ -84,9 +88,7 @@
   }
 }
 .hud-letters {
-  position: absolute;
-  top: 22px;
-  right: 26px;
+  justify-self: end;
   display: flex;
   gap: 6px;
 }
@@ -114,21 +116,23 @@
   }
 }
 .hud-combo {
-  position: absolute;
-  left: 50%;
-  bottom: 54px;
-  transform: translateX(-50%);
-  width: min(92vw, 1100px);
+  display: none;
+  width: min(100%, 1100px);
   text-align: center;
   opacity: 0;
   transition: opacity 0.2s;
 }
 .hud-combo.on {
+  display: block;
   opacity: 1;
 }
 .hud-combo-names {
   font-family: 'Archivo Black', sans-serif;
-  font-size: 19px;
+  font-size: 17px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
   line-height: 1.25;
   color: #fff;
   text-shadow: var(--stroke);
@@ -147,9 +151,11 @@
   top: 30%;
   transform: translate(-50%, -50%);
   font-family: Anton, Impact, sans-serif;
-  font-size: 58px;
+  font-size: clamp(28px, 5vw, 58px);
   font-style: italic;
-  white-space: nowrap;
+  width: calc(100% - 32px);
+  text-align: center;
+  overflow-wrap: anywhere;
   color: #fff;
   text-shadow: var(--stroke);
   opacity: 0;
@@ -182,15 +188,15 @@
   }
 }
 .hud-balance {
-  position: absolute;
-  left: 50%;
-  bottom: 170px;
+  position: relative;
+  display: none;
+  order: -1;
   width: 220px;
   height: 110px;
-  transform: translateX(-50%);
   opacity: 0;
 }
 .hud-balance.on {
+  display: block;
   opacity: 1;
 }
 .hud-balance-arc {
@@ -217,11 +223,9 @@
   background: #ff5a4a;
 }
 .hud-hang {
-  position: absolute;
-  left: 50%;
-  top: 92px;
-  transform: translateX(-50%) rotate(-2deg);
-  width: 380px;
+  display: none;
+  margin: 0 auto;
+  width: min(380px, 100%);
   padding: 8px 16px 10px;
   background: rgba(10, 10, 12, 0.72);
   border: 3px solid #000;
@@ -230,6 +234,7 @@
   transition: opacity 0.12s;
 }
 .hud-hang.on {
+  display: block;
   opacity: 1;
 }
 .hud-hang-title {
@@ -296,9 +301,7 @@
   animation: blink 0.35s infinite alternate;
 }
 .hud-state {
-  position: absolute;
-  left: 28px;
-  bottom: 24px;
+  flex-shrink: 0;
   padding: 5px 12px 4px;
   font: 14px 'Archivo Black', sans-serif;
   letter-spacing: 0.12em;
@@ -385,10 +388,9 @@
   }
 }
 .hud-bail {
-  position: absolute;
-  left: 50%;
-  bottom: 130px;
-  transform: translateX(-50%) rotate(-1deg);
+  display: none;
+  max-width: 760px;
+  text-align: center;
   padding: 8px 18px;
   font: 18px 'Archivo Black', sans-serif;
   letter-spacing: 0.04em;
@@ -396,22 +398,19 @@
   background: #e3242b;
   border: 3px solid #000;
   box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
-  white-space: nowrap;
+  white-space: normal;
   opacity: 0;
 }
 .hud-bail.on {
+  display: block;
   opacity: 1;
 }
 .hud-controls {
-  position: absolute;
-  right: 20px;
-  bottom: 18px;
-  max-width: 560px;
+  max-width: 650px;
   padding: 8px 12px;
   font: 11.5px/1.65 'Space Mono', monospace;
   color: rgba(255, 255, 255, 0.85);
   background: rgba(0, 0, 0, 0.5);
-  border-left: 3px solid #e3242b;
   text-align: right;
 }
 .hud-controls b {
@@ -429,4 +428,78 @@
 }
 .hud.hint-faded .hud-controls {
   opacity: 0;
+}
+
+/* Keep changing gameplay messages above a separate, reserved controls row. */
+.hud-bottom {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.hud-footer { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.hud-guidance {
+  position: absolute;
+  top: 112px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.hud.practice .hud-letters, .hud.practice .hud-controls, .hud.practice .hud-special,
+.hud.rescue .hud-controls { display: none; }
+.hud.practice .hud-hang { margin: 0 0 0 auto; }
+.hud.practice .hud-pop { display: none; }
+@media (max-width: 900px) {
+  .hud-guidance { flex-direction: column; align-items: center; }
+  .hud.practice .hud-hang { margin: 0; }
+}
+@media (max-width: 720px) {
+  .hud-top { left: 16px; right: 16px; top: 16px; grid-template-columns: 1fr auto; gap: 12px; }
+  .hud-score { font-size: 38px; }
+  .hud-special { width: min(140px, 38vw); height: 14px; }
+  .hud-special-label { font-size: 9px; line-height: 11px; }
+  .hud-special.ready .hud-special-label::after { content: ''; }
+  .hud-letters { grid-column: 2; grid-row: 1; gap: 4px; }
+  .hud-letter { width: 24px; height: 30px; font-size: 22px; }
+  .hud-timer { grid-column: 1 / -1; grid-row: 2; justify-self: center; font-size: 26px; line-height: 1; }
+  .hud.practice .hud-timer { grid-column: 2; grid-row: 1; align-self: center; }
+  .hud-guidance { top: 128px; left: 16px; right: 16px; gap: 10px; }
+  .hud.practice .hud-guidance { top: 76px; }
+  .hud-bottom { left: 16px; right: 16px; bottom: 14px; gap: 10px; }
+  .hud-footer { flex-wrap: wrap; gap: 8px; }
+  .hud-controls { flex: 1 1 230px; text-align: left; font-size: 11px; padding: 6px 8px; }
+  .hud-state { font-size: 11px; padding: 4px 8px; }
+  .hud-combo-names { font-size: 13px; }
+  .hud-combo-total { font-size: 30px; }
+  .hud-balance { width: 160px; height: 80px; }
+  .hud-balance-arc { -webkit-mask: radial-gradient(circle at 50% 100%, transparent 52px, #000 53px); mask: radial-gradient(circle at 50% 100%, transparent 52px, #000 53px); }
+  .hud-needle { height: 74px; }
+  .hud-bail { font-size: 13px; padding: 8px 12px; }
+  .hud-hang { padding: 8px 12px; }
+  .hud-hang-title { font-size: 28px; }
+  .hud-hang-hint { font-size: 12px; }
+  .hud-hang-warn { font-size: 11px; }
+  .hud-toasts { right: 16px; top: 128px; max-width: calc(100% - 32px); }
+  .hud-toast { min-width: 0; }
+}
+@media (max-height: 540px) and (min-width: 641px) {
+  .hud-top { top: 12px; }
+  .hud-score { font-size: 34px; }
+  .hud-timer { font-size: 30px; }
+  .hud-guidance, .hud.practice .hud-guidance { top: 88px; flex-direction: row; }
+  .hud-hang { width: 320px; padding: 8px 12px; }
+  .hud-hang-title { font-size: 24px; }
+  .hud-hang-hint, .hud-hang-warn { font-size: 11px; }
+  .hud-bottom { bottom: 10px; gap: 6px; }
+  .hud-combo-total { font-size: 28px; }
+  .hud-balance { width: 120px; height: 60px; align-self: flex-start; }
+  .hud-balance-arc { -webkit-mask: radial-gradient(circle at 50% 100%, transparent 40px, #000 41px); mask: radial-gradient(circle at 50% 100%, transparent 40px, #000 41px); }
+  .hud-needle { height: 56px; }
 }

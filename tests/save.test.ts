@@ -19,4 +19,9 @@ describe('save sanitising', () => {
     expect(s.best).toBe(0);
     expect(s.runs).toBe(0);
   });
+  it('preserves old saves and accepts only a boolean First Ride completion flag', () => {
+    expect(sanitize({ best: 1234 }).introCompleted).toBe(false);
+    expect(sanitize({ introCompleted: 'true' }).introCompleted).toBe(false);
+    expect(sanitize({ best: 1234, introCompleted: true })).toMatchObject({ best: 1234, introCompleted: true });
+  });
 });

@@ -1,5 +1,5 @@
 import './menus.css';
-import type { Game } from '../game/game';
+import type { Game, Mode } from '../game/game';
 import { GOALS, CHEAT_UNLOCKS } from '../game/goals';
 import type { SaveData, Cheats } from '../core/save';
 import { GAPS } from '../park/layout';
@@ -18,7 +18,7 @@ export interface MenuItem {
 }
 
 export interface MenuHooks {
-  startRun(mode: 'career' | 'free'): void;
+  startRun(mode: Mode): void;
   resume(): void;
   restart(): void;
   quitToMenu(): void;
@@ -121,6 +121,10 @@ export class Menus {
 
   back() {
     this.hooks.sfx('back');
+    if (this.screen === 'intro-done') {
+      this.hooks.quitToMenu();
+      return;
+    }
     if (this.screen === 'pause') {
       this.close();
       this.hooks.resume();
@@ -165,6 +169,8 @@ export class Menus {
         return this.options();
       case 'howto':
         return this.howto();
+      case 'intro-done':
+        return this.introDone();
       case 'footage':
         return this.footage();
     }
@@ -251,8 +257,10 @@ export class Menus {
     const done = this.save.goals.length;
     const tapeGot = this.save.goals.includes('tape');
     this.list(p, [
+      ...(!this.save.introCompleted && this.save.runs === 0 ? [{ label: 'FIRST RIDE', sub: 'Start here · drive, jump, flip, recover · skip any time', action: () => this.hooks.startRun('practice') }] : []),
       { label: 'CAREER', sub: `2-minute runs · ${done}/${GOALS.length} goals · best ${this.save.best.toLocaleString()}`, action: () => this.hooks.startRun('career') },
       { label: 'FREE SKATE', sub: 'No timer. No consequences. Some consequences.', action: () => this.hooks.startRun('free') },
+      ...(this.save.introCompleted || this.save.runs > 0 ? [{ label: 'FIRST RIDE', sub: this.save.introCompleted ? 'Completed · replay the four practice lessons' : 'Four practice lessons · no timer · skip any time', action: () => this.hooks.startRun('practice') }] : []),
       { label: 'GOALS', sub: `${done}/${GOALS.length} complete · gaps ${this.save.gaps.length}/${GAPS.length}`, action: () => this.show('goals') },
       { label: 'CHEATS', sub: `${this.save.cheatsUnlocked.length} unlocked`, action: () => this.show('cheats') },
       { label: 'OPTIONS', action: () => this.show('options') },
@@ -267,10 +275,12 @@ export class Menus {
   }
 
   private pause() {
-    const p = this.panel('PAUSED', this.game.mode === 'career' ? 'CAREER' : 'FREE SKATE');
+    const practice = this.game.mode === 'practice';
+    const p = this.panel('PAUSED', practice ? 'FIRST RIDE' : this.game.mode === 'career' ? 'CAREER' : 'FREE SKATE');
     this.list(p, [
       { label: 'RESUME', action: () => (this.close(), this.hooks.resume()) },
-      { label: 'RESTART RUN', action: () => this.hooks.restart() },
+      { label: practice ? 'RESTART FIRST RIDE' : 'RESTART RUN', action: () => this.hooks.restart() },
+      ...(practice ? [{ label: 'SKIP TO FREE SKATE', action: () => this.hooks.startRun('free') }] : []),
       { label: 'GOALS', action: () => this.show('goals') },
       { label: 'OPTIONS', action: () => this.show('options') },
       { label: 'HOW TO PLAY', action: () => this.show('howto') },
@@ -380,10 +390,21 @@ export class Menus {
        <div><b>SHIFT</b> right after landing — revert · with steering — powerslide</div>
        <div><b>HANG ON:</b> thrown off? He's still holding the bars and his weight is on the throttle. <b>BRAKE</b> and <b>MASH SPACE</b> to haul him back on. Pull it off and the whole combo still counts.</div>
        <div><b>SPECIAL:</b> fill the meter, then double-tap directions: ↑↓+J · ←→+J · ↓↑+J · ↑↑+K · ←→+K</div>
-       <div><b>R</b> reset · <b>X</b> let go on purpose · <b>ESC</b> pause · <b>H</b> hide the controls hint</div>
+       <div><b>R</b> reset · <b>X</b> let go on purpose · <b>ESC</b> pause · <b>H</b> horn</div>
        <div class="m-pad">GAMEPAD: RT/LT gas/brake · A ollie · X flip · B grab · Y grind/manual · RB revert · LB let go · Back reset</div>`,
     );
     this.list(p, [{ label: 'BACK', action: () => this.back() }]);
+  }
+
+  private introDone() {
+    const p = this.panel('STILL COUNTS.', 'FIRST RIDE COMPLETE');
+    el('p', 'm-intro-copy', p, 'You can ride, land a flip, and haul yourself back on. The park is yours.');
+    el('p', 'm-intro-copy', p, 'Try a 2-minute career run, or keep practicing without a timer.');
+    this.list(p, [
+      { label: 'START CAREER', sub: '10 goals. One very questionable vehicle.', action: () => this.hooks.startRun('career') },
+      { label: 'FREE SKATE', action: () => this.hooks.startRun('free') },
+      { label: 'MAIN MENU', action: () => this.hooks.quitToMenu() },
+    ]);
   }
 
   private footage() {

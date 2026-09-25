@@ -73,6 +73,8 @@ export class Input {
     if (!a) return;
     // Never steal browser shortcuts.
     if (e.ctrlKey || e.metaKey || e.altKey) return;
+    // Let focused UI buttons activate natively instead of also jumping in the game.
+    if ((e.code === 'Enter' || e.code === 'Space') && (e.target as HTMLElement | null)?.closest?.('button')) return;
     e.preventDefault();
     this.device = 'keyboard';
     if (down) {
@@ -165,7 +167,6 @@ export class Input {
         if (now && !was) {
           this.pressedCount[b]++;
           this.onPress?.(b);
-          if (b === 'ollie') this.onPress?.('confirm');
         }
         if (!now && was) this.releasedCount[b]++;
         this.padBtnHeld[b] = now;

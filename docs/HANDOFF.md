@@ -1,6 +1,6 @@
 # PRO RYKER — Handoff
 
-_Last updated: 2026-09-25, after playtest round 1. Repo: https://github.com/DanielKinsner/Pro-Ryker (**public**), branch `main`._
+_Last updated: 2026-09-25, after the First Ride / HUD pass. Repo: https://github.com/DanielKinsner/Pro-Ryker (**public**). Latest pass is local on `codex/first-ride-hud`; no push or deployment._
 
 ## Where it is and how to run it
 
@@ -10,14 +10,14 @@ Project: `C:\Users\SM - Dan\Documents\GitHub\Pro Ryker`
 npm install
 npm run import-models   # licensed GLBs → public/assets/models/ (git-ignored; from SEND IT checkout or its model host)
 npm run dev             # http://localhost:5210
-npm test                # vitest: 39 unit + headless-physics tests
+npm test                # vitest: 48 unit + headless-physics tests
 npm run build           # static dist/, relative base; strips the local clip always and model binaries by default
 ```
 
 On a fresh machine: clone, `npm install`, `npm run import-models`, `npm run dev`. To enable the "Based on True Events"
 unlock locally, copy the clip to `public/media/original.mp4` (git-ignored, never deployed).
 
-Dev console hooks (dev server only): `window.__game` → `{ game, stage, cam, audio, comedy, replay, fx, attract, crowd, dev }`.
+Dev console hooks (dev server only): `window.__game` includes `{ game, stage, cam, audio, comedy, replay, fx, attract, crowd, firstRide, dev }`.
 `dev.sim(n, dev.frameOf({...}))` steps the simulation synchronously with scripted inputs; `POST /__capture?name=x`
 (dev only) saves a canvas frame to `docs/screens/`. The in-app preview pane throttles hidden pages, so testing there is scripted.
 
@@ -73,6 +73,33 @@ Dev console hooks (dev server only): `window.__game` → `{ game, stage, cam, au
 | "The original footage needs to be included" | ViralHog licenses the clip (not public domain) | Dan chose the embed: "Based on True Events" plays ViralHog's YouTube upload `ieCOgCEtXfY` in a sideways phone, with a clickable BACK (keys go to YouTube once you click the video). Verified in-page: autoplays, BACK returns to the menu; build ships no clip. Local copy only plays offline. |
 
 Also checked: the rider's head after the helmet pops off renders as a full head (not hollow).
+
+## First Ride / HUD pass (2026-09-25)
+
+- **Progress isolation:** attract-mode actions no longer mutate in-memory records that could leak into a later save.
+  Practice also bypasses run counts, best scores, combos, gaps, bails, drag totals and goals. Normal play still records them.
+  Starting a run clears special charge and stale score feedback from the previous session.
+- **Input correction:** one gamepad A press activates a menu item once. Keyboard Enter/Space activates focused lesson
+  buttons without also triggering game actions. How to Play now correctly identifies H as the horn.
+- **HUD:** responsive score/timer/letters header; balance, combo and controls have separate space; contextual control
+  hints; shorter combo strings; captions moved away from scoring; compact rescue guidance and small-screen layouts.
+- **FIRST RIDE:** optional, replayable practice mode using normal physics in a safe flat stretch of the park. Four
+  lessons require driving/braking, an intentional clean or sketchy jump, a completed/landed/banked flip, and an actual
+  hang recovery. The practice hang is announced. Failure retries the current lesson; R / Back or the Retry button does
+  the same. Pause, restart, skip to Free Skate, and completion-to-Career routes are included. Only the backward-compatible
+  `introCompleted` save flag is written on completion. Comedy captions are suppressed during lessons for clarity.
+
+Verification for this pass:
+
+- `npm test`: 48 tests, including event-driven progress isolation, actual menu/input dispatch, save compatibility and
+  lesson progression/retry regressions. `npm run build` and `git diff --check` pass.
+- Scripted browser play using real game physics completed all four lessons, a clean flip landing and the recovery;
+  career records stayed unchanged. Starting Career afterward showed 2:00, zero special charge and cleared feedback.
+- Browser interactions verified retry, resume and skip. A scripted gamepad A press changed a menu value exactly once;
+  a 30-second attract run left save data unchanged. Screenshots checked desktop, narrow portrait and short landscape
+  HUDs, including the balance meter, long combos and recovery guidance. No browser console errors were observed.
+- These checks do not replace a hands-on keyboard/controller playtest or listening pass. Driving/landing physics and
+  existing scoring rules were not retuned. Licensed assets and public deployment remain outside this pass.
 
 ## Not done / not verified (honest list)
 

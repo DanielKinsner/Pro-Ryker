@@ -14,7 +14,7 @@ npm run dev             # http://localhost:5210
 ```
 
 ```bash
-npm test                # 33 unit + headless-physics tests
+npm test                # 48 unit + headless-physics tests
 npm run build           # static build in dist/ (relative base: works at / or nested)
 npm run gen-audio -- vo # (re)generate ElevenLabs audio; needs ELEVENLABS_API_KEY in .env.local
 ```
@@ -41,6 +41,13 @@ Optional: a local copy at `public/media/original.mp4` (git-ignored, never deploy
 | Watch the incident replay (after a bail) | Backspace | — |
 
 Specials (fill the meter): ↑↓+J, ←→+J, ↓↑+J, ↑↑+K, ←→+K.
+
+## First Ride
+
+New players can start with **FIRST RIDE**: four playable lessons in the actual park covering driving and braking,
+a charged jump, a landed kickflip, and the signature brake-and-haul-back rescue. There is no timer; retry the current
+lesson with R / Back, or skip to Free Skate at any time. First Ride stays in the main menu for replaying later.
+Practice records do not count toward career goals, best scores, gaps, or bail totals.
 
 ## What's in it
 

@@ -33,6 +33,7 @@ export interface SaveData {
   runs: number;
   bails: number;
   dragMetres: number;
+  introCompleted: boolean;
 }
 
 const KEY = 'pro-ryker-v1';
@@ -50,6 +51,7 @@ export const DEFAULT_SAVE: SaveData = {
   runs: 0,
   bails: 0,
   dragMetres: 0,
+  introCompleted: false,
 };
 
 const num = (v: unknown, d: number, lo = 0, hi = 1e12) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d);
@@ -83,6 +85,7 @@ export function sanitize(raw: unknown): SaveData {
     runs: num(r.runs, 0),
     bails: num(r.bails, 0),
     dragMetres: num(r.dragMetres, 0),
+    introCompleted: bool(r.introCompleted, false),
   };
 }
 

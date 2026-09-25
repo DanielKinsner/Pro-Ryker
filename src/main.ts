@@ -21,6 +21,8 @@ import { LETTERS } from './park/layout';
 import { Replay } from './game/replay';
 import { Fx } from './render/fx';
 import { Attract } from './game/attract';
+import { FirstRide } from './game/firstRide';
+import { FirstRideView } from './ui/firstRide';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const ui = document.getElementById('ui')!;
@@ -136,6 +138,18 @@ async function boot() {
 
   type App = 'title' | 'menu' | 'run' | 'paused' | 'results' | 'replay';
   let app: App = 'title';
+  const firstRide = new FirstRide(game, () => {
+    game.save.introCompleted = true;
+    game.persist();
+    game.running = false;
+    game.paused = true;
+    app = 'results';
+    audio.stopLoops();
+    hud.root.style.display = 'none';
+    menus.show('intro-done', false);
+    void audio.playMusic('results-sting', { loop: false, fade: 0.2 });
+  });
+  const firstRideView = new FirstRideView(hud.guidance, firstRide, () => startRun('free'));
   const RUN_TRACKS = ['run-punk', 'run-hiphop', 'run-ska'];
   let track = Math.floor(Math.random() * RUN_TRACKS.length);
   audio.onMusicEnded = (id) => {
@@ -169,6 +183,7 @@ async function boot() {
     },
     restart: () => startRun(game.mode),
     quitToMenu: () => {
+      firstRide.stop();
       game.running = false;
       audio.stopLoops();
       app = 'menu';
@@ -188,6 +203,7 @@ async function boot() {
         .then((r) => r.ok && (r.headers.get('content-type') ?? '').includes('video'))
         .catch(() => false),
     onScreen: (name) => {
+      firstRideView.update(game);
       if (name === 'footage') {
         audio.stopMusic(0.5);
         audio.stopLoops();
@@ -197,16 +213,27 @@ async function boot() {
   });
 
   const startRun = (mode: Mode) => {
+    firstRide.stop();
     if (attract.active) stopAttract();
     menus.close();
     app = 'run';
     cam.mode = 'follow';
     hud.root.style.display = '';
     game.startRun(mode);
+    if (mode === 'practice') firstRide.start();
+    comedy.enabled = mode !== 'practice';
+    captions.replaceChildren();
     input.sample();
     track = (track + 1) % RUN_TRACKS.length;
     void audio.playMusic(RUN_TRACKS[track], { loop: false, fade: 0.8 });
     applySettings();
+    hud.update(game);
+    firstRideView.update(game);
+  };
+
+  const stepRun = (dt: number, f: InputFrame) => {
+    game.step(dt, f);
+    firstRide.step(dt, f);
   };
 
   game.onRunEnd = (score) => {
@@ -228,6 +255,7 @@ async function boot() {
   let runBails = 0;
   let controlsHintT = 0;
   game.events.on('run_start', () => {
+    hud.reset();
     runDrag = 0;
     runBails = 0;
     replay.clear();
@@ -264,7 +292,7 @@ async function boot() {
         audio.stopLoops();
         menus.show('pause');
       } else if (b === 'horn') audio.play('sfx/horn.mp3', { vol: 0.9 });
-      else if (b === 'back' && game.rider.state === 'detached' && replay.available) startReplay();
+      else if (b === 'back' && !firstRide.active && game.rider.state === 'detached' && replay.available) startReplay();
     }
   };
   // Losing focus mid-run pauses (never let the Ryker drive off while you're in another window).
@@ -286,10 +314,12 @@ async function boot() {
     audio.stopLoops();
     replay.play();
   };
-  game.events.on('rider_detached', () => hud.toast('INCIDENT RECORDED', 'Press BACKSPACE for the replay', 'info'));
+  game.events.on('rider_detached', () => {
+    if (!game.demo && !firstRide.active) hud.toast('INCIDENT RECORDED', 'Press BACKSPACE for the replay', 'info');
+  });
 
   // Dev-only console hooks (scripted testing); not exposed in production builds.
-  const hooks = { game, stage, phys, park, rig, ryker, cam, hud, menus, audio, comedy, replay, fx, attract, crowd, dev: null as unknown, THREE };
+  const hooks = { game, stage, phys, park, rig, ryker, cam, hud, menus, audio, comedy, replay, fx, attract, crowd, firstRide, dev: null as unknown, THREE };
   if (import.meta.env.DEV) (window as any).__game = hooks;
 
   // Title screen over an orbiting view of the park.
@@ -318,8 +348,10 @@ async function boot() {
     paused: false,
     /** Run n fixed steps with a scripted frame (or a function of step index). */
     sim(n: number, f: InputFrame | ((i: number) => InputFrame)) {
-      for (let i = 0; i < n; i++) game.step(SIM.dt, typeof f === 'function' ? f(i) : f);
+      for (let i = 0; i < n && !game.paused; i++) stepRun(SIM.dt, typeof f === 'function' ? f(i) : f);
       game.render(1 / 60, 1);
+      hud.update(game);
+      firstRideView.update(game);
       return dev.state();
     },
     state() {
@@ -352,10 +384,11 @@ async function boot() {
       acc += dt * scale;
       let steps = 0;
       while (acc >= SIM.dt && steps < SIM.maxCatchUp) {
-        game.step(SIM.dt, input.sample());
+        stepRun(SIM.dt, input.sample());
         replay.record();
         acc -= SIM.dt;
         steps++;
+        if (game.paused) { acc = 0; break; }
       }
       if (steps >= SIM.maxCatchUp) acc = 0;
       controlsHintT += dt;
@@ -390,6 +423,7 @@ async function boot() {
     stage.render();
     if (app === 'run' || app === 'paused') {
       hud.update(game);
+      firstRideView.update(game);
       sound.update(dt, app === 'run');
       comedy.update();
     } else if (app !== 'replay') sound.update(dt, attract.active);
