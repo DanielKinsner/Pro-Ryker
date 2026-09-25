@@ -636,6 +636,21 @@ export class Vehicle {
     this.onLanding?.(ev);
   }
 
+  /** Is the seated rider's torso/head collider touching static geometry (head meets concrete)? */
+  riderTouching() {
+    if (!this.riderCol.isEnabled()) return false;
+    const w = this.phys.world;
+    let hit = false;
+    w.contactPairsWith(this.riderCol, (other) => {
+      if (hit || other.parent()?.handle === this.body.handle) return;
+      if (!this.phys.tags.has(other.handle)) return; // statics only
+      w.contactPair(this.riderCol, other, (m) => {
+        if (m.numContacts() > 0) hit = true;
+      });
+    });
+    return hit;
+  }
+
   /** Is the chassis/nose/rider collider in actual contact with static geometry or props? */
   chassisTouching() {
     const w = this.phys.world;

@@ -41,6 +41,16 @@ export type Feature =
 
 export const rad = (d: number) => (d * Math.PI) / 180;
 
+/**
+ * Round the crease where a straight ramp meets the ground (real ramps have a curved toe).
+ * `h` is the un-clamped linear height; k is the half-width of the fillet in metres of height.
+ */
+function toe(h: number, k: number) {
+  if (h <= -k) return 0;
+  if (h >= k) return h;
+  return ((h + k) * (h + k)) / (4 * k);
+}
+
 /** Direction vector for a compass-ish angle: 0 = -Z (north), 90 = +X (east). */
 export function dirVec(deg: number): [number, number] {
   const a = rad(deg);
@@ -95,9 +105,9 @@ export function qpTopDistance(H: number, R: number) {
 }
 
 function bankProfile(u: number, H: number, angleDeg: number, deck: number, backDeg: number) {
-  if (u <= 0) return 0;
-  const run = H / Math.tan(rad(angleDeg));
-  if (u <= run) return u * Math.tan(rad(angleDeg));
+  const t = Math.tan(rad(angleDeg));
+  const run = H / t;
+  if (u <= run) return toe(u * t, 0.12);
   if (u <= run + deck) return H;
   const back = Math.tan(rad(Math.min(backDeg, 84)));
   return Math.max(0, H - (u - run - deck) * back);
@@ -148,7 +158,7 @@ export function featureHeight(f: Feature, x: number, z: number): number {
       const lz = px * s + pz * c;
       const t = Math.tan(rad(f.angleDeg));
       const h = Math.min(f.height, (f.hw - Math.abs(lx)) * t + f.height, (f.hd - Math.abs(lz)) * t + f.height);
-      return Math.max(0, h);
+      return toe(h, 0.12);
     }
     case 'mound': {
       const d = Math.hypot(x - f.x, z - f.z) / f.r;
