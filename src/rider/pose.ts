@@ -62,7 +62,7 @@ export function lerpParams(out: PoseParams, a: PoseParams, b: PoseParams, t: num
 
 // ---------------------------------------------------------------- library
 
-export type PoseName = 'seated' | 'superman' | 'nohander' | 'cancan' | 'seatstand' | 'selfie' | 'coffin' | 'crouch' | 'unsettled';
+export type PoseName = 'seated' | 'superman' | 'nohander' | 'cancan' | 'seatstand' | 'selfie' | 'coffin' | 'crouch' | 'unsettled' | 'hangL' | 'hangR';
 
 export function makePoses(rig: RiderRig): Record<PoseName, PoseParams> {
   const f = rig.fit;
@@ -82,6 +82,20 @@ export function makePoses(rig: RiderRig): Record<PoseName, PoseParams> {
     mod(p);
     return p;
   };
+  function hangSide(x: number) {
+    return P((p) => {
+      p.pelvis.set(0.86 * x, -0.32, 0.46);
+      p.pelvisRot.set(0.95, -0.25 * x, -0.55 * x);
+      p.spine.set(0.25, 0, -0.25 * x);
+      p.head.set(-0.45, 0.2 * x, 0);
+      p.foot.left.attach = 0;
+      p.foot.left.pos.set(0.62 * x + (x > 0 ? 0.1 : -0.1), 0.3, 1.62);
+      p.foot.left.pole.set(0.9 * x, 0.2, 0.6);
+      p.foot.right.attach = 0;
+      p.foot.right.pos.set(0.95 * x, 0.3, 1.48);
+      p.foot.right.pole.set(1.3 * x, 0.2, 0.6);
+    });
+  }
   return {
     seated,
     // Crouch before an ollie: compress down over the bars.
@@ -155,6 +169,10 @@ export function makePoses(rig: RiderRig): Record<PoseName, PoseParams> {
       p.spine.set(-0.6, 0, 0);
       p.head.set(0.3, 0, 0);
     }),
+    // Thrown off the side, still holding both grips: hips beside the rear wheel, torso stretched
+    // up to the bars, boots trailing on the concrete (the clip's drag). Entry pose before physics.
+    hangR: hangSide(1),
+    hangL: hangSide(-1),
     // Unsettled (scaled by strain in the controller): hips slid, a boot off the peg.
     unsettled: P((p) => {
       p.pelvis.set(0.16, 0.16, 0.1);

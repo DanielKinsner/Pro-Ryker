@@ -44,6 +44,8 @@ export class RiderRig {
   root: THREE.Object3D; // driver_root
   bones = new Map<string, THREE.Bone>();
   rest = new Map<string, { t: THREE.Vector3; r: THREE.Quaternion }>();
+  /** The model's original (standing) bind-pose local rotations — a "stretched out" reference. */
+  bind = new Map<string, THREE.Quaternion>();
   helmet: THREE.SkinnedMesh | null = null;
   meshes: THREE.SkinnedMesh[] = [];
   headScale = 1;
@@ -65,6 +67,7 @@ export class RiderRig {
         if (name === 'Biker_Helmet') this.helmet = m;
       }
     });
+    for (const [name, b] of this.bones) this.bind.set(name, b.quaternion.clone());
     // Seated rest pose from the measured Ryker fit.
     for (const [name, p] of Object.entries(fit.restPose)) {
       const b = this.bones.get(name);

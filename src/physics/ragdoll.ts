@@ -62,6 +62,13 @@ export class Ragdoll {
   parts = new Map<string, Part>();
   muscles: Muscle[] = [];
   grips: Partial<Record<Side, RAPIER.ImpulseJoint>> = {};
+  /** Grip anchors slide from where the hand actually is to the real grip (no snap-yank). */
+  private gripAnchors: Partial<Record<Side, { cur: THREE.Vector3; target: THREE.Vector3 }>> = {};
+  /**
+   * Soft tethers: a body pulled toward a point fixed in another body's frame (his core holding his
+   * body in the drag position beside the Ryker). Everything else stays fully physical.
+   */
+  tethers: { key: string; other: RAPIER.RigidBody; local: THREE.Vector3; k: number; c: number }[] = [];
   /** Global muscle tone: ~0.3 hanging on (trying), ~0.07 limp, ~0.02 knocked silly. */
   tone = 0.3;
   private order: Part[] = [];
@@ -122,7 +129,8 @@ export class Ragdoll {
             .setRotation(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), local.clone().normalize()));
         }
       }
-      cd.setMass(d.mass).setFriction(0.7).setRestitution(0.1).setCollisionGroups(COL.rider);
+      // Leather on concrete slides: low friction, min-combined so the ground's grip doesn't win.
+      cd.setMass(d.mass).setFriction(0.32).setFrictionCombineRule(RAPIER.CoefficientCombineRule.Min).setRestitution(0.1).setCollisionGroups(COL.rider);
       w.createCollider(cd, body);
       // Inherit the motion he actually had.
       const v = velAt(P0, new THREE.Vector3());
@@ -168,13 +176,20 @@ export class Ragdoll {
   grip(side: Side, other: RAPIER.RigidBody, otherLocal: THREE.Vector3) {
     this.release(side);
     const fa = this.parts.get(`forearm_${side}`)!;
-    const jd = RAPIER.JointData.spherical({ x: fa.tip.x, y: fa.tip.y, z: fa.tip.z }, { x: otherLocal.x, y: otherLocal.y, z: otherLocal.z });
+    // Start the anchor where the hand is now (in the other body's frame), then slide it to the grip.
+    const hand = this.tipWorld(`forearm_${side}`, new THREE.Vector3());
+    const t = other.translation();
+    const r = other.rotation();
+    const start = hand.sub(new THREE.Vector3(t.x, t.y, t.z)).applyQuaternion(new THREE.Quaternion(r.x, r.y, r.z, r.w).invert());
+    const jd = RAPIER.JointData.spherical({ x: fa.tip.x, y: fa.tip.y, z: fa.tip.z }, { x: start.x, y: start.y, z: start.z });
     const j = this.phys.world.createImpulseJoint(jd, fa.body, other, true);
     j.setContactsEnabled(false);
     this.grips[side] = j;
+    this.gripAnchors[side] = { cur: start.clone(), target: otherLocal.clone() };
   }
 
   release(side: Side) {
+    delete this.gripAnchors[side];
     const j = this.grips[side];
     if (j) {
       if (this.phys.world.getImpulseJoint(j.handle)) this.phys.world.removeImpulseJoint(j, true);
@@ -184,6 +199,26 @@ export class Ragdoll {
 
   gripCount() {
     return (this.grips.left ? 1 : 0) + (this.grips.right ? 1 : 0);
+  }
+
+  /**
+   * Point muscles at a reference pose given as bone *local* rotations (e.g. the standing bind pose).
+   * The target for parent-body → child-body is the product of local rotations along the bone chain.
+   */
+  targetPose(local: Map<string, THREE.Quaternion>, keys: string[], blend = 1) {
+    for (const m of this.muscles) {
+      if (!keys.includes(m.child.def.key)) continue;
+      const chain: THREE.Object3D[] = [];
+      let b: THREE.Object3D | null = m.child.boneObj;
+      while (b && b !== m.parent.boneObj) {
+        chain.unshift(b);
+        b = b.parent;
+      }
+      if (!b) continue;
+      const q = new THREE.Quaternion();
+      for (const bone of chain) q.multiply(local.get(bone.name) ?? bone.quaternion);
+      m.target.copy(m.rest).slerp(q, blend);
+    }
   }
 
   /** Set a muscle target as an offset from the activation pose (e.g. straighten the elbows to reach). */
@@ -197,6 +232,38 @@ export class Ragdoll {
   /** Apply muscle impulses. Call once per fixed step before world.step(). */
   step(dt: number) {
     if (!this.active) return;
+    for (const t of this.tethers) {
+      const part = this.parts.get(t.key);
+      if (!part) continue;
+      const ot = t.other.translation();
+      const orr = t.other.rotation();
+      const oq = _q.set(orr.x, orr.y, orr.z, orr.w);
+      const target = _v.copy(t.local).applyQuaternion(oq).add(_v2.set(ot.x, ot.y, ot.z));
+      const p = part.body.translation();
+      // Velocity of the target point on the other body
+      const ov = t.other.linvel();
+      const ow = t.other.angvel();
+      const rel = _w.set(target.x - ot.x, target.y - ot.y, target.z - ot.z);
+      const pv = new THREE.Vector3(ow.x, ow.y, ow.z).cross(rel).add(new THREE.Vector3(ov.x, ov.y, ov.z));
+      const bv = part.body.linvel();
+      const m = part.body.mass();
+      const fx = (target.x - p.x) * t.k - (bv.x - pv.x) * t.c;
+      const fy = (target.y - p.y) * t.k * 0.6 - (bv.y - pv.y) * t.c * 0.6; // gravity mostly wins vertically
+      const fz = (target.z - p.z) * t.k - (bv.z - pv.z) * t.c;
+      const imp = { x: fx * m * dt, y: fy * m * dt, z: fz * m * dt };
+      part.body.applyImpulse(imp, true);
+      // Equal and opposite on the Ryker (he IS dragging on it).
+      t.other.applyImpulseAtPoint({ x: -imp.x * 0.35, y: -imp.y * 0.35, z: -imp.z * 0.35 }, target, true);
+    }
+    for (const side of ['left', 'right'] as Side[]) {
+      const a = this.gripAnchors[side];
+      const j = this.grips[side];
+      if (!a || !j) continue;
+      if (a.cur.distanceToSquared(a.target) > 1e-6) {
+        a.cur.lerp(a.target, Math.min(1, dt * 9));
+        j.setAnchor2({ x: a.cur.x, y: a.cur.y, z: a.cur.z });
+      }
+    }
     for (const m of this.muscles) {
       const A = m.parent.body;
       const B = m.child.body;
@@ -213,11 +280,13 @@ export class Ragdoll {
       const wa = A.angvel();
       const wb = B.angvel();
       const wRel = _w.set(wb.x - wa.x, wb.y - wa.y, wb.z - wa.z);
-      // Desired relative angular velocity: toward the target, much harder past the cone limit.
+      // Desired relative angular velocity toward the target — rate-limited so a changed target is a
+      // pull, not a whip (an uncapped version whirled the limbs and yanked the Ryker via the grips).
       const over = Math.max(0, angle - m.cone);
-      const kp = 9 * this.tone * m.k + over * 40;
-      const want = _v2.copy(axis).multiplyScalar(angle > 1e-4 ? angle * kp : 0);
-      const gain = Math.min(0.9, 0.35 * this.tone * m.k + (over > 0 ? 0.6 : 0));
+      const kp = 9 * this.tone * m.k;
+      const rate = angle > 1e-4 ? Math.min(7, angle * kp) + Math.min(9, over * 22) : 0;
+      const want = _v2.copy(axis).multiplyScalar(rate);
+      const gain = Math.min(0.55, 0.35 * this.tone * m.k + (over > 0 ? 0.25 : 0));
       const dw = want.sub(wRel).multiplyScalar(gain);
       // Effective inertia ~ the lighter body's
       const I = Math.min(inertiaOf(A), inertiaOf(B));
@@ -274,6 +343,7 @@ export class Ragdoll {
 
   deactivate() {
     const w = this.phys.world;
+    this.tethers = [];
     this.release('left');
     this.release('right');
     for (const p of this.order) w.removeRigidBody(p.body);

@@ -55,7 +55,7 @@ export class ChaseCam {
     this.heading.lerp(desired, k).normalize();
 
     this.extra += (opts.wide - this.extra) * (1 - Math.exp(-dt * 2.5));
-    const dist = this.distance + this.extra + Math.min(2.5, vel.length() * 0.06);
+    const dist = this.distance + this.extra + Math.min(1.2, vel.length() * 0.04);
     const height = this.height + this.extra * 0.45;
     const want = target.clone().addScaledVector(this.heading, -dist);
     want.y = Math.max(want.y + height, target.y + 1.2);
@@ -65,7 +65,7 @@ export class ChaseCam {
     dir.normalize();
     const hit = this.phys.world.castRay(rayOf(target, dir), len, true, undefined, COL.ground);
     if (hit && hit.timeOfImpact < len) want.copy(target).addScaledVector(dir, Math.max(1.2, hit.timeOfImpact - 0.35));
-    this.pos.lerp(want, 1 - Math.exp(-dt * CAMERA.followLerp));
+    this.pos.lerp(want, 1 - Math.exp(-dt * (CAMERA.followLerp + Math.min(8, vel.length() * 0.3))));
     const lookWant = target.clone().addScaledVector(this.heading, CAMERA.lookAhead).add(new THREE.Vector3(0, 0.6, 0));
     this.look.lerp(lookWant, 1 - Math.exp(-dt * 10));
     this.shake = Math.max(0, this.shake - dt * 2.5);

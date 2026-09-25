@@ -233,6 +233,13 @@ export class Vehicle {
     this.nose.setCollisionGroups(on ? COL.vehicleEmpty : COL.vehicle);
   }
 
+  /** While he's hanging on, his torso/legs can lie on (and drag off) the chassis. */
+  setRiderCollision(on: boolean) {
+    const g = on || this.empty ? COL.vehicleEmpty : COL.vehicle;
+    this.chassis.setCollisionGroups(g);
+    this.nose.setCollisionGroups(g);
+  }
+
   readPose() {
     const t = this.body.translation();
     const r = this.body.rotation();
@@ -405,7 +412,9 @@ export class Vehicle {
     }
     if (brake > 0) {
       if (vAlong > 0.6) drive -= brake * VEHICLE.brakeForce;
-      else if (vAlong > -VEHICLE.reverseMax && throttle === 0) drive -= brake * VEHICLE.engineForce * 0.55; // reverse
+      // Reverse (not while he's hanging on — then the brake just brakes).
+      else if (vAlong > -VEHICLE.reverseMax && throttle === 0 && c.forcedThrottle === 0) drive -= brake * VEHICLE.engineForce * 0.55;
+      else if (vAlong > 0) drive -= brake * VEHICLE.brakeForce * Math.min(1, vAlong / 0.6);
     }
     // Rolling + air drag
     drive -= Math.sign(vAlong) * (VEHICLE.rollingDrag * m + VEHICLE.airDrag * m * vAlong * vAlong * 0.2);

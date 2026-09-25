@@ -97,7 +97,7 @@ export const CAMERA = {
   lookAhead: 2.2,
   fov: 62,
   followLerp: 7.5,
-  hangExtra: 1.6,
+  hangExtra: 0.9,
 };
 
 export const deg = (d: number) => (d * Math.PI) / 180;

@@ -88,7 +88,7 @@ export class RiderController {
   addStrain(amount: number, cause: string) {
     if (!this.attached || this.state === 'recovering') return;
     if (this.protectT > 0 && amount < 0.9) amount *= 0.3;
-    this.strain += amount;
+    this.strain = Math.min(1.5, this.strain + amount);
     if (this.strain >= RIDER.hangEnter) this.hang(cause);
   }
 
@@ -157,23 +157,39 @@ export class RiderController {
   private stepHanging(dt: number, input: { haulPressed: boolean; letGo: boolean; brake: number }) {
     const v = this.vehicle;
     this.hangTime += dt;
+    if (this.entryT > 0) {
+      this.entryT -= dt;
+      v.ctl.forcedThrottle = RIDER.deathGripThrottle;
+      v.ctl.steerAuthority = RIDER.hangSteer;
+      if (this.entryT <= 0) this.activateHang();
+      return;
+    }
     const speed = v.speed;
     this.dragMetres += speed * dt;
     // His weight is on the twist-grip: the Ryker accelerates unless you brake against it.
     this.deathGrip = RIDER.deathGripThrottle * (this.hands === 2 ? 1 : 0.55);
     v.ctl.forcedThrottle = this.deathGrip;
     v.ctl.steerAuthority = RIDER.hangSteer;
-    // Haul yourself back: mash. Harder the faster you're being dragged.
-    if (input.haulPressed) this.haul = Math.min(1, this.haul + RIDER.haulPerTap * (this.hands === 2 ? 1 : 0.7));
+    // Haul yourself back: mash. Harder the faster you're being dragged. (Decay first, then taps,
+    // so a full meter is actually reachable.)
     this.haul = Math.max(0, this.haul - (RIDER.haulDecayBase + RIDER.haulDecayPerMps * speed) * dt);
+    if (input.haulPressed) this.haul = Math.min(1, this.haul + RIDER.haulPerTap * (this.hands === 2 ? 1 : 0.7));
     // Grip drains with speed and impacts.
     const pv = this.ragdoll.pelvisVel(_v2);
     const impact = this.lastPelvisVel ? pv.distanceTo(this.lastPelvisVel) : 0;
     this.lastPelvisVel = (this.lastPelvisVel ?? new THREE.Vector3()).copy(pv);
-    const hit = impact > 2.8 ? RIDER.gripDrainImpact * Math.min(3, impact / 2.8) : 0;
+    // Only real slams cost grip (ragdoll jiggle doesn't), with a cooldown so one hit counts once.
+    this.impactCd = Math.max(0, this.impactCd - dt);
+    let hit = 0;
+    if (impact > 7 && this.impactCd <= 0) {
+      hit = RIDER.gripDrainImpact * Math.min(2.5, impact / 7);
+      this.impactCd = 0.3;
+    }
     this.grip -= (RIDER.gripDrainBase + RIDER.gripDrainPerMps * speed + (input.brake > 0.5 ? -0.03 : 0)) * dt + hit;
-    // Arms reach for the bars while hanging (muscles pull elbows straighter).
+    // Arms reach for the bars while hanging; a failing grip lets his body swing more.
     this.ragdoll.tone = 0.32;
+    const hold = (this.hands === 2 ? 1 : 0.55) * (0.45 + 0.55 * Math.max(0, this.grip)) * (v.grounded ? 1 : 0.5);
+    for (const t of this.ragdoll.tethers) t.k = (t.key === 'pelvis' ? 38 : 46) * hold;
     if (input.letGo) {
       this.detach('let go on purpose', 0);
       return;
@@ -203,30 +219,23 @@ export class RiderController {
   }
   private lastPelvisVel: THREE.Vector3 | null = null;
   private decelHist: THREE.Vector3[] = [];
+  private impactCd = 0;
+  lastBuckSide = 1;
+  private entryT = 0;
   private lastSlip: Side = 'right';
 
   hang(cause: string) {
     if (this.state === 'hanging' || this.state === 'detached') return;
     const v = this.vehicle;
-    // Pose → world, then hand it to physics. The rear suspension bucks his hips up and back
-    // off the seat; the death grip then drives the Ryker forward out from under him.
-    this.ryker.update(v, 1);
-    this.renderPose(0);
-    this.rig.root.updateMatrixWorld(true);
-    const com = v.com(new THREE.Vector3());
-    const w = v.angVel.clone();
-    const up = v.up.clone();
-    const back = v.fwd.clone().negate();
-    this.ragdoll.activate(
-      (p, out) => out.copy(v.vel).add(w.clone().cross(p.clone().sub(com))),
-      (key) => (key === 'pelvis' || key.startsWith('thigh') || key.startsWith('shin') ? up.clone().multiplyScalar(2.6).addScaledVector(back, 1.8) : null),
-    );
-    this.toWorldSpace();
-    const gripsLocal = this.gripPointsLocal();
-    this.ragdoll.grip('left', v.body, gripsLocal.left);
-    this.ragdoll.grip('right', v.body, gripsLocal.right);
-    this.ragdoll.tone = 0.32;
-    v.riderCol.setEnabled(false);
+    // Off the side he goes: whichever way the Ryker is rolling/sliding (default: his right).
+    const lat = v.vel.dot(v.right) * 0.15 + v.angVel.dot(v.fwd) * 0.4;
+    this.lastBuckSide = lat < -0.05 ? -1 : 1;
+    // Short procedural lead-in (the design kit's "near-hang" phase): swing off the seat to the side,
+    // then physics takes over from that pose, already clear of the bodywork.
+    this.entryT = 0.16;
+    this.grab.pose = this.lastBuckSide > 0 ? 'hangR' : 'hangL';
+    this.grab.target = 1;
+    this.grab.weight = Math.min(this.grab.weight, 0.2);
     this.hands = 2;
     this.grip = 1;
     this.haul = 0;
@@ -234,10 +243,49 @@ export class RiderController {
     this.dragMetres = 0;
     this.hangCause = cause;
     this.lastPelvisVel = null;
-    this.grab.target = 0;
-    this.grab.weight = 0;
+    v.ctl.forcedThrottle = RIDER.deathGripThrottle;
     this.setState('hanging');
     this.events.emit('hang_entered', { hands: 2, speed: v.speed, cause });
+  }
+
+  /** Hand the hanging rider to the ragdoll, from the (procedural) thrown-off-the-side pose. */
+  private activateHang() {
+    const v = this.vehicle;
+    this.ryker.update(v, 1);
+    this.grab.weight = 1;
+    this.renderPose(0);
+    this.rig.root.updateMatrixWorld(true);
+    const com = v.com(new THREE.Vector3());
+    const w = v.angVel.clone();
+    const side = v.right.clone().multiplyScalar(this.lastBuckSide);
+    const drift = v.up.clone().multiplyScalar(0.2).addScaledVector(v.fwd, -0.8).addScaledVector(side, 0.6);
+    this.ragdoll.activate(
+      (p, out) => out.copy(v.vel).add(w.clone().cross(p.clone().sub(com))),
+      (key) => (key === 'pelvis' || key.startsWith('thigh') || key.startsWith('shin') ? drift : null),
+    );
+    this.toWorldSpace();
+    const gripsLocal = this.gripPointsLocal();
+    this.ragdoll.grip('left', v.body, gripsLocal.left);
+    this.ragdoll.grip('right', v.body, gripsLocal.right);
+    this.ragdoll.tone = 0.32;
+    // Body stretched out and dragging (standing reference pose for spine/hips/knees), arms reaching.
+    this.ragdoll.targetPose(this.rig.bind, ['torso', 'chest', 'head', 'thigh_left', 'thigh_right', 'shin_left', 'shin_right'], 0.7);
+    // His core holds his body in the drag position beside/behind the rear wheel (soft tethers in the
+    // Ryker's frame); legs drag on the concrete, everything flops physically. Hips/legs start clear
+    // of the bodywork and can't pass under it; torso/arms reach over the side panel to the grips.
+    for (const [key, part] of this.ragdoll.parts) {
+      const g = key === 'pelvis' || key.startsWith('thigh') || key.startsWith('shin') ? COL.riderFree : COL.rider;
+      for (let i = 0; i < part.body.numColliders(); i++) part.body.collider(i).setCollisionGroups(g);
+    }
+    v.setRiderCollision(true);
+    const sx = this.lastBuckSide;
+    this.ragdoll.tethers = [
+      { key: 'pelvis', other: v.body, local: new THREE.Vector3(0.62 * sx, 0.24, 1.0), k: 38, c: 7 },
+      { key: 'chest', other: v.body, local: new THREE.Vector3(0.42 * sx, 0.58, 0.28), k: 46, c: 8 },
+    ];
+    v.riderCol.setEnabled(false);
+    this.grab.target = 0;
+    this.grab.weight = 0;
   }
 
   detach(cause: string, speed: number) {
@@ -254,6 +302,7 @@ export class RiderController {
     }
     this.ragdoll.release('left');
     this.ragdoll.release('right');
+    this.ragdoll.tethers = [];
     this.ragdoll.tone = 0.12;
     this.emptyThrottle = this.state === 'hanging' ? this.deathGrip : 0;
     v.ctl.forcedThrottle = this.emptyThrottle;
@@ -281,9 +330,12 @@ export class RiderController {
     for (const [name, b] of this.rig.bones) this.blendFrom.set(name, { q: b.quaternion.clone(), p: b.position.clone() });
     this.ragdoll.deactivate();
     v.riderCol.setEnabled(true);
+    v.setRiderCollision(false);
     v.ctl.forcedThrottle = 0;
     v.ctl.steerAuthority = 1;
     this.recoverT = 0;
+    this.decelHist = []; // speed history from before the hang is not a crash
+    this.strain = 0;
     this.setState('recovering');
     this.events.emit('rider_recovered', { fromOneHand: fromOne, dragMetres: this.dragMetres });
   }
@@ -308,6 +360,7 @@ export class RiderController {
     this.leanVel.set(0, 0, 0);
     this.prevVel.copy(this.vehicle.vel);
     this.decelHist = []; // a respawn's instant stop is not a crash
+    this.entryT = 0;
     this.lastPelvisVel = null;
     this.clearHelmet();
     this.setState('seated');
@@ -406,7 +459,7 @@ export class RiderController {
 
   /** Pose the skeleton for this frame. */
   renderPose(dt: number) {
-    if (this.ragdoll.active && (this.state === 'hanging' || this.state === 'detached')) {
+    if (this.ragdoll.active && ((this.state === 'hanging' && this.entryT <= 0) || this.state === 'detached')) {
       this.ragdoll.sync();
       this.phone.visible = false;
       return;
@@ -430,7 +483,8 @@ export class RiderController {
       this.bob += this.bobVel * dt;
       // Grab + crouch + unsettled blend
       const g = this.grab;
-      g.weight += Math.sign(g.target - g.weight) * Math.min(Math.abs(g.target - g.weight), dt / 0.14);
+      const rate = g.pose === 'hangL' || g.pose === 'hangR' ? 0.12 : 0.14;
+      g.weight += Math.sign(g.target - g.weight) * Math.min(Math.abs(g.target - g.weight), dt / rate);
     }
     const p = this.cur;
     lerpParams(p, this.poses.seated, this.poses.seated, 0);
