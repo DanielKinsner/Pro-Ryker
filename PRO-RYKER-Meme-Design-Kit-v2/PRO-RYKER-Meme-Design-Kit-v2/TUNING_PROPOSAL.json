@@ -1,0 +1,89 @@
+{
+  "version": 2,
+  "status": "UNTUNED DESIGN HYPOTHESES. Not measured vehicle specifications or an implemented configuration.",
+  "units": {
+    "length": "metres",
+    "time": "seconds",
+    "speed": "metres_per_second",
+    "angle": "radians except fields explicitly ending _degrees"
+  },
+  "simulation": {
+    "fixed_step_seconds": 0.016666666666666666,
+    "max_catchup_steps": 5,
+    "default_gravity_y": -9.81,
+    "pause_on_focus_loss": true
+  },
+  "drive": {
+    "forward_speed_cap_mps": 22,
+    "reverse_speed_cap_mps": 4,
+    "acceleration_target_mps2": 10,
+    "braking_target_mps2": 16,
+    "speed_alone_can_eject": false
+  },
+  "launch": {
+    "flat_pop_delta_v_mps": 3.8,
+    "bank_assist_delta_v_mps": 4.8,
+    "boost_requires_valid_ramp_contact": true,
+    "unexplained_midair_translation_boost": false
+  },
+  "air": {
+    "single_roll_duration_seconds": 0.95,
+    "partial_landing_assist_angle_degrees": 18,
+    "planned_inversion_causes_auto_bail": false
+  },
+  "rider": {
+    "strain_units": "normalized gameplay score; weights must be calibrated",
+    "unsettled_enter": 0.35,
+    "unsettled_exit": 0.2,
+    "hang_enter": 0.72,
+    "strain_release": 0.96,
+    "state_entry_dwell_seconds": 0.12,
+    "recovery_dwell_seconds": 0.25,
+    "recovery_blend_seconds": 0.35,
+    "allow_direct_severe_impact_release": true,
+    "grip_failure_randomness": false,
+    "high_speed_straight_is_stable": true,
+    "mandatory_max_hang_duration_seconds": null,
+    "detail": "Do not force detachment solely because a hanging animation timer expired; use actual grip/recovery state."
+  },
+  "session": {
+    "run_duration_seconds": 120,
+    "max_combo_finish_grace_seconds": 6,
+    "grounded_bank_delay_seconds": 0.65,
+    "multiplier_cap": 12,
+    "minimum_scoring_travel_mps": 1.5,
+    "lost_unbanked_combo_on_full_detach": true,
+    "empty_bike_tricks_score": false,
+    "recovery_reward_once_per_episode": true
+  },
+  "camera": {
+    "world_horizon_stable": true,
+    "shake_default_strength": 0.25,
+    "shake_can_be_disabled": true
+  },
+  "replay": {
+    "history_seconds": 10,
+    "pose_samples_per_second": 30,
+    "replay_is_transform_playback": true,
+    "mp4_export_implemented": false
+  },
+  "chaos": {
+    "enabled_by_default": false,
+    "records_separate": true,
+    "panic_throttle_optional": true,
+    "panic_throttle_duration_cap_seconds": 0.6,
+    "brake_overrides_panic_throttle": true,
+    "detachment_launch_boost_default_mps": 0
+  },
+  "reset": {
+    "immediate_input_available": true,
+    "target_gameplay_resume_seconds": 0.5,
+    "restores_grips_score_events_audio": true
+  },
+  "notes": [
+    "These values must be stress-tested; no frame-rate or stability claim is made.",
+    "Thresholds operate on measured strain, not raw speed or world-up orientation.",
+    "Main score mode never secretly sticks the throttle.",
+    "Duration and camera targets may change after measured playtests without changing the attached-rider premise."
+  ]
+}

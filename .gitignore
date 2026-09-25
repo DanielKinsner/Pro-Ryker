@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.vercel/
+*.log
+.env
+.env.*
+!.env.example
+# Licensed / purchased models: never commit (npm run import-models)
+public/assets/models/*.glb
+public/assets/models/provenance.json
+# Original ViralHog clip: local-only unlock, never commit or deploy
+public/media/
+# Duplicate of the extracted design kit folder
+PRO-RYKER-Meme-Design-Kit-v2.zip

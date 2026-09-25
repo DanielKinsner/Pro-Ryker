@@ -1,0 +1,904 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PRO RYKER — Design Kit v2</title><style>
+:root{--ink:#20242b;--muted:#69717b;--paper:#f4f3ef;--card:#fff;--red:#c91820;--edge:#e4e3df;--accent:#00798b}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.7}a{color:var(--accent);overflow-wrap:anywhere}header{background:#15181d;color:#fff;padding:58px max(28px,calc((100vw - 1260px)/2)) 52px;border-top:8px solid var(--red)}.eyebrow{font-size:12px;letter-spacing:.16em;font-weight:750;color:#b7bec7;text-transform:uppercase}.hero-title{font-size:clamp(40px,7.3vw,88px);font-weight:900;line-height:.95;letter-spacing:-.055em;margin:23px 0 14px}.hero-title span{color:#ff4650}.tagline{font-size:clamp(19px,2.5vw,29px);font-weight:800;letter-spacing:-.03em;margin:0 0 24px}.hero-copy{max-width:820px;color:#ccd0d6;font-size:18px}.facts{display:flex;flex-wrap:wrap;gap:10px;margin:27px 0 0}.facts span{font-size:12px;border:1px solid #424851;padding:6px 11px;border-radius:4px;color:#e6e9ee}.layout{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:225px minmax(0,1fr);gap:36px;padding:34px 28px 80px}aside{position:sticky;top:22px;align-self:start;padding:16px 0}aside strong{font-size:12px;letter-spacing:.13em;display:block;margin:0 0 16px;color:var(--muted)}aside a{display:block;color:#515a65;text-decoration:none;font-size:14px;padding:9px 14px;border-left:2px solid transparent}aside a:hover{border-color:var(--red);color:var(--red);background:#eae9e5}.aside-note{padding:18px 14px;font-size:12px;color:var(--muted)}main{min-width:0}.notice{background:#fff5df;border-left:4px solid #b97710;padding:20px 24px;margin:0 0 28px;font-size:14px}.notice strong{display:block;margin-bottom:5px}.chapter{background:var(--card);padding:40px 45px;margin-bottom:28px;border:1px solid var(--edge);border-radius:5px}.chapter-label{font-size:11px;font-weight:850;letter-spacing:.17em;color:var(--red);text-transform:uppercase;margin-bottom:19px}h1{font-size:34px;letter-spacing:-.04em;line-height:1.2;margin:0 0 20px}h2{font-size:25px;letter-spacing:-.028em;line-height:1.25;margin:44px 0 18px;padding-top:16px;border-top:1px solid var(--edge)}h3{font-size:19px;line-height:1.3;margin:31px 0 13px}p{margin:14px 0}strong{font-weight:760}blockquote{border-left:3px solid var(--red);margin:22px 0;padding:1px 20px;background:#f8f8f6;font-size:18px;font-weight:560}ul,ol{padding-left:24px}li{margin:7px 0}.table-wrap{overflow-x:auto;margin:23px 0}table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.5}th{text-align:left;background:#20242b;color:white;padding:13px 14px;vertical-align:top}td{padding:13px 14px;vertical-align:top;border-bottom:1px solid var(--edge)}tr:nth-child(even) td{background:#f8f8f5}code{font-family:ui-monospace,"SFMono-Regular",Consolas,monospace;font-size:.87em;background:#f0f2f3;padding:2px 5px;border-radius:3px;overflow-wrap:anywhere}pre{white-space:pre-wrap;padding:18px;background:#f0f2f3;font-size:13px}pre code{padding:0}.joke-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.joke{background:#f6f6f3;border-left:3px solid var(--red);padding:19px}.joke small{font-size:10px;letter-spacing:.09em;color:var(--muted)}.joke p{font-size:18px;font-weight:650;line-height:1.4;margin:10px 0 0}.end{color:var(--muted);font-size:13px;padding:5px 10px}
+@media(max-width:900px){.layout{grid-template-columns:1fr;gap:12px;padding:18px}aside{position:static;display:flex;flex-wrap:wrap;gap:4px;padding:0 0 12px}aside strong,.aside-note{display:none}aside a{padding:5px 10px;border-left:0;font-size:12px;background:#e9e8e4;border-radius:3px}.chapter{padding:26px 22px}header{padding:36px 24px}.joke-grid{grid-template-columns:1fr}h1{font-size:29px}h2{font-size:23px}}
+@media print{body{background:white;font-size:10pt}header{background:white!important;color:black;padding:20px 0}.hero-title span,.eyebrow,.hero-copy{color:black}.layout{display:block;padding:0}aside,.facts{display:none}.chapter{border:0;padding:0;margin:25px 0;break-before:page}.notice{break-inside:avoid}h1,h2,h3{break-after:avoid}table,blockquote,.joke{break-inside:avoid}a{color:inherit}.hero-title{font-size:46pt}.hero-copy{font-size:12pt}.tagline{font-size:20pt}}
+</style></head><body><header><div class="eyebrow">SlingMods Arcade · Design packet v2 · September 25, 2026</div><div class="hero-title">PRO <span>RYKER</span></div><p class="tagline">HOLD ON. IT GETS WORSE.</p><p class="hero-copy">Drive it like a Ryker. Trick it like a skateboard. Keep the rider attached for as long as your decisions permit.</p><div class="facts"><span>ACTUAL RYKER + PURCHASED BIKER</span><span>SHARED FLIPS</span><span>RECOVERABLE HANGING-ON</span><span>JOINTED RAGDOLL BAILS</span></div></header><div class="layout"><aside><strong>DIRECTOR PACKET</strong><a href="#overview">The game</a><a href="#comedy">Comedy sampler</a><a href="#reference">Reference &amp; evidence</a><a href="#physics">Rider &amp; physics</a><a href="#assets">Existing assets</a><a href="#build">Build &amp; acceptance</a><a href="#kickoff">Developer kickoff</a><a href="#sources">Sources</a><div class="aside-note">A design and agent handoff. No built game, model binaries, or source-video footage included.</div></aside><main><div class="notice"><strong>Reference status: the exact Short has not been viewed.</strong>The corrected attached-rider design follows Dan’s instructions. Related incident coverage was retrieved, but clip-specific choreography, timecodes, audio, and edits remain unverified. This packet does not claim otherwise.</div><section class="chapter" id="overview"><div class="chapter-label">The game</div><h1 id="overview-heading-0">SLINGMODS: PRO RYKER</h1>
+<h2 id="overview-heading-1">HOLD ON. IT GETS WORSE.</h2>
+<p><strong>Design proposal · Version 2 · September 25, 2026</strong></p>
+<p>The numbers, missions, names, choreography, and jokes below are original proposals for playtesting. They do not describe a completed game or claim frame-by-frame fidelity to the linked video. Reference status is recorded separately in <code>02_REFERENCE_AND_EVIDENCE.md</code>.</p>
+<h2 id="overview-heading-2">1. What we are making</h2>
+<p>A detailed, believable Can-Am Ryker enters an outdoor skatepark. A detailed, believable adult biker is driving it. Nothing about either of them suggests that the next sensible action is a kickflip.</p>
+<p>The player does one anyway.</p>
+<p><strong>The entire rider-and-Ryker assembly rotates together.</strong> His hands remain on the handlebars, his hips mostly stay with the seat, and his body flexes with the motion. He lands, chassis-grinds a rail, gets the rear wheel up into a nose manual, wobbles, nearly loses the seat, and either wrestles himself back into place or leaves the vehicle at a deeply inconvenient angle.</p>
+<p>That is the game: a surprisingly good arcade trick system inside an increasingly stupid physical predicament.</p>
+<p>It should feel as though the player is trying to turn a viral skatepark disaster into the successful stunt the rider probably imagined—not watching a predetermined disaster on every attempt. That interpretation is our creative direction, not a factual claim about the real rider's intent.</p>
+<p><strong>The one-sentence pitch:</strong> a Tony-Hawk-style combo playground where a Ryker is wildly overqualified to accelerate and wildly underqualified to be a skateboard.</p>
+<h3 id="overview-heading-3">Four things that must survive every implementation decision</h3>
+<ol>
+<li>You are actually driving a recognizable Ryker, using Dan's existing model and purchased biker.</li>
+<li>Rider and vehicle can perform absurd flips together; successful tricks do not require a separated rider catching the bike.</li>
+<li>Losing control has a visible middle: slipping, hanging on, recovering, then sometimes a full ragdoll separation.</li>
+<li>The game is fun to play well, and funny to play badly. Neither outcome makes the player wait through a long reset.</li>
+</ol>
+<h3 id="overview-heading-4">What this is not</h3>
+<p>Not a real-world motorcycle simulator. Not a literal recreation of an identifiable person's accident. Not a motorcycle wearing a skateboard as a cosmetic. Not a fixed sequence of crash animations. Not a game about injuring spectators. Not a reskin of Three-Wheel Tour's racing modes. Not SEND IT's parcel-delivery loop.</p>
+<p>The municipal-sign humor is a garnish. <strong>The actual protagonist of the comedy is a man trying to keep driving while his body has other plans.</strong></p>
+<h2 id="overview-heading-5">2. The first playable minute</h2>
+<p>Start at the lip of a modest concrete bank. The Ryker is already running. The rider adjusts his gloves; someone in the background has a phone out. There is no mandatory cinematic and no long trip from a garage.</p>
+<p>A concise overlay teaches throttle and brake. Three seconds of driving demonstrate that steering is responsive and the bike has convincing weight. A small bank invites a pop. Holding the trick modifier and steering rolls the whole bike and rider around once. All three tires return to concrete with a hefty suspension compression.</p>
+<p>The first line of text is not a lore introduction:</p>
+<p><strong>KICKFLIP. APPARENTLY.</strong></p>
+<p>On the next transition, overcooking the landing makes his boots slip. His hips lift from the seat. His arms extend as the bike carries on beneath him. The warning reads <strong>HANG ON</strong>, paired with a directional balance cue.</p>
+<p>Ease off, counterbalance, hold Brace: he pulls himself back into place and continues. <strong>MEANT THAT.</strong></p>
+<p>Ignore the warning or hit the next lip sideways: his last grip lets go. Now the character is a jointed ragdoll with the momentum he actually had. The Ryker continues separately. You may watch it unfold or reset immediately.</p>
+<p>A spectator, after the loudest noise has ended:</p>
+<blockquote>
+<p>"Bike's still having a good time."</p>
+</blockquote>
+<p>Every element in that minute teaches the final game. There is no tutorial-only mechanic that disappears afterward.</p>
+<h2 id="overview-heading-6">3. Driving should feel powerful, not cumbersome</h2>
+<p>Use familiar vehicle controls and immediate arcade responsiveness. The Ryker accelerates briskly, brakes decisively, reverses reliably, carves wide bowl transitions, and can break traction into a controllable powerslide.</p>
+<p>Low-speed maneuvering should be easy enough to line up a rail without a three-point-turn simulator. At high speed, the useful turning radius widens, but the game never silently disables steering. A drift input trades grip for yaw, letting practiced players aim through tighter lines. Releasing it lets the tires recover progressively rather than snapping the vehicle sideways.</p>
+<p>The vehicle should sound and move as though it has mass: suspension dips under braking, the front pair bob independently over small seams, and the rear tire scrubs through a powerslide. These details sell the absurdity of the launch; they must not make traversing the park exhausting.</p>
+<h3 id="overview-heading-7">Speed is a risk amplifier, not an eject button</h3>
+<p>A clean high-speed straight is stable. A clean, planned flip can remain stable even while upside down. Risk comes from what the player does with that speed: abrupt sideways landings, entering an uneven lip diagonally, overcorrecting a manual, or demanding an impossible turn while already slipping.</p>
+<p>Do not write <code>if speed &gt; threshold: eject rider</code>. That gives the player arbitrary punishment instead of a physical joke they understand.</p>
+<p>Braking and reducing throttle are genuine recovery tools. A player who recognizes the problem should have a meaningful chance to save it.</p>
+<h2 id="overview-heading-8">4. Controls: simple enough to learn, deep enough to combine</h2>
+<p>The initial design targets keyboard and controller. Touch can follow once the central mechanic is good; do not advertise mobile support merely because the canvas fits a phone screen.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Keyboard proposal</th>
+<th>Controller proposal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Accelerate</td>
+<td>W</td>
+<td>Right trigger</td>
+</tr>
+<tr>
+<td>Brake / reverse after stopping</td>
+<td>S</td>
+<td>Left trigger</td>
+</tr>
+<tr>
+<td>Steer / balance</td>
+<td>A / D</td>
+<td>Left stick horizontal</td>
+</tr>
+<tr>
+<td>Pop from a ramp or small flat-ground hop</td>
+<td>Space</td>
+<td>South face button</td>
+</tr>
+<tr>
+<td>Air-trick modifier</td>
+<td>Hold J + direction</td>
+<td>Hold west face button + left stick</td>
+</tr>
+<tr>
+<td>Air spin modifier</td>
+<td>Hold K + A / D</td>
+<td>Hold east face button + left/right</td>
+</tr>
+<tr>
+<td>Grind / manual modifier</td>
+<td>Hold E + context/direction</td>
+<td>North face button + context/direction</td>
+</tr>
+<tr>
+<td>Drift on the ground</td>
+<td>Left Shift</td>
+<td>Right bumper</td>
+</tr>
+<tr>
+<td>Brace / attempt recovery</td>
+<td>Left Ctrl</td>
+<td>Left bumper</td>
+</tr>
+<tr>
+<td>Deliberately let go, outside primary competition</td>
+<td>Hold X</td>
+<td>Hold both bumpers in Free Skate only</td>
+</tr>
+<tr>
+<td>Restart at last safe spawn</td>
+<td>R</td>
+<td>View/back button; remappable</td>
+</tr>
+<tr>
+<td>Pause / controls</td>
+<td>Esc</td>
+<td>Menu</td>
+</tr>
+<tr>
+<td>Open last replay when safely stopped</td>
+<td>Tab</td>
+<td>A pause-menu action</td>
+</tr>
+</tbody>
+</table></div>
+<p>These are proposed mappings, not sacred key choices. Remap conflicts after real simultaneous-key and gamepad testing. Display the active device's glyphs. Never steal common browser shortcuts. Game input owns keys only while the game has focus.</p>
+<h3 id="overview-heading-9">Trick input behavior</h3>
+<p>Airborne J + left/right requests a roll; J + forward/back requests a front/back rotation. K + left/right requests a yaw spin. The modifiers explicitly prevent accidental braking or acceleration commands from being interpreted as tricks. Direction becomes lean/air control when appropriate, not an unrelated world-axis movement.</p>
+<p>A short buffered press can request one rotation. Holding or re-inputting requests more, within the available airtime. The screen shows the committed trick and whether another rotation would be an overcommit. Skilled players can override a conservative warning; the system should not force them into the beginner route forever.</p>
+<p>Brace is not an invulnerability button. It reduces decorative looseness and helps the rider recenter while limiting trick acceleration and increasing control damping. Holding it throughout a run makes you safer but less spectacular. You must still aim the landing.</p>
+<p>Grinding uses a contextual capture window around authored rails/coping. Manual entry has an intentional directional gesture on the ground. The same button must not randomly choose between a grind and a manual when both are possible: show which candidate is selected and use explicit priority rules.</p>
+<h2 id="overview-heading-10">5. The trick vocabulary</h2>
+<p>The labels borrow the readability and combo rhythm of skate games. The physics are an unapologetic Ryker parody, not a claim that a seated roll is a technically authentic skateboard kickflip.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trick</th>
+<th>Motion</th>
+<th>What makes it funny</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ryker ollie</td>
+<td>Suspension compresses, then the whole vehicle pops</td>
+<td>An implausibly tiny preparation launches a substantial machine</td>
+</tr>
+<tr>
+<td>Kickflip / heelflip</td>
+<td>Bike and attached rider roll together</td>
+<td>He continues gripping the bars as though this were routine steering</td>
+</tr>
+<tr>
+<td>Shove-it 180 / 360</td>
+<td>Whole assembly yaws in the air</td>
+<td>He is still seated and driving; no floating-rider catch state</td>
+</tr>
+<tr>
+<td>Varial</td>
+<td>Coordinated roll plus yaw</td>
+<td>The rider's attempt at composure lags behind the vehicle</td>
+</tr>
+<tr>
+<td>Backflip / frontflip</td>
+<td>Full assembly rotates end over end</td>
+<td>Boots momentarily lighten; hands stay committed</td>
+</tr>
+<tr>
+<td>Chassis boardslide</td>
+<td>Vehicle turns sideways across a rail</td>
+<td>Sparks, a deep scrape, and a determined seated man</td>
+</tr>
+<tr>
+<td>Straight chassis grind</td>
+<td>Vehicle travels along a rail aligned with its path</td>
+<td>The entire road vehicle occupies a space meant for a board</td>
+</tr>
+<tr>
+<td>Rear-wheel manual</td>
+<td>Front pair lifted, one rear tire supports the bike</td>
+<td>Tiny body corrections are trying to govern a large front end</td>
+</tr>
+<tr>
+<td>Nose manual</td>
+<td>Rear wheel lifted, front pair supporting</td>
+<td>The rider approaches the dashboard with mounting concern</td>
+</tr>
+<tr>
+<td>Side-wheel balance</td>
+<td>Rear plus one front wheel; other front lifted</td>
+<td>His inside knee decides it wants to participate</td>
+</tr>
+<tr>
+<td>Revert / powerslide link</td>
+<td>Quick ground yaw after landing</td>
+<td>A reasonable-looking riding move rescues an unreasonable trick</td>
+</tr>
+<tr>
+<td>Wall tap / wall ride</td>
+<td>Brief assisted contact on selected banked surfaces</td>
+<td>It looks like confident improvisation, until it doesn't</td>
+</tr>
+</tbody>
+</table></div>
+<p>Real rotation and sustained contact must support every scoring label. No point award merely because the player pressed the right button. No phantom grind a metre away from the rail.</p>
+<h3 id="overview-heading-11">Three special moves for the first polished release</h3>
+<p><strong>THE MID-LIFE VARIAL</strong><br/>
+A fast combined yaw-and-roll with the rider still aboard. His torso leans late and his boots briefly float, then he regains the exact same driving pose. A clean landing earns one tiny jacket adjustment, not a victory dance.</p>
+<p><strong>THE UNLICENSED SUPERMAN</strong><br/>
+A deliberately extended airborne pose: hips lift, legs trail, both hands retain the bars. This is an authored show-off pose while control is intact. It must look and behave differently from an involuntary hanging-on state. Player release returns toward the seat; a bad impact can still convert it into a real bail.</p>
+<p><strong>THE THREE-POINT TURN</strong><br/>
+A yaw-heavy aerial trick into a short nose balance and ride-out. The name is pedestrian; the thing on screen is absolutely not. Do not make it a canned multi-stage teleport. Each phase has physical space and a failure condition.</p>
+<p>Later moves may be added once these read well. Do not build thirty nearly identical rotations with increasingly long names before one landing feels good.</p>
+<h2 id="overview-heading-12">6. The feature that makes this game ours: HANG ON</h2>
+<p>The rider is not welded to the seat, but he is not a helpless sack from the moment the game starts. His connection has states:</p>
+<p><strong>Seated → unsettled → hanging on → recovered, or fully detached.</strong></p>
+<h3 id="overview-heading-13">Seated</h3>
+<p>Hips near the seat, feet near the pegs, hands on grips. Head, spine, elbows, and knees have controlled secondary motion. Successful stunt rotation carries him with the bike. He remains recognizable, not a flailing starfish during every ordinary turn.</p>
+<h3 id="overview-heading-14">Unsettled</h3>
+<p>One boot loses a peg. Hips slide sideways. Shoulders twist under braking. The rider is still mostly driving, and the player still has strong control. Show a brief directional lean warning, a glove creak, or a foot slap against the bike. Do not shout about every minor wobble.</p>
+<h3 id="overview-heading-15">Hanging on</h3>
+<p>The seat connection is lost, but one or both hands still hold. This is where the meme energy lives: the vehicle keeps moving while the rider becomes an increasingly bad passenger on his own decisions.</p>
+<p>His hips can trail. His legs can kick. One hand may slip before the other. His body should respond to the actual direction of travel; it must not always fall into the same preauthored Superman pose.</p>
+<p>Throttle eases when the player lets go. For the main score mode, there is no invisible stuck accelerator. A separate opt-in chaos modifier may exaggerate the panic-acceleration feedback as a fictional arcade rule with a visible cue and a hard duration cap.</p>
+<p>The rider can recover when relative motion, grip strain, and vehicle alignment become manageable. Brake, counterbalance, and Brace help. He cannot teleport through the chassis or haul himself from three metres away.</p>
+<h3 id="overview-heading-16">Fully detached</h3>
+<p>All rider-to-vehicle grips release. The person and bike become separate physical outcomes. Steering inputs no longer control the empty vehicle, and the detached rider cannot score normal tricks or instantly remount in midair.</p>
+<p>The player can watch the bail. The game never requires it. Reset is available immediately, with no long fade, hospital, tow truck, or repair bill.</p>
+<h3 id="overview-heading-17">A real recovery must feel better than a free pass</h3>
+<p>One front wheel comes down first. The rider's right boot slips. He leans too far, catches himself by the bars, scrapes a boot along the surface, and hauls himself back aboard just before the next bank.</p>
+<p><strong>STILL COUNTS.</strong></p>
+<p>That moment should often be more satisfying than the preceding flip. Reward a genuine save modestly, once per instability episode, and do not let players farm it by wobbling in place.</p>
+<h2 id="overview-heading-18">7. Modes, scoring, and progression</h2>
+<h3 id="overview-heading-19">Park Session</h3>
+<p>A two-minute run on one connected map. You choose lines, bank combos, and beat local records. At time expiry, allow the current combo a short, capped finish window; no endless overtime manual.</p>
+<p>A provisional combo is the sum of valid trick/gap values multiplied by a capped variety multiplier. Grind/manual points accrue through meaningful travel, not elapsed time while stationary. Duplicate tricks depreciate inside the combo. A trick only counts after its actual motion is complete and its required landing/contact has been satisfied.</p>
+<p>Normal grounded travel without a link move banks the combo after a short interval. A full rider detachment loses unbanked score. Previously banked score is never stolen for a joke.</p>
+<p>A sketchy but recoverable landing may retain the combo with reduced trick quality. A severe crash cannot be relabeled a sketchy success because the bike eventually bounced upright without its rider.</p>
+<h3 id="overview-heading-20">Free Skate</h3>
+<p>No timer. Immediate retry. Choose a safe spawn. Practice a rail, learn how far a jump carries, deliberately test the ragdoll, or find the stupidest way to reach a roof.</p>
+<p>A local chaos panel can alter gravity, grip resilience, or launch generosity. Records obtained with modifiers are separate from default-mode records. No hidden stat changes between attempts.</p>
+<h3 id="overview-heading-21">Save It</h3>
+<p>Short challenge setups built around recoverable mistakes. You begin just before a known awkward entry and have to ride away. The same mechanics operate in normal play; these are teaching challenges, not scripted quick-time events.</p>
+<p>Examples: a sideways wheel touch, an overenthusiastic bank entry, a slipping manual, or one foot off after a rail exit. Use repeatable seeds and actual physics. Give immediate retry at the setup point.</p>
+<h3 id="overview-heading-22">Incident Report</h3>
+<p>An optional Free Skate side activity and replay caption system, not the main score economy. Awards commemorate funny outcomes such as the empty Ryker stopping upright in a parking bay. No global leaderboard for injury, no requirement to hit people, and no fake monetary repair accounting.</p>
+<h3 id="overview-heading-23">Progression</h3>
+<p>Unlock paint treatments, harmless helmet stickers, replay treatments, park signs, and trick challenges through landed lines and discovery. Do not sell grip strength or grind controls. Do not force twenty low-level runs before the Ryker can do the thing the game advertises.</p>
+<p>No shop page is needed to make the first release good. A restrained SlingMods sponsor presence and one optional arcade/footer link are enough. Any later real product integration must distinguish fantasy stunt modifiers from real product claims.</p>
+<h2 id="overview-heading-24">8. The park: MUNICIPAL LIABILITY</h2>
+<p>A fictional outdoor concrete park inspired by the kind of setting in the reported meme, not a verified reconstruction of a real location. Bright, slightly warm afternoon light, clear shadows, concrete with use and texture, metal rails, benches, a chain-link boundary, low urban context, and several spectators who stay off active stunt lines.</p>
+<p>Do not lead with a tropical resort, a neon cybercity, or a comedy theme park. The absurd vehicle works best against somewhere recognizable and ordinary. Premium lighting and materials should make ordinary concrete attractive without changing the identity.</p>
+<p>Proposed initial footprint: roughly 110 × 85 metres, scaled from measured gameplay needs rather than treated as survey data. Six connected zones share sightlines and return paths.</p>
+<h3 id="overview-heading-25">A. The Drop-In — signature reference-inspired line</h3>
+<p>An upper apron leads past a short stair section beside a rollable bank. Below is a trough/runout, then an opposing bank, then a second bowl edge. Provide a safe bypass and generous recovery space.</p>
+<p>The topology is the design focus: <strong>commit downhill → gain momentum → meet the next transition while trying to remain aboard</strong>. Exact ramps and distances in the Short remain unverified.</p>
+<p>A skilled player can use the same terrain to pop, rotate, land, and link to a rail. A careless player creates the messy hanging-on sequence. Both emerge from the layout; neither is a mandatory cinematic.</p>
+<h3 id="overview-heading-26">B. Confidence Plaza — learn and warm up</h3>
+<p>Low banks, wide ledges, a forgiving long rail, flat landing space, and a conspicuous no-motorized-vehicles sign. Spawn close enough that the first trick is seconds away.</p>
+<p>Spectators stand on a raised, protected apron with useful sightlines. They animate reactions and film, rather than wandering directly into the player's brakes.</p>
+<h3 id="overview-heading-27">C. The Commitment Bowl — flow</h3>
+<p>A readable open bowl with linked hips and coping, larger than the beginner features but not an opaque concrete maze. Multiple exits let a manual carry toward the plaza or the street section.</p>
+<p>Transitions must be smoothly collidable. The camera needs to see the next wall and landing. Decorative seams are not collision traps.</p>
+<h3 id="overview-heading-28">D. The Bad Idea Department — street lines</h3>
+<p>Stairs, offset rails, ledges, a low wall, and a drainage gap. The Ryker can chassis-slide, grind straight, leave with a shove-it, and bank through a powerslide.</p>
+<p>Avoid narrow corridors sized for a skateboard rather than the actual vehicle. A difficult route is deliberate alignment and balance, not snagging mirrors on invisible walls.</p>
+<h3 id="overview-heading-29">E. The Overcommit — big air</h3>
+<p>A clear approach, large curved launch, generous landing, and optional riskier transfer. The sky provides a clean silhouette for whole-vehicle tricks and hanging-on poses.</p>
+<p>The safe route stays fun. The harder route adds airtime and requires more exact yaw alignment. A launch is generous enough for the proposed tricks; no agent may shrink ramps and then fake extra airtime with unexplained teleports.</p>
+<h3 id="overview-heading-30">F. Lost &amp; Found — physical comedy and return path</h3>
+<p>Maintenance shed, benches, light bins, folding chair, and a low roof route. Only a small, controlled subset of props is dynamic. Their initial positions do not block the main route, and a new scored run restores the authored layout.</p>
+<p>This area should feel like part of the park, not a room full of joke targets. Physics produces opportunities; it does not need a bright arrow over every bin.</p>
+<h3 id="overview-heading-31">Three sample lines</h3>
+<p><strong>Beginner:</strong> Confidence Plaza bank → full-assembly kickflip → ordinary landing → rear-wheel manual → bank combo.</p>
+<p><strong>Intermediate:</strong> Drop-In → recover an awkward transition → straight grind → yaw spin out → powerslide toward Commitment Bowl.</p>
+<p><strong>Advanced:</strong> Bowl coping → hip transfer → varial → narrow chassis boardslide → nose manual → Overcommit launch → clean ride-out.</p>
+<p>Each line has an easy exit. A player can stop performing tricks and return to plain driving without a mode transition.</p>
+<h2 id="overview-heading-32">9. Comedy: make physics tell the joke first</h2>
+<p>The reference-inspired humor is escalating overconfidence, loss of posture, and the gap between what the bike is doing and what the rider is managing. The game should not bury it under nonstop meme captions.</p>
+<p><strong>Priority:</strong> physical action, then a sound or reaction, then an occasional line. Do not stack all three every time.</p>
+<h3 id="overview-heading-33">Signature physical gags</h3>
+<p><strong>The Employee Separation</strong><br/>
+The rider loses the seat, hangs from the bars, slips free, and continues along a completely different trajectory. A beat later: <strong>RIDER DISCONNECTED. VEHICLE UNAFFECTED.</strong> Only trigger if the bike is actually still moving.</p>
+<p><strong>The Bike Gets the Applause</strong><br/>
+The rider is already down and sitting up. His empty Ryker happens to finish a roll on its tires. One spectator gives a restrained clap. Another looks at them. The clap stops. A recognition event, not a scripted force that always makes the bike land upright.</p>
+<p><strong>The World's Worst Superman</strong><br/>
+Both hands remain attached while legs trail behind. A shoe scrapes, knees bend, and his body keeps trying to find the seat. A brief original line: "That's not a Superman. That's a hostage situation." No copying the actual video's soundtrack or voices.</p>
+<p><strong>The Walk of Absolutely Nothing Happened</strong><br/>
+When a completed crash naturally settles and the player elects to watch, the rider gets up, straightens his jacket, takes a few dignified steps, then notices the Ryker is still slowly rolling away. Optional short get-up animation; never a prerequisite for retry.</p>
+<p><strong>The Delayed Chair</strong><br/>
+A crash knocks a chair slightly off balance. Everything goes quiet. The chair completes its actual fall with one metallic clink. Do not randomly topple a stable prop across the park for a joke.</p>
+<p><strong>The Phone Filmer</strong><br/>
+An adult spectator carefully tracks the stunt with their phone. During a wild hanging-on save, they lower it and just look. On a later rare successful run, they keep recording and give a disbelieving head shake. No repeated stock cheering loop.</p>
+<p><strong>The Parking Achievement</strong><br/>
+An empty, upright Ryker rolls slowly into a marked service bay and stops while the rider is elsewhere. <strong>VALET PARKING.</strong> Requires the outcome; never moves the bike into the bay.</p>
+<p><strong>The Boot Audit</strong><br/>
+After a spectacular recovery, the rider glances down to confirm both boots are still where he left them. A glance, not a missing-limb gag.</p>
+<p><strong>The Silent Board Tap</strong><br/>
+A spectator taps their skateboard on the concrete once after an impossible clean trick. The respect is sincere. The vehicle is still ridiculous.</p>
+<h3 id="overview-heading-34">Language and delivery</h3>
+<p>The director version may be unfiltered. Keep a separate clean subtitle/voice variant for a public SlingMods build. Profanity is seasoning, not the entire comedic identity. A swear after every wheel touch is less funny than one perfectly timed "Well, shit" after a preventable disaster.</p>
+<p>Use dry, conversational performances. The announcer is an amused witness, not a shouty esports host. The municipal employee should appear occasionally, not become a constant lecture about permits.</p>
+<p>Original line examples:</p>
+<blockquote>
+<p>"You added a third wheel and somehow reduced your options."</p>
+<p>"The bike has completed the trick. Staffing remains unresolved."</p>
+<p>"Still driving. Technically."</p>
+<p>"He is no longer the operator. He is an accessory."</p>
+<p>"That was an ollie with an engine and no fucking plan."</p>
+<p>"You've invented a worse bus stop."</p>
+<p>"Strong opening. Several unrelated endings."</p>
+<p>"You can't park the man there."</p>
+</blockquote>
+<p>A line requires its trigger to be true. "Still driving" is wrong after full detachment. "One-handed" is wrong while both grips remain. Avoid omniscient commentary about an event the replay did not show.</p>
+<h3 id="overview-heading-35">The silence budget</h3>
+<p>At most one optional voice at a time. Aim for no more than six to eight optional spoken reactions in a two-minute run, with longer gaps in practice. Do not repeat the same line within a run. Discard old queued jokes; do not tell the player about a crash after they have restarted and landed another trick.</p>
+<p>Near-success frustration deserves less chatter. After several rapid failures, dial the comedy down instead of taunting harder. Muting dialogue must preserve all necessary control feedback.</p>
+<h2 id="overview-heading-36">10. Missions and achievements worth attempting</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Requirement</th>
+<th>Payoff</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SIR, THIS IS A SKATEPARK</td>
+<td>Land a full-assembly flip beyond the entry bank</td>
+<td>Establishes the premise immediately</td>
+</tr>
+<tr>
+<td>I CAN SAVE THIS</td>
+<td>Recover from genuine hanging-on and ride ten metres</td>
+<td>Unlocks a recovery challenge</td>
+</tr>
+<tr>
+<td>I CANNOT SAVE THIS</td>
+<td>Deliberately let go in Free Skate</td>
+<td>Introduces replay/reset without punishing main score</td>
+</tr>
+<tr>
+<td>STILL COUNTS</td>
+<td>Bank a combo after a sketchy landing and recovery</td>
+<td>A small cosmetic acknowledgement</td>
+</tr>
+<tr>
+<td>THE FLOOR IS MOSTLY A SUGGESTION</td>
+<td>Link three aerial tricks through valid contacts</td>
+<td>Requires deliberate route design</td>
+</tr>
+<tr>
+<td>TAKE A SEAT</td>
+<td>Chassis-slide the plaza bench and ride away</td>
+<td>Modest local badge</td>
+</tr>
+<tr>
+<td>THREE WHEELS, ONE BRAIN CELL</td>
+<td>Complete a rear manual, nose manual, and side balance in one run</td>
+<td>Demonstrates all balance families</td>
+</tr>
+<tr>
+<td>VALET PARKING</td>
+<td>Empty Ryker genuinely stops upright inside service bay</td>
+<td>Optional incident-report stamp</td>
+</tr>
+<tr>
+<td>CAMERA WAS ROLLING</td>
+<td>Land the advanced Overcommit transfer</td>
+<td>Unlocks a replay framing preset</td>
+</tr>
+<tr>
+<td>NOT MY FIRST MISTAKE</td>
+<td>Beat your own score after a reset</td>
+<td>Celebrates improvement, not grinding chores</td>
+</tr>
+<tr>
+<td>PLEASE REMAIN SEATED</td>
+<td>Finish a run without full detachment</td>
+<td>Actually meaningful for the premise</td>
+</tr>
+<tr>
+<td>THAT WAS ON PURPOSE</td>
+<td>Bank a combo after one-hand recovery</td>
+<td>Rare, earned, and very shareable</td>
+</tr>
+</tbody>
+</table></div>
+<p>No mission depends on striking a spectator. No required destruction of expensive real branded products. Scores, achievements, and cosmetics are local in the first release; online competition is later work, not a fake network badge.</p>
+<h2 id="overview-heading-37">11. Art, camera, interface, and audio</h2>
+<h3 id="overview-heading-38">Visual direction</h3>
+<p>Detailed Ryker and leather biker, plausible concrete, polished lighting, understated UI. Use SlingMods red sparingly with charcoal and off-white typography; a cool cyan accent can identify balance/recovery controls. Keep SEND IT's yellow logistics identity separate.</p>
+<p>Make the tires, suspension, exhaust, handlebars, and rider silhouette readable in motion. Do not hide the character behind an oversized speedometer. Use actual imported materials, then tune exposure and environment lighting around them. Do not erase hard-surface detail with a blanket low-poly conversion.</p>
+<p>The park gets authored variation: worn concrete at contact edges, clean rail highlights, subtle dust, scuffs, and restrained prop color. Avoid noisy decals everywhere. Daylight shadows are gameplay depth cues as much as decoration.</p>
+<h3 id="overview-heading-39">Camera</h3>
+<p>An elevated trailing camera sees both the next transition and the rider. During aerial rolls the camera preserves a comfortable world horizon; it does not barrel-roll with the bike. Widen framing slightly for big air and genuine hanging-on so the body remains legible.</p>
+<p>At full separation, smoothly prioritize the rider while keeping the Ryker in view when feasible. Do not zoom so far out that both become ants. A short optional replay can show alternate views afterward.</p>
+<p>Use collision avoidance and occlusion handling so the camera does not pass through concrete, rails, or scenery. Do not frame the ground while the rider leaves the screen. Reduce shake, disable cinematic motion, and offer a stable-camera setting.</p>
+<h3 id="overview-heading-40">Interface</h3>
+<p>Score and remaining run time at the top; current combo/trick at lower center; a compact balance cue only when relevant. Normal play is not permanently plastered with danger meters.</p>
+<p>The integrity/recovery indicator uses text and shape as well as color: <strong>SEATED</strong>, <strong>WOBBLY</strong>, <strong>HANG ON</strong>. Do not show a fake medical injury bar. A crash gets a concise failure cause and immediate retry prompt.</p>
+<p>During a run the menu is one pause away. Results offer <strong>Run Again</strong>, <strong>Free Skate</strong>, and <strong>Last Replay</strong>. No hidden reset inside a garage or career screen.</p>
+<h3 id="overview-heading-41">Sound</h3>
+<p>The motor gives useful throttle and speed feedback without filling every frequency. Tire contact changes by slide, landing, and surface. A landing combines suspension, tire slap, and a little mechanical clatter. Rail slides sound substantial, not like a toy zipper.</p>
+<p>Physical comedy uses small detail: glove strain, a boot scrape, a jacket rustle, a chair clink. No constant cartoon boings, canned screams, or injury effects. Non-gory impacts can be funny without sounding like actual suffering.</p>
+<p>Music is original or properly licensed instrumental skate energy: punchy drums, bass, guitar or electronic grit, and room for contact sounds. Do not extract the video's song or copy a Tony Hawk soundtrack. Music, engine/effects, and dialogue have separate controls.</p>
+<h3 id="overview-heading-42">Replay</h3>
+<p>Record recent transforms, articulated poses, and game events in a short ring buffer. Offer slow motion and an optional phone-filmer angle; do not interrupt active score play with surprise slow motion. Replays show what happened, not a re-simulation that invents a different crash.</p>
+<p>Keep a clean cinematic option. Optional captions attach to true event timestamps. A generated replay is not automatically a downloadable MP4: video encoding/export is a separate feature and must be labeled honestly.</p>
+<h2 id="overview-heading-43">12. What the first release should contain</h2>
+<p>One Ryker. One existing biker. One excellent connected park. Reliable drive/brake/reverse. Whole-assembly aerial tricks. Two grind styles. Rear and nose manuals. Visible unsettled/hanging-on/full-bail transitions. Recoverable saves. Two-minute runs, Free Skate, local records, a handful of challenges, replay, and immediate retry.</p>
+<p>A smaller polished set is not permission to deliver a box-on-ramp prototype. The first release should already look like this game. Additional vehicles, multiplayer, alternate parks, extensive customization, and a sprawling career are expansions after the core is convincing.</p>
+<h3 id="overview-heading-44">The first evidence gate</h3>
+<p>Show an uninterrupted playable sequence with the real models: drive into the park, flip together, land, wobble into a recoverable hang, ride away. On another attempt, a visible mistake must produce a momentum-consistent articulated ejection and fast reset.</p>
+<p>A pretty still render, a rigid bike with a detached camera, a placeholder capsule rider, or a successful compile does not pass this gate.</p>
+<p><strong>The final creative rule: exaggerate the situation, not the paperwork. Make it a machine you love controlling, with a man you cannot quite believe is still on it.</strong></p>
+</section><section class="chapter" id="comedy"><div class="chapter-label">A taste of the comedy</div><h1>The joke is what happens.</h1><p>Dialogue reacts to the physics. It never forces the physics. The ZIP includes all 60 proposed bark cues, 20 caption entries, 12 signs, and 12 physical gag specifications.</p><div class="joke-grid"><div class="joke"><small>HANG ENTERED</small><p>“Still driving. Technically.”</p></div><div class="joke"><small>HANG ENTERED</small><p>“That&#x27;s not a Superman. That&#x27;s a hostage situation.”</p></div><div class="joke"><small>HANG ENTERED</small><p>“The handlebars have become a full-time job.”</p></div><div class="joke"><small>RIDER RECOVERED</small><p>“Meant that. Shut up.”</p></div><div class="joke"><small>RAGDOLL SETTLED</small><p>“You can&#x27;t park the man there.”</p></div><div class="joke"><small>EMPTY BIKE SETTLED</small><p>“Your vehicle would like to continue without you.”</p></div><div class="joke"><small>RIDER DETACHED</small><p>“That&#x27;s a commute in two installments.”</p></div><div class="joke"><small>HARD GAP COMPLETED</small><p>“I was recording. Then I needed both eyes.”</p></div></div></section><section class="chapter" id="reference"><div class="chapter-label">Reference &amp; evidence</div><h1 id="reference-heading-0">Reference and evidence ledger</h1>
+<h2 id="reference-heading-1">A. Authoritative user requirements</h2>
+<p>Dan supplied <code>https://www.youtube.com/shorts/ieCOgCEtXfY</code> and asked for a Ryker skatepark game inspired by the meme, with exaggerated skateboard-style tricks, ragdoll physics, the existing Ryker and rider models, and substantial comedy.</p>
+<p>He explicitly corrected the initial interpretation: the rider can drive the vehicle and rotate with it while remaining attached. Speed/balance situations may eject him. The player need not make the bike flip independently below an airborne rider.</p>
+<p>Those instructions govern version 2. The original package's independent-bike catch system, backward-seated catch, engine-off boot-push opening, and separated-rider proof milestone are superseded. Do not accidentally reintroduce them through an older JSON bank or kickoff.</p>
+<h2 id="reference-heading-2">B. What was actually accessible</h2>
+<p>The supplied YouTube Shorts page, ordinary watch page, mobile page, and embed routes did not provide playable or frame-inspectable footage through the available access paths. No successful video download, playback, audio review, duration measurement, or frame extraction occurred.</p>
+<p>An exact-video-ID web search found discussion linking that ID, but discussion is not visual evidence. Additional searches retrieved coverage of a Ryker skatepark incident, including Jalopnik's November 2, 2021 article and CarThrottle's account. Those articles describe a loss of control around skatepark transitions, the rider hanging onto the controls, continued acceleration, and an eventual crash. [S1, S2]</p>
+<p>ViralHog also has a catalog listing for “Man Wrecks Can-Am Roadster at Skatepark.” Its individual video page was not successfully retrieved. A catalog match does not establish that Dan's exact Short contains the same length, framing, edit, captions, or audio. [S3]</p>
+<p><strong>Status:</strong> related incident coverage retrieved; exact supplied edit and frame sequence unverified. No claim is made that the author watched the video.</p>
+<h2 id="reference-heading-3">C. Translation into the game</h2>
+<p>The following are design choices informed by Dan's instructions and the general situation described in coverage, not observations of specific frames:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Basis</th>
+<th>Game translation</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ryker in a skatepark</td>
+<td>Ordinary outdoor concrete park with inappropriate vehicle</td>
+<td>User-confirmed premise</td>
+</tr>
+<tr>
+<td>Rider stays with the vehicle</td>
+<td>Shared flips with compliant riding posture</td>
+<td>User-confirmed correction</td>
+</tr>
+<tr>
+<td>Loss of control / hanging on described in coverage</td>
+<td>Recoverable partial detachment before full ragdoll</td>
+<td>Original mechanic based on general situation</td>
+</tr>
+<tr>
+<td>Continued momentum across transitions</td>
+<td>Signature downhill-to-opposing-bank line</td>
+<td>Proposed topology; exact clip geometry unverified</td>
+</tr>
+<tr>
+<td>Meme/comedy request</td>
+<td>Awkward body posture, delayed reactions, sparse dry lines</td>
+<td>Original creative work</td>
+</tr>
+<tr>
+<td>Ridiculous physics request</td>
+<td>Assisted launches, aerial rotation, rails, manuals, survivable slapstick</td>
+<td>Original gameplay design</td>
+</tr>
+</tbody>
+</table></div>
+<p>Do not confuse source fidelity with real-life simulation. Once the reference is visually available, preserve recognizable staging and escalation while deliberately exaggerating the playable outcomes.</p>
+<h2 id="reference-heading-4">D. Footage-specific fidelity pass, still outstanding</h2>
+<p>When the video itself becomes available to the implementing agent, inspect the actual clip and record: access method, filename or URL, measured duration, broad shot order, rider posture changes, vehicle direction changes, major contacts, separation moment, and camera behavior. Use real timecodes only after measuring them.</p>
+<p>Identify three to five visual beats worth translating into the signature game line. Mark each as directly visible, obscured, or inferred. Distinguish a longer incident recording from the exact meme edit Dan sent. Do not invent dialogue or use an article's account as a transcript.</p>
+<p>This pass may adjust bank ordering, framing, reaction timing, and hanging-on poses. It must not silently reverse Dan's explicit instruction about whole-assembly tricks. It also must not block unrelated safe work such as asset validation or initial rider-state engineering.</p>
+<p>The final build report must retain “reference fidelity unverified” until actual footage review has happened. Core gameplay may be evaluated independently; clip-based claims may not.</p>
+<h2 id="reference-heading-5">E. Asset verification boundary</h2>
+<p>GitHub returned the current source-repository commit metadata, the Ryker runtime directory, the purchased biker manifest, its Ryker fit data, and directory entries for the model files. These establish useful paths and recorded metadata. They do not prove a local clone contains all required bytes, that animations render correctly, or that a ragdoll exists.</p>
+<p>See <code>04_ASSET_HANDOFF.md</code> for paths and source labels. This package did not import or render the models and does not include their binaries.</p>
+</section><section class="chapter" id="physics"><div class="chapter-label">Rider &amp; physics</div><h1 id="physics-heading-0">Rider and physics contract</h1>
+<p><strong>Design/engineering proposal, not tested implementation.</strong> Numerical defaults live in <code>TUNING_PROPOSAL.json</code>; calibrate them using actual gameplay.</p>
+<h2 id="physics-heading-1">1. Architecture: one simulation, explicit owners</h2>
+<p>Suggested browser starting point: TypeScript, Vite, Three.js rendering, and Rapier physics, with a small DOM-based UI. This is a design recommendation, not a verified dependency installation. Select compatible stable versions, pin them, and record the environment. A different stack is acceptable when it demonstrably improves the requested result without changing deployment goals.</p>
+<p>Rapier documents dynamic/kinematic rigid bodies, colliders, joints, and continuous collision detection. Three.js documents skinned meshes and skeleton-aware cloning. Those sources establish basic tool capabilities; the controller, ragdoll transitions, and tuning below are our proposed engineering, not library promises. [T1–T3]</p>
+<p>Keep these responsibilities separate:</p>
+<ul>
+<li>Vehicle motion controller: drive, contacts, launches, air control, landings, grinds.</li>
+<li>Rider controller: posture, compliance, contact/grip states, recovery, ragdoll ownership.</li>
+<li>Trick/score evaluator: observes accepted game events; does not move physics bodies.</li>
+<li>Comedy director: observes truthful events; does not alter outcomes to force a punchline.</li>
+<li>Replay recorder: records actual transforms and events; does not advance the live simulation.</li>
+<li>Session manager: run timer, local records, spawning, pause/focus handling.</li>
+</ul>
+<p>Exactly one system owns a root or body at a time. Animation and physics cannot both write contradictory transforms in the same tick.</p>
+<h2 id="physics-heading-2">2. Coordinate basis and timing</h2>
+<p>Use metres, seconds, radians internally. The observed biker fit declares +X right, +Y up, -Z forward in vehicle space. Validate the Ryker import against that convention instead of adding blind rotations to make the screenshot look correct. [R3]</p>
+<p>Use a fixed simulation timestep, initially 1/60 second, and interpolate presentation. Limit catch-up work after a long frame. Pause rather than simulating a giant time step when a tab resumes. Quaternions govern body orientation; scoring may maintain separate signed, unwrapped rotation accumulators.</p>
+<p>Sample inputs once per simulation tick. Keep gamepad deadzones, response curves, keyboard ramping, and simultaneous-key behavior explicit. Timers for balance and grip are simulation-time timers, not frames or wall-clock animation callbacks.</p>
+<p>Do not promise bit-identical simulation on arbitrary devices. Test consistency on supported configurations and use recorded transforms for replays.</p>
+<h2 id="physics-heading-3">3. Vehicle representation</h2>
+<p>Start from measured model bounds and wheel centers. Build a simple compound collision body with the actual broad chassis and front-wheel width, plus appropriate wheel-contact sampling. Do not inherit the Slingshot footprint or use the detailed render mesh as a dynamic triangle-mesh collider.</p>
+<p>Use a dynamic chassis with tunable arcade suspension/contact forces. Airborne trick commands apply controlled rotational targets/torques while translation remains physically legible. Ground stabilization, launch assist, and limited rotation damping are allowed cheats. Document when they operate.</p>
+<p>The chassis collision orientation must follow the visible orientation. Rotating only a visual child while leaving an upright invisible collision box would make upside-down passes and landings dishonest.</p>
+<p>For an early prototype, analytic/sweep-based movement may be acceptable if the entire collision envelope is swept along its motion, contacts are respected, and the fallback is explicitly documented. Do not repeatedly teleport a dynamic body through the park and call that a physical stunt controller.</p>
+<p>Authored rails can use a special constrained path-following state. Its candidate selection, allowed alignment, balance, travel, exit velocity, and obstruction handling must be explicit. A grind does not grant immunity to an overhanging wall.</p>
+<h2 id="physics-heading-4">4. Rider representation</h2>
+<p>The purchased biker manifest records 60 skeleton joints. That is an animation skeleton, not a requirement for 60 physical bodies and not proof of a ready-made ragdoll. [R2]</p>
+<p>Begin with approximately 12–16 physics bodies covering pelvis, torso sections, head, upper/lower arms, and upper/lower legs. Hands/feet may be separate or driven from terminal limbs after measuring stability. Use bounded joints and fit colliders to the actual body rather than aesthetic guesses.</p>
+<p>Use the existing Ryker grip fit as a starting seated pose. Measure hips, pegs, grip anchors, leg clearance, and handlebar movement. The bars may steer; the hands should follow their actual contact frames.</p>
+<p>While strongly attached, the seated body can be a controlled skeleton with physically responsive secondary motion, or a driven ragdoll using compliant motors. Both approaches are acceptable if they visibly preserve attachment while allowing flex. A rigid parented mannequin with a random “fall off” timer is not.</p>
+<p>For partial detachment, physical bodies and one/two hand constraints should drive the visible skinned rider. If a hybrid implementation uses procedural near-hang animation before physical release, it must honestly label that phase and produce equally convincing physical directionality. Full bails require a jointed ragdoll, not a single rotating capsule.</p>
+<h2 id="physics-heading-5">5. State machine and contact ownership</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>State</th>
+<th>Seat/feet</th>
+<th>Hands</th>
+<th>Motion authority</th>
+<th>Exit conditions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SEATED</td>
+<td>Strong support targets</td>
+<td>Strong grip targets</td>
+<td>Vehicle + driven rider</td>
+<td>Sustained measured strain, destabilizing contact</td>
+</tr>
+<tr>
+<td>UNSETTLED</td>
+<td>Reduced support; one or more feet can slip</td>
+<td>Grips retained</td>
+<td>Vehicle + compliant pose</td>
+<td>Recovery dwell, further instability, direct severe hit</td>
+</tr>
+<tr>
+<td>HANGING_BOTH</td>
+<td>Seat/peg support released</td>
+<td>Two compliant constraints</td>
+<td>Physical rider + reduced driving control</td>
+<td>Recapture window, one grip failure, severe impact</td>
+</tr>
+<tr>
+<td>HANGING_ONE</td>
+<td>Seat released</td>
+<td>One constrained hand</td>
+<td>Physical rider + strongly reduced control</td>
+<td>Recapture only in narrow valid window, final release</td>
+</tr>
+<tr>
+<td>DETACHED</td>
+<td>None</td>
+<td>None</td>
+<td>Independent vehicle and ragdoll physics</td>
+<td>Reset, optional settled/get-up presentation</td>
+</tr>
+<tr>
+<td>RESETTING</td>
+<td>Restored from validated spawn</td>
+<td>Restored</td>
+<td>Session manager atomically rebuilds state</td>
+<td>Clean seated start</td>
+</tr>
+</tbody>
+</table></div>
+<p>Do not force every bail through a theatrical full sequence. A direct major impact can cause immediate detachment. But ordinary errors should frequently show a readable warning and recoverable middle.</p>
+<p>State-change hysteresis is required. Use different entry/exit thresholds and minimum dwell, so the rider does not flicker between attached and hanging when a signal crosses a boundary for one frame.</p>
+<h2 id="physics-heading-6">6. Compute strain from causes, not speed alone</h2>
+<p>Use measured or estimated signals such as:</p>
+<ul>
+<li>Unplanned acceleration/jerk relative to the expected stunt trajectory.</li>
+<li>Relative pelvis displacement and velocity from the seat frame.</li>
+<li>Grip target error and relative hand velocity.</li>
+<li>Roll/pitch error relative to the current support plane and intended maneuver.</li>
+<li>Contact-normal impact severity, especially off-center wheel or chassis contact.</li>
+<li>Sustained balance error during a manual, grind, or side-wheel balance.</li>
+</ul>
+<p>Normalize these to tunable gameplay ranges. A conceptual strain accumulator is:</p>
+<p><code>next = clamp(current + dt * (weightedInstability - recoverableSettling), 0, 1)</code></p>
+<p>The formula is illustrative, not a finished physical model. Choose weights from visible playtests. Separate quick hard-impact release from slowly accumulated balance loss. Release latches and reattachment rules should be deterministic given the same simulation state, not random comedy rolls.</p>
+<p><strong>Do not count a supported, commanded inversion as automatic loss of balance.</strong> During a clean air trick, expected pose and angular motion rotate with the vehicle. Grounded balance, planned aerial motion, and uncontrolled tumbling require different reference frames.</p>
+<p>Speed may amplify the consequences of steering demand and impacts. It is not itself an instability event. A high-speed straight must be repeatably survivable; a gentle stationary lean must not launch a person across the park.</p>
+<h2 id="physics-heading-7">7. Landing evaluation</h2>
+<p>Evaluate contact against the actual landing surface normal, not always world up. A correct landing on a sloped transition can be safer than the same velocity into flat concrete.</p>
+<p>Consider incoming normal speed, residual angular velocity, yaw relative to travel, wheel/chassis contact order, and support formation. For intuition, incoming normal speed is the negative portion of relative velocity dotted with the contact normal. This helps distinguish fast travel along a ramp from a hard arrival into it.</p>
+<p>Use forgiving but bounded landing assist. It may damp small residual rotation or help settle plausible wheel contacts; it may not rotate an inverted bike upright through the floor.</p>
+<p>Classify outcomes as clean, sketchy/recoverable, or severe. Expose the reason in debug telemetry. A sketchy landing enters rider strain and reduces score quality; a severe landing may detach the rider. Recovery that follows must result from the player's actions and actual available space.</p>
+<p>The exact angle/speed thresholds are tuning hypotheses. Test them across flat surfaces, transitions, rails, and asymmetric front-wheel contacts rather than selecting one screenshot-friendly number.</p>
+<h2 id="physics-heading-8">8. Release without the explosion bug</h2>
+<p>At the moment a driven skeleton becomes physical, initialize the physical bodies from the current posed bones in world space. Preserve the real accumulated motion.</p>
+<p>For body point <code>p</code>, inherit vehicle/root motion approximately as:</p>
+<p><code>v_body = v_root + omega_root × (p - center_of_mass) + v_relative_pose</code></p>
+<p>The last term represents actual relative pose motion when available; bound noisy numerical estimates. If bodies already exist and are physically moving in a hanging state, retain their real velocities rather than reinitializing them from the vehicle.</p>
+<p>The default bail should not add an arbitrary giant outward impulse. Speed, angular motion, and contact already create the trajectory. A small authored exaggeration may be added for a clearly labeled chaos preset, consistently and with limits.</p>
+<p>At release, stop animation from resetting pelvis or limbs. Remove or disable rider-to-vehicle constraints exactly once. Preserve skeleton parent-space conversions so the visible mesh follows the physical bodies without a bind-pose snap or doubled root transform.</p>
+<p>Prevent body intersections when activating contacts. Use narrowly scoped collision filters during the transition, only long enough to clear initial overlap, then restore sensible contact rules. Never disable all world collision for the ragdoll because it is easier.</p>
+<p>Joint constraints, collision margins, mass ratios, solver settings, and damping need real stress tests. Anatomical limits should prevent elbows reversing or shoulders stretching metres. Funny floppiness is not an exploding rig.</p>
+<h2 id="physics-heading-9">9. Recovery: bring him back, do not teleport him back</h2>
+<p>Recovery requires at least one remaining grip, manageable relative speed, sufficient seat proximity, and a vehicle pose where recapture is plausible. A valid player Brace/counterbalance input may increase assistance inside that window.</p>
+<p>Blend toward the seat over a short interval with collision-aware movement. Reacquire hip/foot targets in sequence; the hands should not jump across the bars. Abort if a new impact or rapid relative separation invalidates the window.</p>
+<p>After recovery, allow a brief settling period before another low-level signal can throw the same rider straight back into hanging. Do not protect against genuine severe collisions.</p>
+<p>A full detach is final for the current attempt. Midair magic remounts are not first-release mechanics. Reset is fast enough that they are unnecessary.</p>
+<h2 id="physics-heading-10">10. Score and comedy events</h2>
+<p>Emit immutable semantic events, with a run ID and simulation timestamp: <code>trick_completed</code>, <code>landing_clean</code>, <code>landing_sketchy</code>, <code>hang_entered</code>, <code>grip_lost</code>, <code>rider_recovered</code>, <code>rider_detached</code>, <code>empty_bike_settled</code>, <code>combo_banked</code>, <code>prop_settled</code>, and <code>run_reset</code>.</p>
+<p>These names are proposed contracts. Implement the actual data schema rather than pretending a JSON bank is sufficient.</p>
+<p>Scoring consumes valid trick and contact records. The comedy director consumes event context. Captions that rely on an outcome need the outcome's observed data, not a timer predicting it.</p>
+<p>Deduplicate contact events so a multi-collider impact does not trigger five identical laughs. Stop queued barks on reset and pause. A joke's effect is audio, text, or an NPC reaction; it cannot silently change vehicle balance or force a missed landing.</p>
+<h2 id="physics-heading-11">11. Replays and reset</h2>
+<p>Keep a bounded transform/event ring buffer, initially around 10 seconds at a proposed 30 samples per second. Interpolate playback, retain all relevant bone/body states, and verify memory use. This is a starting budget, not a measured performance claim.</p>
+<p>Choose the main camera target by state. Record enough framing/event information to show separation without losing either subject. Saved replay data is not an encoded video file.</p>
+<p>Reset must clear old constraint handles, velocities, trick accumulators, grip latches, score windows, audio queues, and local props when appropriate. Repeated resets should not leak bodies, GPU resources, or event listeners.</p>
+<p>Maintain validated safe spawns on usable surfaces, outside rails and props. A last-safe transform needs orientation and clearance, not just the last position that had wheel contact. Reversing away from an obstacle should work without resetting.</p>
+<h2 id="physics-heading-12">12. Performance and honesty</h2>
+<p>Measure the actual imported assets. Simplify with evidence, preserving Ryker identity and rider silhouette. Favor sensible shadows, controlled resolution, static park batching/instancing, and limited active props before destroying source detail.</p>
+<p>Use continuous collision detection or an equivalent tested sweep strategy where fast motion risks missed contact; verify the chosen physics version's API rather than copying an obsolete name. [T1]</p>
+<p>Target a smooth desktop experience, but report measured browser, hardware, resolution, frame-time distribution, and test duration. No “60 FPS everywhere” claims. A single rendering screenshot is not performance or physics evidence.</p>
+</section><section class="chapter" id="assets"><div class="chapter-label">Existing assets</div><h1 id="assets-heading-0">Existing asset handoff</h1>
+<h2 id="assets-heading-1">Source repository: read-only</h2>
+<p><code>DanielKinsner/slingmods-three-wheel-tour-rebuild</code></p>
+<p>The GitHub connection returned <code>main</code> at commit:</p>
+<p><code>a3b6384a3c0e07a4da29866a655399597b87fbc7</code></p>
+<p>This was the observed revision during preparation on September 25, 2026. It is a reproducible reference, not a promise that main will remain there. Discover the current local/source state and record the actual import commit. Do not force-reset the user's checkout to this revision. [R1]</p>
+<p>PRO RYKER is a separate project. Three-Wheel Tour and SEND IT are not writable staging areas. Do not move, delete, rename, overwrite, reformat, reconfigure, or globally upgrade dependencies in them. Copy only needed, authorized assets/utilities to the new project.</p>
+<h2 id="assets-heading-2">Observed candidates</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Source path</th>
+<th>Evidence and intended use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>public/assets/ryker/ryker-900.glb</code></td>
+<td>Runtime directory entry at observed revision; 13,469,980 bytes; primary Ryker candidate [R4]</td>
+</tr>
+<tr>
+<td><code>public/assets/ryker/manifest.json</code></td>
+<td>Directory entry; component/scale metadata candidate; fully inspect before import [R4]</td>
+</tr>
+<tr>
+<td><code>public/assets/ryker/rear-rig.json</code></td>
+<td>Directory entry; rear-motion setup candidate [R4]</td>
+</tr>
+<tr>
+<td><code>public/assets/drivers/biker/biker-rider.glb</code></td>
+<td>Biker tree entry and manifest; intended purchased leather biker [R2]</td>
+</tr>
+<tr>
+<td><code>public/assets/drivers/biker/manifest.json</code></td>
+<td>Read successfully; source provenance, stats, fits, grip measurements [R2]</td>
+</tr>
+<tr>
+<td><code>public/assets/drivers/biker/fit-ryker.json</code></td>
+<td>Read beginning of fit; declares rig roots, coordinate basis, measured arm/grip targets [R3]</td>
+</tr>
+<tr>
+<td><code>assets/ryker/Ryker-Game-Master.blend</code></td>
+<td>Referenced by repository Ryker README as editable master; byte availability still to verify [R5]</td>
+</tr>
+<tr>
+<td><code>scripts/build-biker-rider.py</code></td>
+<td>Named in biker manifest as build source; inspect dependencies and original-source availability before executing [R2]</td>
+</tr>
+<tr>
+<td><code>assets/source/brand/slingmods-logo-wide-2000.webp</code></td>
+<td>Source-tree listing candidate for existing brand art; verify bytes and usage in new build</td>
+</tr>
+</tbody>
+</table></div>
+<p>Use <code>public/assets/drivers/biker/fit-ryker.json</code> for the purchased biker. Do not assume the older <code>public/assets/ryker/driver-attachment.json</code> belongs to that same skeleton; it is a separate observed file.</p>
+<p><code>public/assets/ryker/complete/</code> also exists. Inspect current loaders/manifests to understand its purpose before deciding whether it supersedes or augments the single GLB. Do not import every historic asset folder merely because it exists.</p>
+<h2 id="assets-heading-3">Biker metadata actually read</h2>
+<p>The manifest records 33,544 triangles, 60 joints, nine images, and 1,900,128 bytes. It labels the asset as derived from an owner-purchased rigged biker source, with leather/skin/helmet materials and per-vehicle fits. The original purchase source is described as not in Git. [R2]</p>
+<p>Recorded biker SHA-256:</p>
+<p><code>91d6f7b2621ce586497f9bbc5a77c1b2ab7689fdb27814ffbfc82bf385b7b664</code></p>
+<p>Compare the local imported bytes before trusting this value. This packet read the manifest; it did not independently hash or render the binary.</p>
+<p>The observed fit names <code>driver_root</code>, <code>driver_rig</code>, <code>driver_body_visual</code>, and <code>driver_head_visual</code>. It includes arm bones such as <code>driver_upper_arm_left</code>, <code>driver_forearm_left</code>, and <code>driver_hand_left</code>, with corresponding right-side names. These are observed candidates, not a complete skeleton map. Inspect the full rig for pelvis, spine, neck, legs, hands, and feet. [R3]</p>
+<h2 id="assets-heading-4">Import acceptance</h2>
+<p>Confirm actual binary content, not a Git LFS pointer or placeholder file. Record source commit, path, byte length, SHA-256, texture dependencies, mesh/material counts, dimensions, scale, and skeleton hierarchy.</p>
+<p>Load the vehicle and rider in the chosen runtime. Verify front/rear wheel placement, grip reach, seat and peg positions, steering, materials, normals, and skin deformation. Photograph/render the imported pair from front-quarter, side, rear, and an aerial-test view as evidence.</p>
+<p>Do not silently substitute <code>test-driver.glb</code> or the older tour rider when the purchased biker import fails. Diagnose the real asset. A temporary proxy is acceptable only as visibly labeled engineering scaffolding, not the final delivery.</p>
+<p>Do not automatically execute downloaded source scripts. Inspect them and their input paths first. Never run them in a way that overwrites the original purchased asset. Prefer using the already-exported runtime GLB when the original authoring source is unavailable.</p>
+<p>The earlier Ryker README contains historical conversion and physics notes, with a header stating newer playable-vehicle work supersedes old visual-only limitations. Treat those passages as history; do not report old Slingshot-physics limitations as the current game's state without inspecting the current code. This new game will have its own stunt controller regardless. [R5]</p>
+<h2 id="assets-heading-5">Packaging and deployment</h2>
+<p>No model binaries are included in this design ZIP. The implementing agent must obtain them from the authorized source checkout. Keep original purchased source material private, preserve provenance, and publish only the intended game runtime output. Do not turn public hosting into an unintended downloadable source-art archive.</p>
+<p>Proposed new project slug: <code>slingmods-pro-ryker</code>. Proposed eventual arcade path: <code>/arcade/pro-ryker</code>. These are design choices, not created repositories, directories, projects, or deployments. Resolve paths and deployment authorization from the actual environment.</p>
+</section><section class="chapter" id="build"><div class="chapter-label">Build &amp; acceptance</div><h1 id="build-heading-0">Build milestones and acceptance</h1>
+<p>These are delivery gates, not claims of completed work. Run useful implementation/testing/repair loops internally and hand back substantial results.</p>
+<h2 id="build-heading-1">M0 — Assets and source truth</h2>
+<p>Create/discover a separate project. Record source revision and local asset hashes. Load the actual Ryker and purchased biker. Document rig/basis/fit. Preserve source repositories. Record whether the exact video is accessible.</p>
+<p>Pass: correct models and materials rendered together, real grip/seat fit inspected, no silent placeholder substitution, readable local launch instructions. File paths alone do not pass.</p>
+<h2 id="build-heading-2">M1 — The playable meme mechanic</h2>
+<p>Build an outdoor test area with a bank, trough, opposing transition, recovery space, and safe spawn. Implement drive/brake/reverse, shared aerial rotation, rider compliance, partial hanging, recovery, full articulated bail, and reset.</p>
+<p>Pass: an uninterrupted gameplay capture shows both a successful stunt/recovery and a clearly caused unsuccessful attempt. The player's next attempt is immediately available. No forced crash cutscene. The bike and rider visibly rotate together while attached.</p>
+<h2 id="build-heading-3">M2 — A real skate session</h2>
+<p>Build the connected Municipal Liability park around readable routes. Add grinds, rear/nose manuals, valid trick recognition, capped combo scoring, two-minute sessions, Free Skate, and local bests. Make the sky, concrete, vehicle, rider, and UI feel like one visual direction.</p>
+<p>Pass: three distinct lines work without camera failures, invisible walls, unwinnable jumps, or a garage navigation detour. Repeated valid actions score consistently. Empty-bike stunts do not bank rider combos.</p>
+<h2 id="build-heading-4">M3 — Comedy that responds to what happened</h2>
+<p>Add a restrained set of spectator reactions, physical props, original audio cues, the comedy scheduler, clean/unfiltered variants, concise challenges, and a transform-based replay.</p>
+<p>Pass: jokes correspond to actual events, do not spam, never change outcomes, clear on reset, and can be muted. At least three physically different bail/recovery outcomes occur under controlled variations, rather than the same animation repeated.</p>
+<h2 id="build-heading-5">M4 — Delivery and robustness</h2>
+<p>Polish controls and camera, validate asset loading, optimize after measurement, verify production build paths, add accessibility/settings, and prepare an honest handoff.</p>
+<p>Pass: supported devices and measured performance are stated, not assumed. No paid source assets or authoring archives accidentally ship. Source games remain unchanged. Reference fidelity is explicitly unresolved unless the actual Short has been inspected.</p>
+<h2 id="build-heading-6">Focused regression matrix</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Expected behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full throttle on a clean straight</td>
+<td>Rider stays aboard; speed alone never ejects</td>
+</tr>
+<tr>
+<td>Clean roll at ample altitude</td>
+<td>Rider and vehicle rotate together; grip posture remains coherent</td>
+</tr>
+<tr>
+<td>Repeat identical safe trick</td>
+<td>Comparable outcome; no random bail chance</td>
+</tr>
+<tr>
+<td>Low-speed bump</td>
+<td>Small response, not a projectile rider</td>
+</tr>
+<tr>
+<td>Off-axis landing at moderate speed</td>
+<td>Readable strain; possible recovery</td>
+</tr>
+<tr>
+<td>Same error with substantially greater impact severity</td>
+<td>Greater consequences for a visible reason</td>
+</tr>
+<tr>
+<td>Inversion during a commanded aerial trick</td>
+<td>Not misclassified as grounded loss of balance</td>
+</tr>
+<tr>
+<td>Landing on a sloped transition</td>
+<td>Evaluated relative to local surface, not global vertical</td>
+</tr>
+<tr>
+<td>Both-hands hang and valid recovery input</td>
+<td>Reachable return to seat without teleport/clipping</td>
+</tr>
+<tr>
+<td>One-hand hang outside recovery envelope</td>
+<td>Grip release follows physical state; no impossible snapback</td>
+</tr>
+<tr>
+<td>Direct severe chassis/head-area contact</td>
+<td>Immediate bail allowed; no forced warning delay</td>
+</tr>
+<tr>
+<td>Release during angular motion</td>
+<td>Ragdoll inherits tangential motion, not zeroed velocity</td>
+</tr>
+<tr>
+<td>Full detach while empty bike lands upright</td>
+<td>Combo is lost; optional incident gag may occur</td>
+</tr>
+<tr>
+<td>Stationary manual or rail stall</td>
+<td>No endless score generation</td>
+</tr>
+<tr>
+<td>Multi-collider rail impact</td>
+<td>One coherent event, not repeated score/voice triggers</td>
+</tr>
+<tr>
+<td>Unsupported collision proxy orientation</td>
+<td>Test must fail; visible trick and collision body must agree</td>
+</tr>
+<tr>
+<td>Camera through a full roll and separation</td>
+<td>Horizon comfortable; subject readable; no world clipping</td>
+</tr>
+<tr>
+<td>Brake to stop then reverse</td>
+<td>Predictable reversing and steering</td>
+</tr>
+<tr>
+<td>Repeated rapid resets</td>
+<td>No stale grips, audio, duplicates, physics bodies, or accumulating memory</td>
+</tr>
+<tr>
+<td>Background tab and resume</td>
+<td>Pause/focus recovery; no enormous time-step explosion</td>
+</tr>
+<tr>
+<td>Timer expires during a combo</td>
+<td>Bounded finish grace; no indefinite overtime</td>
+</tr>
+<tr>
+<td>Clean/unfiltered/muted dialogue</td>
+<td>Gameplay identical; only presentation changes</td>
+</tr>
+<tr>
+<td>Default versus chaos presets</td>
+<td>Clearly labeled, separate records; no hidden settings crossover</td>
+</tr>
+<tr>
+<td>Reload local save</td>
+<td>Records/settings survive valid reload and handle malformed data safely</td>
+</tr>
+<tr>
+<td>Production build asset URLs</td>
+<td>Model/textures load at intended deployed base path</td>
+</tr>
+</tbody>
+</table></div>
+<p>Use enough repetitions to expose instability and report the actual sample count. Re-run sensitive cases at several rendering rates without changing the fixed simulation tick. A suggested long-run smoke is 100 resets plus a sustained driving/trick session; this is a target, not evidence that it has happened.</p>
+<h2 id="build-heading-7">Evidence to deliver</h2>
+<p>An actual launchable build; exact commit and launch command; a short uninterrupted gameplay capture of the central mechanic; a capture of one completed score run; imported-model views; a concise log of measured tests; performance samples including browser/hardware/resolution/duration; asset provenance; and a current limitations list.</p>
+<p>Do not record a glossy promotional film instead of play evidence. Do not use generated pictures as proof that the code renders correctly. Do not claim audio was reviewed when only waveforms or a file list were inspected.</p>
+<h2 id="build-heading-8">No false completion</h2>
+<p>An implementation may be playable while exact-clip fidelity remains open. Say so. Conversely, a source-video summary is not a playable game. Keep those two achievements separate and do not claim either before it exists.</p>
+</section><section class="chapter" id="kickoff"><div class="chapter-label">Developer kickoff</div><h1 id="kickoff-heading-0">PRO RYKER — autonomous build kickoff</h1>
+<p>Read this entire package before editing code. This is a design handoff, not a claim that the game has been built. Dan's decision to give you this packet for implementation authorizes the build in a separate project; it does not authorize replacing his other games or publishing private source art.</p>
+<h2 id="kickoff-heading-1">Your assignment</h2>
+<p>Build <strong>SLINGMODS: PRO RYKER — HOLD ON. IT GETS WORSE.</strong> A premium-looking third-person browser skatepark game using Dan's actual Ryker and purchased leather-jacket biker, with intentionally exaggerated physics and substantial physical comedy.</p>
+<p>The rider is DRIVING the Ryker. He can remain attached while the WHOLE RIDER-AND-VEHICLE ASSEMBLY flips or spins. Imperfect riding can loosen his feet/seat, leave him hanging from the handlebars, allow a skilled recovery, or release a fully jointed ragdoll.</p>
+<p>The earlier floating-rider independent-bike catch interpretation is superseded. Do not implement it as the game's foundation. Whole-assembly rolls labeled with skateboard-inspired trick names are intentional in this parody.</p>
+<p>Your central test is not whether a trick counter increments. It is whether real gameplay makes a viewer laugh at a recognizable biker desperately remaining attached to a recognizable Ryker, while the player feels they can actually control and improve the outcome.</p>
+<h2 id="kickoff-heading-2">Read order</h2>
+<p>Read <code>README.md</code>, <code>02_REFERENCE_AND_EVIDENCE.md</code>, <code>01_GAME_DESIGN.md</code>, <code>03_RIDER_AND_PHYSICS.md</code>, <code>04_ASSET_HANDOFF.md</code>, and <code>05_BUILD_AND_ACCEPTANCE.md</code>. Inspect both JSON proposals and <code>SOURCES.md</code>.</p>
+<p>All proposed tuning values are hypotheses. You may choose better engineering and calibrate numbers after observing the real game. You may not quietly change the central premise, substitute the assets, or call missing reference access “verified.”</p>
+<h2 id="kickoff-heading-3">Recover the environment, then act</h2>
+<p>Discover the working directory, repository status, installed toolchain, available browsers, and model access. Do not hard-code an old Windows username or assume that a previous Claude/Codex session exists. Preserve unrelated local edits.</p>
+<p>Create or resume a separate <code>slingmods-pro-ryker</code> project. Do not restart an existing PRO RYKER implementation blindly: inspect its code, handoff, and evidence first. The Three-Wheel Tour source repository is read-only. SEND IT stays separate. No edits, resets, pushes, cleanup, or dependency upgrades in either source project.</p>
+<p>Retrieve only the useful authorized assets. The candidate Ryker and biker paths are in <code>04_ASSET_HANDOFF.md</code>. Verify bytes, provenance, dimensions, materials, skeleton, grip fit, and runtime rendering. Use the purchased biker rather than test-driver or tour-rider substitutions.</p>
+<p>The exact YouTube Short has not been viewed by this packet's author. Attempt to inspect it directly when your environment supports that, and clearly record success or failure. Do not invent timestamps or claim the article descriptions are footage. Continue independent mechanics/import work if media access is unavailable; keep clip-fidelity acceptance open.</p>
+<h2 id="kickoff-heading-4">Build the physical joke before the surrounding product</h2>
+<p>The first meaningful milestone must use the real models in an outdoor test area:</p>
+<ul>
+<li>Responsive driving, braking, reversing, and ramp traversal.</li>
+<li>One full-assembly airborne flip with hands/seat visibly connected.</li>
+<li>A sketchy landing causing visible unsettled posture.</li>
+<li>A recoverable partial hang from the bars.</li>
+<li>A failed recovery causing momentum-consistent articulated separation.</li>
+<li>Immediate reset with the next attempt already ready to drive.</li>
+</ul>
+<p>A pretty menu, a generic vehicle, a detached capsule, or a screenshot of an upside-down bike is not completion. Actual moving gameplay is required.</p>
+<p>Use a practical hybrid controller rather than pursuing laboratory realism. Explicitly manage transform ownership, collision envelopes, grip constraints, skeleton/body mappings, release velocities, and state hysteresis. Do not tune crashes by inserting random giant impulses. Do not make a speed threshold eject the rider on a clean straight.</p>
+<p>Once this is genuinely good, build the connected park, grinds/manuals, valid combo scoring, Free Skate, local records, concise challenges, event-driven comedy, and replay. Author the environment at a scale the Ryker can traverse. Keep the camera's horizon comfortable through flips.</p>
+<h2 id="kickoff-heading-5">Creative authority</h2>
+<p>Make routine design and engineering decisions yourself. Author original park geometry, signage, materials, reactions, and sounds when available tools permit. Prioritize a cohesive, detailed finished look, not a graybox that is rationalized as “minimal.” Keep the world ordinary enough that the absurd stunt is the focal point.</p>
+<p>Comedy should be bold but precise. Prefer real physical outcomes to constant captions. Use the supplied bank as a starting pool, improve weak lines, and respect the silence budget. Keep clean/unfiltered variants separate. Do not spend the project on municipal lore while the actual rider remains rigid.</p>
+<p>No requirement to use a particular model vendor, paid tool, or external asset purchase. Do not make new spending a default prerequisite. Do not copy music, voices, branding treatments, or video clips from Tony Hawk or the source meme. Use original/licensed material and the existing owner-authorized models.</p>
+<h2 id="kickoff-heading-6">Work in substantial milestones</h2>
+<p>Implement, run, play, inspect, repair, and retest within each milestone. Do not stop after every small file or ask Dan to approve routine parameters. Do not bury him under dozens of speculative tests before a playable line exists. Conversely, do not call compiling a physics game equivalent to testing its motion.</p>
+<p>When the core is stable, run targeted automated regression cases alongside actual visual/play review. Record commands and evidence. Describe failures directly. Any captured imagery must come from the running build and be labeled appropriately; generated concept art is not runtime evidence.</p>
+<p>Keep a concise implementation handoff, a record of chosen tuning, and a list of genuine remaining gaps. Commit only inside the correct project when authorized. A preview deployment can follow the user's hosting instruction; do not silently change a production arcade or publish private source archives.</p>
+<h2 id="kickoff-heading-7">The final handoff</h2>
+<p>Provide a working launch command or authorized preview URL, exact project/branch/commit, source-asset provenance, controls, supported devices, useful gameplay evidence, measured performance, and honest outstanding limitations. Include the reference-access status.</p>
+<p>Finish with a playable result, not merely this plan rewritten. The player should be able to go from launch to an impossible Ryker trick, an absurd near-bail, and another attempt without navigating a garage or understanding your architecture.</p>
+</section><section class="chapter" id="sources"><div class="chapter-label">Sources</div><h1 id="sources-heading-0">Sources and scope</h1>
+<p>Accessed September 25, 2026. These references support only the factual statements identified in the documents. Gameplay, dialogue, tuning, architecture, map design, and milestones are original proposals, not copied specifications.</p>
+<h2 id="sources-heading-1">Video and related coverage</h2>
+<p><strong>U1 — User-supplied reference; NOT successfully viewed</strong><br/>
+<a href="https://www.youtube.com/shorts/ieCOgCEtXfY">https://www.youtube.com/shorts/ieCOgCEtXfY</a></p>
+<p><strong>S1 — Jalopnik, November 2, 2021, Jason Torchinsky</strong><br/>
+<a href="https://www.jalopnik.com/watch-a-dude-with-a-3-wheel-motorcycle-do-something-bre-1847983333/">https://www.jalopnik.com/watch-a-dude-with-a-3-wheel-motorcycle-do-something-bre-1847983333/</a><br/>
+Supports the reported general sequence of a Ryker skatepark loss of control and the rider hanging onto its controls. Secondary reporting; does not prove the exact supplied Short was watched.</p>
+<p><strong>S2 — CarThrottle, Matt Robinson; page displays an October 10, 2024 update</strong><br/>
+<a href="https://www.carthrottle.com/news/trikes-skatepark-excursion-even-more-disastrous-youd-expect">https://www.carthrottle.com/news/trikes-skatepark-excursion-even-more-disastrous-youd-expect</a><br/>
+Additional secondary description of a Ryker descending a ramp, hanging-on loss of control, and a flip. No exact-video/edit equivalence claimed.</p>
+<p><strong>S3 — ViralHog catalog</strong><br/>
+<a href="https://viralhog.com/watch/category/skateboard%20crash">https://viralhog.com/watch/category/skateboard%20crash</a><br/>
+Catalog listing for “Man Wrecks Can-Am Roadster at Skatepark,” dated November 1, 2021. The linked individual page at <code>https://viralhog.com/watch/file/303473372</code> did not load successfully. The catalog is not footage analysis.</p>
+<h2 id="sources-heading-2">Repository sources read through the connected GitHub account</h2>
+<p><strong>R1 — Observed source HEAD</strong><br/>
+<a href="https://api.github.com/repos/DanielKinsner/slingmods-three-wheel-tour-rebuild/commits/main">https://api.github.com/repos/DanielKinsner/slingmods-three-wheel-tour-rebuild/commits/main</a><br/>
+Returned commit <code>a3b6384a3c0e07a4da29866a655399597b87fbc7</code> during this session.</p>
+<p><strong>R2 — Purchased biker manifest and tree</strong><br/>
+<a href="https://github.com/DanielKinsner/slingmods-three-wheel-tour-rebuild/blob/main/public/assets/drivers/biker/manifest.json">https://github.com/DanielKinsner/slingmods-three-wheel-tour-rebuild/blob/main/public/assets/drivers/biker/manifest.json</a><br/>
+<a href="https://api.github.com/repos/DanielKinsner/slingmods-three-wheel-tour-rebuild/git/trees/e95b48a085dd2ceb430bbc1a37374dda450278f3?recursive=1">https://api.github.com/repos/DanielKinsner/slingmods-three-wheel-tour-rebuild/git/trees/e95b48a085dd2ceb430bbc1a37374dda450278f3?recursive=1</a><br/>
+Manifest content and directory entries read; binary not independently imported or rendered.</p>
+<p><strong>R3 — Ryker-specific purchased biker fit</strong><br/>
+<a href="https://github.com/DanielKinsner/slingmods-three-wheel-tour-rebuild/blob/main/public/assets/drivers/biker/fit-ryker.json">https://github.com/DanielKinsner/slingmods-three-wheel-tour-rebuild/blob/main/public/assets/drivers/biker/fit-ryker.json</a><br/>
+Beginning of fit data read, including root names, basis, and arm/grip targets. Complete fit/rig remains an implementation inspection task.</p>
+<p><strong>R4 — Ryker runtime directory at observed revision</strong><br/>
+<a href="https://api.github.com/repos/DanielKinsner/slingmods-three-wheel-tour-rebuild/contents/public/assets/ryker?ref=a3b6384a3c0e07a4da29866a655399597b87fbc7">https://api.github.com/repos/DanielKinsner/slingmods-three-wheel-tour-rebuild/contents/public/assets/ryker?ref=a3b6384a3c0e07a4da29866a655399597b87fbc7</a><br/>
+Supports candidate paths and recorded file sizes. File listing is not a local binary availability guarantee.</p>
+<p><strong>R5 — Repository Ryker README</strong><br/>
+<a href="https://github.com/DanielKinsner/slingmods-three-wheel-tour-rebuild/blob/main/assets/ryker/README.md">https://github.com/DanielKinsner/slingmods-three-wheel-tour-rebuild/blob/main/assets/ryker/README.md</a><br/>
+Conversion history and candidate editable-source paths. Its header explicitly notes that current work supersedes older visual-only limitations.</p>
+<h2 id="sources-heading-3">Primary technical documentation</h2>
+<p><strong>T1 — Rapier JavaScript rigid-body guide</strong><br/>
+<a href="https://rapier.rs/docs/user_guides/javascript/rigid_bodies/">https://rapier.rs/docs/user_guides/javascript/rigid_bodies/</a><br/>
+Basic body types, forces/impulses, colliders, and continuous-collision features. Verify exact chosen-version APIs before implementation. This source is not validation of our proposed vehicle or ragdoll controller.</p>
+<p><strong>T2 — Three.js SkeletonUtils</strong><br/>
+<a href="https://threejs.org/docs/pages/module-SkeletonUtils.html">https://threejs.org/docs/pages/module-SkeletonUtils.html</a><br/>
+Skeleton-aware cloning and retargeting utilities; runtime compatibility still needs testing.</p>
+<p><strong>T3 — Three.js SkinnedMesh</strong><br/>
+<a href="https://threejs.org/docs/pages/SkinnedMesh.html">https://threejs.org/docs/pages/SkinnedMesh.html</a><br/>
+Relationship of skinned geometry, bone weights/indices, and skeleton. Does not imply the supplied model is already a working physics ragdoll.</p>
+</section><p class="end">Version 2 supersedes the earlier independent-bike catch interpretation. Three-Wheel Tour and SEND IT remain separate, unchanged projects.</p></main></div></body></html>

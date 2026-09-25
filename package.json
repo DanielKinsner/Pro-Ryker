@@ -1,0 +1,30 @@
+{
+  "name": "slingmods-pro-ryker",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "import-models": "node scripts/import-models.mjs",
+    "gen-audio": "vite-node scripts/gen-audio.ts --"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-compat": "0.21.0",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "^4.5.0",
+    "@gltf-transform/extensions": "^4.5.0",
+    "@gltf-transform/functions": "^4.5.0",
+    "@types/node": "^24.13.6",
+    "@types/three": "^0.186.0",
+    "meshoptimizer": "^0.22.0",
+    "typescript": "5.9",
+    "vite": "^8.3.1",
+    "vite-node": "^6.0.0",
+    "vitest": "^4.1.11"
+  }
+}

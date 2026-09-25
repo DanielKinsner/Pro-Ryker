@@ -1,0 +1,79 @@
+{
+  "package": "PRO RYKER Meme Design Kit",
+  "version": 2,
+  "date": "2026-09-25",
+  "status": "Design files only; not game implementation or gameplay evidence.",
+  "reference_video_viewed": false,
+  "game_built": false,
+  "model_binaries_bundled": false,
+  "validation": [
+    "JSON parses",
+    "Unique bark IDs",
+    "HTML section navigation targets exist",
+    "Required documents present",
+    "Superseded independent-flip event absent"
+  ],
+  "counts": {
+    "barks": 60,
+    "captions": 20,
+    "physical_gags": 12,
+    "signs": 12
+  },
+  "files": [
+    {
+      "name": "01_GAME_DESIGN.md",
+      "bytes": 31057,
+      "sha256": "71092c342355dc0dcde0cc508c1bc2084c0e3d85936c8276de70378b57b2e681"
+    },
+    {
+      "name": "02_REFERENCE_AND_EVIDENCE.md",
+      "bytes": 4831,
+      "sha256": "f469b5bb8966fc32d83a811d07385314d75b5913b25ef185a77abadc6791d97f"
+    },
+    {
+      "name": "03_RIDER_AND_PHYSICS.md",
+      "bytes": 14407,
+      "sha256": "71d4911f63ee2c9251a62c3ba33589a118e5b1c72539b0bfae136475ae42ec78"
+    },
+    {
+      "name": "04_ASSET_HANDOFF.md",
+      "bytes": 5416,
+      "sha256": "5702c0aa0128f18b08e1407e0a9fe69672a1234e94e86b7b4172dd07089765fb"
+    },
+    {
+      "name": "05_BUILD_AND_ACCEPTANCE.md",
+      "bytes": 6072,
+      "sha256": "f98a40bfb426c7d0e00cc2013fd7a443ab7dc5714a38a43502a6e05265c1e5a4"
+    },
+    {
+      "name": "COMEDY_BANK.json",
+      "bytes": 31087,
+      "sha256": "2d77e3f0a897d50817b73a9cad636485bc06c019e3ed5a12670d3ef92c633080"
+    },
+    {
+      "name": "README.md",
+      "bytes": 3360,
+      "sha256": "32bf2d7b86627d7934d32df9453e952083a7091925bd019e3a7872d3e91050e3"
+    },
+    {
+      "name": "READ_THE_DESIGN.html",
+      "bytes": 90342,
+      "sha256": "4df1f0d5d43e4dc970d3a254907c75fefc92f0d2a933ee5d6cf860813c0d7a42"
+    },
+    {
+      "name": "SOURCES.md",
+      "bytes": 3746,
+      "sha256": "09f4917d23224395ecfa5abb319f401c0f8f313535a0f23de3e790fb5034d254"
+    },
+    {
+      "name": "START_HERE.md",
+      "bytes": 6798,
+      "sha256": "fe6d63ff1164777aaeb36257cd3140023afd561d05a5fee082030c808ff0fa26"
+    },
+    {
+      "name": "TUNING_PROPOSAL.json",
+      "bytes": 2970,
+      "sha256": "693a2daeb2cf967d7ec390f407a8239f7130aacbddabbad1dd888a27e1487c85"
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+ "version": 1,
+ "asset": "/assets/drivers/biker/biker-rider.glb",
+ "source": "male-biker-rigged/ (owner purchase, not in Git)",
+ "build": "scripts/build-biker-rider.py",
+ "triangles": 33544,
+ "joints": 60,
+ "materials": [
+  "Biker_Leather",
+  "Biker_Skin_Hands",
+  "Biker_Skin_Head",
+  "Biker_Helmet"
+ ],
+ "images": 9,
+ "bytes": 1900128,
+ "sha256": "91d6f7b2621ce586497f9bbc5a77c1b2ab7689fdb27814ffbfc82bf385b7b664",
+ "fits": {
+  "slingshot": "/assets/drivers/biker/fit-slingshot.json",
+  "ryker": "/assets/drivers/biker/fit-ryker.json",
+  "spyder": "/assets/drivers/biker/fit-spyder.json"
+ },
+ "grips": {
+  "slingshot": {
+   "left": {
+    "measured": true,
+    "samples": 140,
+    "axis": [
+     -0.5491,
+     -0.78873,
+     0.2764
+    ],
+    "tubeRadius": 0.0143,
+    "gripShift": 0.0244
+   },
+   "right": {
+    "measured": true,
+    "samples": 140,
+    "axis": [
+     0.54911,
+     -0.78873,
+     0.27639
+    ],
+    "tubeRadius": 0.0143,
+    "gripShift": 0.0244
+   }
+  },
+  "ryker": {
+   "left": {
+    "measured": true,
+    "samples": 507,
+    "axis": [
+     -0.99692,
+     0.07782,
+     -0.00987
+    ],
+    "tubeRadius": 0.0134,
+    "gripShift": 0.0124
+   },
+   "right": {
+    "measured": true,
+    "samples": 505,
+    "axis": [
+     0.99699,
+     0.07673,
+     -0.01145
+    ],
+    "tubeRadius": 0.0134,
+    "gripShift": 0.0124
+   }
+  },
+  "spyder": {
+   "left": {
+    "measured": true,
+    "samples": 3259,
+    "axis": [
+     -0.91985,
+     -0.01852,
+     0.39183
+    ],
+    "tubeRadius": 0.0215,
+    "gripShift": 0.085
+   },
+   "right": {
+    "measured": true,
+    "samples": 3461,
+    "axis": [
+     0.91987,
+     -0.02189,
+     0.39162
+    ],
+    "tubeRadius": 0.0217,
+    "gripShift": 0.0843
+   }
+  }
+ },
+ "provenance": "Owner-purchased rigged biker character. Game build: turned to vehicle forward, semantic bone names, head/helmet split for cockpit, rebuilt PBR materials with leather relief/roughness/hardware maps derived from the supplied albedo, per-vehicle seated poses fitted to measured grip geometry."
+}

@@ -1,0 +1,1078 @@
+{
+  "package": "SLINGMODS: PRO RYKER",
+  "version": 2,
+  "status": "Original proposed content; not an implemented event system.",
+  "premise": "Rider drives and flips with vehicle; partial grip loss and full ejection emerge from instability.",
+  "scheduler": {
+    "director_preview_mode": "unfiltered",
+    "public_build_mode": "clean",
+    "mode_must_be_visible": true,
+    "one_optional_voice_at_a_time": true,
+    "minimum_optional_voice_gap_seconds": 12,
+    "max_optional_voices_per_120_second_run": 8,
+    "no_repeat_line_within_run": true,
+    "cancel_all_queued_on_reset": true,
+    "drop_stale_events": true,
+    "critical_cues_preempt_comedy": true,
+    "reduce_barks_after_repeated_early_failures": true,
+    "prefer_one_layer_of_joke": true,
+    "never_change_physics_or_score_to_force_gag": true,
+    "event_names_are_proposals_not_existing_apis": true
+  },
+  "barks": [
+    {
+      "id": "first_flip",
+      "event": "trick_completed",
+      "speaker": "spectator",
+      "priority": 85,
+      "clean": "That's a kickflip. Apparently.",
+      "unfiltered": "That's a kickflip. On a fucking Ryker.",
+      "requires": [
+        "first_full_assembly_roll_this_session",
+        "rider_attached"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "still_driving",
+      "event": "hang_entered",
+      "speaker": "spectator",
+      "priority": 65,
+      "clean": "Still driving. Technically.",
+      "unfiltered": "Still driving. Technically.",
+      "requires": [
+        "at_least_one_hand_attached",
+        "vehicle_moving"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "accessory",
+      "event": "hang_entered",
+      "speaker": "spectator",
+      "priority": 55,
+      "clean": "He is no longer the operator. He is an accessory.",
+      "unfiltered": "He is no longer the operator. He is an accessory.",
+      "requires": [
+        "seat_released",
+        "at_least_one_hand_attached"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "superman",
+      "event": "hang_entered",
+      "speaker": "spectator",
+      "priority": 65,
+      "clean": "That's not a Superman. That's a hostage situation.",
+      "unfiltered": "That's not a Superman. That's a hostage situation.",
+      "requires": [
+        "both_hands_attached",
+        "legs_trailing",
+        "involuntary_hang"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "last_hand",
+      "event": "grip_lost",
+      "speaker": "spectator",
+      "priority": 65,
+      "clean": "That's a lot of vehicle for one hand.",
+      "unfiltered": "One hand. Entire fucking vehicle.",
+      "requires": [
+        "one_hand_remaining"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "holding_work",
+      "event": "hang_entered",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "The handlebars have become a full-time job.",
+      "unfiltered": "The handlebars have become a full-time job.",
+      "requires": [
+        "seat_released"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "seat_optional",
+      "event": "hang_entered",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "The seat has lost its largest customer.",
+      "unfiltered": "The seat has lost its largest customer.",
+      "requires": [
+        "seat_released"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "long_hang",
+      "event": "hang_sustained",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "At this point the bike is taking him somewhere.",
+      "unfiltered": "At this point the bike is taking him somewhere.",
+      "requires": [
+        "hang_duration_over_1_second",
+        "vehicle_moving"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "return_policy",
+      "event": "rider_recovered",
+      "speaker": "spectator",
+      "priority": 60,
+      "clean": "Apparently he can return himself to the seat.",
+      "unfiltered": "Apparently he can return himself to the seat.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "meant_that",
+      "event": "rider_recovered",
+      "speaker": "spectator",
+      "priority": 70,
+      "clean": "Absolutely meant that. No further questions.",
+      "unfiltered": "Meant that. Shut up.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "impossible_save",
+      "event": "rider_recovered",
+      "speaker": "spectator",
+      "priority": 65,
+      "clean": "I'm going to need you to pretend that was skill.",
+      "unfiltered": "That was skill. Probably. Fuck it, it counts.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "system",
+      "event": "rider_recovered",
+      "speaker": "spectator",
+      "priority": 55,
+      "clean": "He has a system. It appears to be panic.",
+      "unfiltered": "He has a system. It appears to be panic.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "hand_save",
+      "event": "rider_recovered",
+      "speaker": "spectator",
+      "priority": 75,
+      "clean": "One hand was enough. Somehow.",
+      "unfiltered": "One hand was enough. Somehow.",
+      "requires": [
+        "recovered_from_one_hand"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "respect",
+      "event": "combo_banked",
+      "speaker": "spectator",
+      "priority": 60,
+      "clean": "I hate that you actually landed that.",
+      "unfiltered": "I hate how fucking good that was.",
+      "requires": [
+        "high_variety_combo"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "dignity",
+      "event": "landing_clean",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "Excellent landing. Questionable everything else.",
+      "unfiltered": "Excellent landing. Questionable everything else.",
+      "requires": [
+        "completed_aerial_trick"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "nice",
+      "event": "landing_clean",
+      "speaker": "spectator",
+      "priority": 25,
+      "clean": "Okay. That was genuinely good.",
+      "unfiltered": "Okay. That was genuinely good.",
+      "requires": [
+        "hard_gap_completed"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "third_wheel",
+      "event": "rider_detached",
+      "speaker": "spectator",
+      "priority": 60,
+      "clean": "You added a third wheel and somehow reduced your options.",
+      "unfiltered": "You added a third wheel and somehow reduced your options.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "unrelated_endings",
+      "event": "rider_detached",
+      "speaker": "spectator",
+      "priority": 55,
+      "clean": "Strong opening. Several unrelated endings.",
+      "unfiltered": "Strong opening. Several unrelated endings.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "not_park_man",
+      "event": "ragdoll_settled",
+      "speaker": "spectator",
+      "priority": 50,
+      "clean": "You can't park the man there.",
+      "unfiltered": "You can't park the man there.",
+      "requires": [
+        "rider_in_nonparking_area"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "bike_enjoying",
+      "event": "rider_detached",
+      "speaker": "spectator",
+      "priority": 55,
+      "clean": "Bike's still having a good time.",
+      "unfiltered": "Bike's still having a good time.",
+      "requires": [
+        "empty_vehicle_still_moving"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "staffing",
+      "event": "empty_bike_landed",
+      "speaker": "spectator",
+      "priority": 75,
+      "clean": "The bike has completed the trick. Staffing remains unresolved.",
+      "unfiltered": "The bike has completed the trick. Staffing remains unresolved.",
+      "requires": [
+        "rider_detached",
+        "bike_upright_after_roll"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "ownership",
+      "event": "empty_bike_settled",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "Your vehicle would like to continue without you.",
+      "unfiltered": "Your vehicle would like to continue without you.",
+      "requires": [
+        "rider_detached"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "well",
+      "event": "ragdoll_settled",
+      "speaker": "spectator",
+      "priority": 25,
+      "clean": "Well. That happened.",
+      "unfiltered": "Well, shit.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "new_route",
+      "event": "rider_detached",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "You've discovered an exit that wasn't on the map.",
+      "unfiltered": "You've discovered an exit that wasn't on the map.",
+      "requires": [
+        "rider_leaves_active_park_area"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "left_ride",
+      "event": "rider_detached",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "The ride has left the rider.",
+      "unfiltered": "The ride has left the rider.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "momentum",
+      "event": "rider_detached",
+      "speaker": "spectator",
+      "priority": 45,
+      "clean": "The plan stopped. The momentum didn't.",
+      "unfiltered": "The plan stopped. The momentum didn't.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "commute",
+      "event": "rider_detached",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "That's a commute in two installments.",
+      "unfiltered": "That's a commute in two installments.",
+      "requires": [
+        "rider_vehicle_separated_significantly"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "ollie_engine",
+      "event": "trick_completed",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "That was an ollie with an engine and no plan.",
+      "unfiltered": "That was an ollie with an engine and no fucking plan.",
+      "requires": [
+        "large_assisted_pop",
+        "rider_attached"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "grind",
+      "event": "grind_completed",
+      "speaker": "spectator",
+      "priority": 55,
+      "clean": "The rail wasn't expecting a whole vehicle.",
+      "unfiltered": "The rail wasn't expecting a whole vehicle.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "rail_receipt",
+      "event": "grind_completed",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "That scrape had several parts to it.",
+      "unfiltered": "That scrape had several parts to it.",
+      "requires": [
+        "chassis_grind"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "bench",
+      "event": "grind_completed",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "It's a bench. You're taking the instruction too literally.",
+      "unfiltered": "It's a bench. You're taking the instruction too literally.",
+      "requires": [
+        "grind_target_bench"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "nose",
+      "event": "manual_completed",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "He brought three wheels and used the front two.",
+      "unfiltered": "He brought three wheels and used the front two.",
+      "requires": [
+        "manual_type_nose"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "rear",
+      "event": "manual_completed",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "That's two perfectly good wheels you're ignoring.",
+      "unfiltered": "That's two perfectly good wheels you're ignoring.",
+      "requires": [
+        "manual_type_rear"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "balance",
+      "event": "balance_recovered",
+      "speaker": "spectator",
+      "priority": 35,
+      "clean": "The last brain cell is doing balance control.",
+      "unfiltered": "The last brain cell is doing balance control.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "backflip",
+      "event": "trick_completed",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "Very normal way to use handlebars.",
+      "unfiltered": "Very normal way to use handlebars.",
+      "requires": [
+        "full_assembly_backflip"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "varial",
+      "event": "trick_completed",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "Several axes of poor judgment.",
+      "unfiltered": "Several axes of poor judgment.",
+      "requires": [
+        "varial_completed"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "helmet",
+      "event": "landing_clean",
+      "speaker": "spectator",
+      "priority": 30,
+      "clean": "The helmet would like some credit.",
+      "unfiltered": "The helmet would like some credit.",
+      "requires": [
+        "hard_trick_completed",
+        "helmet_visible"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "manager",
+      "event": "first_park_entry",
+      "speaker": "park_employee",
+      "priority": 40,
+      "clean": "No. Not that kind of three-wheeler.",
+      "unfiltered": "No. Not that kind of three-wheeler.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "sign",
+      "event": "first_sign_gap_completed",
+      "speaker": "park_employee",
+      "priority": 70,
+      "clean": "The sign was not a challenge.",
+      "unfiltered": "The sign was not a challenge.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "not_loophole",
+      "event": "first_engine_on_grind",
+      "speaker": "park_employee",
+      "priority": 60,
+      "clean": "The fact that it's also grinding does not make it a skateboard.",
+      "unfiltered": "The fact that it's also grinding does not make it a skateboard.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "parking",
+      "event": "empty_bike_parked",
+      "speaker": "park_employee",
+      "priority": 80,
+      "clean": "The parking is fine. Everything before it needs work.",
+      "unfiltered": "The parking is fine. Everything before it needs work.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "service",
+      "event": "rider_detached",
+      "speaker": "park_employee",
+      "priority": 35,
+      "clean": "Maintenance would like to know which part is supposed to be the rider.",
+      "unfiltered": "Maintenance would like to know which part is supposed to be the rider.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "phone",
+      "event": "hard_gap_completed",
+      "speaker": "filmer",
+      "priority": 50,
+      "clean": "I was recording. Then I needed both eyes.",
+      "unfiltered": "I was recording. Then I needed both eyes.",
+      "requires": [
+        "filmer_lowered_phone"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "again",
+      "event": "run_finished",
+      "speaker": "spectator",
+      "priority": 70,
+      "clean": "Same terrible idea. Much better execution.",
+      "unfiltered": "Same terrible idea. Much better execution.",
+      "requires": [
+        "new_personal_best"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "permission",
+      "event": "run_finished",
+      "speaker": "spectator",
+      "priority": 35,
+      "clean": "I'd call that permission, but I don't work here.",
+      "unfiltered": "I'd call that permission, but I don't work here.",
+      "requires": [
+        "no_bails"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "seated",
+      "event": "run_finished",
+      "speaker": "spectator",
+      "priority": 55,
+      "clean": "Please remain seated. Oh. You actually did.",
+      "unfiltered": "Please remain seated. Oh. You actually did.",
+      "requires": [
+        "no_bails"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "bus_stop",
+      "event": "ragdoll_settled",
+      "speaker": "spectator",
+      "priority": 45,
+      "clean": "You've invented a worse bus stop.",
+      "unfiltered": "You've invented a worse bus stop.",
+      "requires": [
+        "rider_settled_by_bench"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "chair",
+      "event": "prop_settled",
+      "speaker": "spectator",
+      "priority": 15,
+      "clean": "And the chair would like to add something.",
+      "unfiltered": "And the chair would like to add something.",
+      "requires": [
+        "delayed_chair_fall",
+        "no_recent_dialogue"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "did_nothing",
+      "event": "rider_getup",
+      "speaker": "spectator",
+      "priority": 40,
+      "clean": "Straighten the jacket. That fixes it.",
+      "unfiltered": "Straighten the jacket. That fixes it.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "slow_escape",
+      "event": "empty_bike_rolling_away",
+      "speaker": "spectator",
+      "priority": 50,
+      "clean": "It's leaving the scene without you.",
+      "unfiltered": "It's leaving the scene without you.",
+      "requires": [
+        "rider_up",
+        "bike_slowly_rolling"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "reverse",
+      "event": "reverse_escape_completed",
+      "speaker": "spectator",
+      "priority": 20,
+      "clean": "A rare decision made in the correct direction.",
+      "unfiltered": "A rare decision made in the correct direction.",
+      "requires": [
+        "escaped_obstacle_without_reset"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "one_more",
+      "event": "trick_overcommit_warning",
+      "speaker": "spectator",
+      "priority": 20,
+      "clean": "That's enough rotations. That's enough. That's—",
+      "unfiltered": "That's enough rotations. That's enough. That's—",
+      "requires": [
+        "optional_chaos_mode",
+        "warning_not_critical",
+        "sufficient_audio_gap"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "perfectly_wrong",
+      "event": "combo_banked",
+      "speaker": "spectator",
+      "priority": 65,
+      "clean": "Wrong vehicle. Impeccable technique.",
+      "unfiltered": "Wrong vehicle. Impeccable technique.",
+      "requires": [
+        "clean_high_combo"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "suspension",
+      "event": "landing_sketchy",
+      "speaker": "spectator",
+      "priority": 25,
+      "clean": "The suspension filed that under 'unexpected.'",
+      "unfiltered": "The suspension filed that under 'unexpected.'",
+      "requires": [
+        "rider_still_attached"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "returning",
+      "event": "rider_recovered",
+      "speaker": "spectator",
+      "priority": 55,
+      "clean": "Welcome back to your own vehicle.",
+      "unfiltered": "Welcome back to your own vehicle.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "hobby",
+      "event": "run_finished",
+      "speaker": "spectator",
+      "priority": 25,
+      "clean": "Interesting hobby. Unclear future.",
+      "unfiltered": "Interesting fucking hobby.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "line",
+      "event": "combo_banked",
+      "speaker": "spectator",
+      "priority": 40,
+      "clean": "That line should not work. Keep it.",
+      "unfiltered": "That line should not work. Keep it.",
+      "requires": [
+        "new_route_combo"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "transfer",
+      "event": "hard_gap_completed",
+      "speaker": "spectator",
+      "priority": 45,
+      "clean": "One bad idea has successfully reached another.",
+      "unfiltered": "One bad idea has successfully reached another.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "approved",
+      "event": "empty_bike_parked",
+      "speaker": "park_employee",
+      "priority": 50,
+      "clean": "Finally. A vehicle doing a vehicle thing.",
+      "unfiltered": "Finally. A vehicle doing a vehicle thing.",
+      "requires": [],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    },
+    {
+      "id": "silence",
+      "event": "rare_clean_hero_trick",
+      "speaker": "spectator",
+      "priority": 0,
+      "clean": "",
+      "unfiltered": "",
+      "requires": [
+        "prefer_silent_board_tap"
+      ],
+      "max_per_run": 1,
+      "repeat_cooldown_runs": 3,
+      "stale_after_seconds": 2.5
+    }
+  ],
+  "captions": [
+    {
+      "id": "kickflip_apparently",
+      "event": "first_full_assembly_roll",
+      "text": "KICKFLIP. APPARENTLY."
+    },
+    {
+      "id": "wobbly",
+      "event": "rider_unsettled",
+      "text": "WOBBLY"
+    },
+    {
+      "id": "hang_on",
+      "event": "hang_entered",
+      "text": "HANG ON"
+    },
+    {
+      "id": "meant_it",
+      "event": "rider_recovered",
+      "text": "MEANT THAT."
+    },
+    {
+      "id": "still_counts",
+      "event": "combo_banked_after_save",
+      "text": "STILL COUNTS."
+    },
+    {
+      "id": "human_error",
+      "event": "rider_detached",
+      "text": "HUMAN ERROR"
+    },
+    {
+      "id": "disconnected",
+      "event": "rider_detached_moving_bike",
+      "text": "RIDER DISCONNECTED. VEHICLE UNAFFECTED."
+    },
+    {
+      "id": "empty_success",
+      "event": "empty_bike_landed",
+      "text": "BIKE: NAILED IT. RIDER: ELSEWHERE."
+    },
+    {
+      "id": "valet",
+      "event": "empty_bike_parked",
+      "text": "VALET PARKING"
+    },
+    {
+      "id": "one_hand",
+      "event": "one_hand_hang",
+      "text": "ONE HAND. THREE WHEELS."
+    },
+    {
+      "id": "nose",
+      "event": "nose_manual_completed",
+      "text": "FRONT OFFICE"
+    },
+    {
+      "id": "rear",
+      "event": "rear_manual_completed",
+      "text": "REAR MANAGEMENT"
+    },
+    {
+      "id": "varial",
+      "event": "varial_completed",
+      "text": "MID-LIFE VARIAL"
+    },
+    {
+      "id": "backflip",
+      "event": "backflip_completed",
+      "text": "COMMITMENT ISSUES"
+    },
+    {
+      "id": "rider_flew",
+      "event": "rider_detached_airborne",
+      "text": "UNSCHEDULED WALKING"
+    },
+    {
+      "id": "high_score",
+      "event": "new_personal_best",
+      "text": "TERRIBLE IDEA. PERSONAL BEST."
+    },
+    {
+      "id": "seat_return",
+      "event": "one_hand_recovery",
+      "text": "REINSTALLED SUCCESSFULLY"
+    },
+    {
+      "id": "no_bail",
+      "event": "run_finished_no_bail",
+      "text": "PLEASE REMAIN SEATED: COMPLETE"
+    },
+    {
+      "id": "chair",
+      "event": "delayed_chair_fall",
+      "text": ""
+    },
+    {
+      "id": "style",
+      "event": "large_combo_banked",
+      "text": "WRONG VEHICLE. RIGHT LINE."
+    }
+  ],
+  "signs": [
+    "NO MOTORIZED VEHICLES",
+    "YES, YOURS COUNTS",
+    "PLEASE REMAIN ATTACHED",
+    "LOST & FOUND: MOSTLY CONFIDENCE",
+    "THIS RAMP IS NOT A PERSONALITY TEST",
+    "NO PARKING. ESPECIALLY UPSIDE DOWN.",
+    "REPORT LOOSE HARDWARE. SPECIFY HUMAN OR VEHICLE.",
+    "SERVICE ENTRANCE — NOT A LAUNCH RAMP",
+    "THE BENCHES HAVE FILED A COMPLAINT",
+    "DO NOT FEED THE BAD IDEAS",
+    "HELMETS REQUIRED. COMMON SENSE REQUESTED.",
+    "NEXT MEETING: WHAT IS THAT MAN DOING?"
+  ],
+  "physical_gags": [
+    {
+      "id": "employee_separation",
+      "event": "rider_detached",
+      "requires": [
+        "actual_ragdoll_release"
+      ],
+      "presentation": "Follow the real split trajectories. Optional caption only if the empty bike continues moving.",
+      "do_not": "Add a random launch impulse to manufacture distance."
+    },
+    {
+      "id": "bike_applause",
+      "event": "empty_bike_landed",
+      "requires": [
+        "bike_upright_after_roll",
+        "rider_detached",
+        "spectator_has_sightline"
+      ],
+      "presentation": "One small clap, a sideways look from another spectator, then silence.",
+      "do_not": "Force the bike upright or award the lost rider combo."
+    },
+    {
+      "id": "bad_superman",
+      "event": "hang_entered",
+      "requires": [
+        "both_hands_attached",
+        "legs_trailing",
+        "involuntary_hang"
+      ],
+      "presentation": "Body follows actual acceleration while boots scramble for support.",
+      "do_not": "Use a fixed superhero pose for every possible hang."
+    },
+    {
+      "id": "jacket_repair",
+      "event": "rider_getup",
+      "requires": [
+        "ragdoll_settled",
+        "player_elected_to_watch"
+      ],
+      "presentation": "Brief jacket straightening before he notices the vehicle.",
+      "do_not": "Delay the reset button or pretend clothing repairs the crash."
+    },
+    {
+      "id": "delayed_chair",
+      "event": "prop_unstable",
+      "requires": [
+        "chair_physically_disturbed",
+        "chair_fall_occurs_after_main_impact"
+      ],
+      "presentation": "Let the actual delayed fall end with one small clink. Prefer no dialogue.",
+      "do_not": "Trigger an unrelated chair collapse with a timer."
+    },
+    {
+      "id": "filmer_stops",
+      "event": "hang_sustained",
+      "requires": [
+        "filmer_has_sightline",
+        "rare_reaction"
+      ],
+      "presentation": "Filmer lowers phone slightly to watch with their eyes.",
+      "do_not": "Rotate the NPC to react through a wall."
+    },
+    {
+      "id": "valet",
+      "event": "empty_bike_settled",
+      "requires": [
+        "rider_detached",
+        "bike_inside_service_bay",
+        "bike_upright",
+        "speed_below_parking_limit"
+      ],
+      "presentation": "One incident-report stamp and optional employee line.",
+      "do_not": "Teleport the vehicle into the bay."
+    },
+    {
+      "id": "boot_audit",
+      "event": "rider_recovered",
+      "requires": [
+        "rider_stable",
+        "no_urgent_upcoming_input"
+      ],
+      "presentation": "Tiny glance toward the pegs, then eyes forward.",
+      "do_not": "Remove boots, equipment, or body parts."
+    },
+    {
+      "id": "board_tap",
+      "event": "rare_clean_hero_trick",
+      "requires": [
+        "spectator_has_skateboard",
+        "spectator_has_sightline"
+      ],
+      "presentation": "Single sincere board tap on concrete. No voice or caption needed.",
+      "do_not": "Loop a stadium-cheer animation."
+    },
+    {
+      "id": "slow_escape",
+      "event": "empty_bike_rolling_away",
+      "requires": [
+        "rider_has_stood_up",
+        "bike_actually_rolling_slowly",
+        "player_elected_to_watch"
+      ],
+      "presentation": "The rider notices it and takes one annoyed step.",
+      "do_not": "Inject new engine power after the bike has stopped."
+    },
+    {
+      "id": "self_possession",
+      "event": "landing_clean",
+      "requires": [
+        "spectacular_trick",
+        "rider_stable",
+        "rare_reaction"
+      ],
+      "presentation": "Tiny collar or glove adjustment, otherwise continue riding.",
+      "do_not": "Take steering away for a victory dance."
+    },
+    {
+      "id": "dropped_dignity",
+      "event": "rider_detached",
+      "requires": [
+        "cosmetic_trinket_equipped",
+        "separation_impulse_present"
+      ],
+      "presentation": "A harmless cosmetic key tag tumbles separately and settles later.",
+      "do_not": "Make the protective helmet fall off or turn props into score-critical hazards."
+    }
+  ]
+}
