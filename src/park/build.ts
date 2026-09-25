@@ -42,30 +42,7 @@ export function buildPark(phys: PhysicsWorld, scene: THREE.Scene): Park {
 
   // --- Heightfield render mesh + collider
   group.add(heightfieldMesh(grid, concrete));
-  const nr = grid.nz - 1;
-  const nc = grid.nx - 1;
-  const heights = new Float32Array(grid.nx * grid.nz);
-  for (let ix = 0; ix < grid.nx; ix++) for (let iz = 0; iz < grid.nz; iz++) heights[iz + ix * grid.nz] = grid.h[iz * grid.nx + ix];
-  phys.addStatic(
-    RAPIER.ColliderDesc.heightfield(nr, nc, heights, { x: BOUNDS.sizeX, y: 1, z: BOUNDS.sizeZ }).setTranslation(
-      BOUNDS.minX + BOUNDS.sizeX / 2,
-      0,
-      BOUNDS.minZ + BOUNDS.sizeZ / 2,
-    ),
-    'concrete',
-  );
-  // Flat ground around the park (outside the heightfield).
-  const E = 400;
-  const x0 = BOUNDS.minX;
-  const x1 = BOUNDS.minX + BOUNDS.sizeX;
-  const z0 = BOUNDS.minZ;
-  const z1 = BOUNDS.minZ + BOUNDS.sizeZ;
-  const slab = (cx: number, cz: number, hx: number, hz: number) =>
-    phys.addStatic(RAPIER.ColliderDesc.cuboid(hx, 1, hz).setTranslation(cx, -1, cz), 'ground');
-  slab((x0 - E) / 2, 0, (E + x0) / 2 + 0.01, E);
-  slab((x1 + E) / 2, 0, (E - x1) / 2 + 0.01, E);
-  slab((x0 + x1) / 2, (z0 - E) / 2, (x1 - x0) / 2, (E + z0) / 2 + 0.01);
-  slab((x0 + x1) / 2, (z1 + E) / 2, (x1 - x0) / 2, (E - z1) / 2 + 0.01);
+  addParkColliders(phys, grid);
 
   const rails: GrindRail[] = [];
 
@@ -135,10 +112,37 @@ export function buildPark(phys: PhysicsWorld, scene: THREE.Scene): Park {
     concrete,
     ledgeMat,
     heightAt: (x, z) => {
-      const inside = x > x0 && x < x1 && z > z0 && z < z1;
+      const inside = x > BOUNDS.minX && x < BOUNDS.minX + BOUNDS.sizeX && z > BOUNDS.minZ && z < BOUNDS.minZ + BOUNDS.sizeZ;
       return inside ? gridHeight(grid, x, z) : 0;
     },
   };
+}
+
+/** DOM-free: the park heightfield collider plus the flat ground around it (also used by tests). */
+export function addParkColliders(phys: PhysicsWorld, grid: HeightGrid) {
+  const nr = grid.nz - 1;
+  const nc = grid.nx - 1;
+  const heights = new Float32Array(grid.nx * grid.nz);
+  for (let ix = 0; ix < grid.nx; ix++) for (let iz = 0; iz < grid.nz; iz++) heights[iz + ix * grid.nz] = grid.h[iz * grid.nx + ix];
+  phys.addStatic(
+    RAPIER.ColliderDesc.heightfield(nr, nc, heights, { x: BOUNDS.sizeX, y: 1, z: BOUNDS.sizeZ }).setTranslation(
+      BOUNDS.minX + BOUNDS.sizeX / 2,
+      0,
+      BOUNDS.minZ + BOUNDS.sizeZ / 2,
+    ),
+    'concrete',
+  );
+  // Flat ground around the park (outside the heightfield).
+  const E = 400;
+  const x0 = BOUNDS.minX;
+  const x1 = BOUNDS.minX + BOUNDS.sizeX;
+  const z0 = BOUNDS.minZ;
+  const z1 = BOUNDS.minZ + BOUNDS.sizeZ;
+  const slab = (cx: number, cz: number, hx: number, hz: number) => phys.addStatic(RAPIER.ColliderDesc.cuboid(hx, 1, hz).setTranslation(cx, -1, cz), 'ground');
+  slab((x0 - E) / 2, 0, (E + x0) / 2 + 0.01, E);
+  slab((x1 + E) / 2, 0, (E - x1) / 2 + 0.01, E);
+  slab((x0 + x1) / 2, (z0 - E) / 2, (x1 - x0) / 2, (E + z0) / 2 + 0.01);
+  slab((x0 + x1) / 2, (z1 + E) / 2, (x1 - x0) / 2, (E - z1) / 2 + 0.01);
 }
 
 function tube(pts: THREE.Vector3[], r: number, mat: THREE.Material, closed: boolean) {

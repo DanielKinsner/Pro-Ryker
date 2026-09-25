@@ -81,6 +81,8 @@ export const FEATURES: Feature[] = [
       { x: -5, z: -10, r: 9, depth: 3.3 },
       { x: -13, z: 8, r: 9, depth: 2.4 },
       { x: 0, z: 4, r: 7.5, depth: 2.0 },
+      // Shallow middle where the four lobes meet (otherwise a deck-level island is left inside).
+      { x: -8.5, z: -1, r: 5.5, depth: 1.5 },
     ],
   },
   // Confidence Plaza funbox — first pop.

@@ -384,7 +384,12 @@ export class Vehicle {
       // Preload so the static ride height is the modelled one (compression = suspensionRest).
       const x0 = VEHICLE.suspensionRest - (this.mass * -SIM.gravity) / 3 / VEHICLE.springK;
       const x = w.compression;
-      const dx = (x - w.prevCompression) / dt;
+      // Damper uses the wheel point's real velocity along the suspension axis. (Differencing the
+      // compression spiked on first contact — prev = fully extended — and bounced every landing.)
+      const at0 = _v3.set(w.local.x, w.local.y, w.local.z).applyQuaternion(this.quat).add(this.pos);
+      const r = at0.sub(this.body.worldCom() as unknown as THREE.Vector3);
+      const pv = _v2.copy(this.angVel).cross(r).add(this.vel);
+      const dx = -pv.dot(this.up);
       let f = VEHICLE.springK * (x - x0) + VEHICLE.damperC * dx;
       // Bump stop.
       if (x > VEHICLE.suspensionUp + VEHICLE.suspensionRest * 0.9) f += 60000 * (x - (VEHICLE.suspensionUp + VEHICLE.suspensionRest * 0.9));
