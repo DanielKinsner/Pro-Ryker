@@ -27,6 +27,7 @@ export interface SaveData {
   bestCombo: number;
   goals: string[];
   gaps: string[];
+  secrets: string[];
   cheatsUnlocked: (keyof Cheats)[];
   cheats: Cheats;
   settings: Settings;
@@ -45,6 +46,7 @@ export const DEFAULT_SAVE: SaveData = {
   bestCombo: 0,
   goals: [],
   gaps: [],
+  secrets: [],
   cheatsUnlocked: [],
   cheats: { bigHead: false, moonGravity: false, perfectBalance: false, slomo: false, slingmodsParts: false, specialAlways: false },
   settings: { music: 0.7, sfx: 0.9, voice: 0.9, language: 'salty', shake: true, showControls: true, quality: 'high' },
@@ -71,6 +73,7 @@ export function sanitize(raw: unknown): SaveData {
     bestCombo: num(r.bestCombo, 0),
     goals: strs(r.goals),
     gaps: strs(r.gaps),
+    secrets: strs(r.secrets),
     cheatsUnlocked: strs(r.cheatsUnlocked).filter((k): k is keyof Cheats => (cheatKeys as string[]).includes(k)),
     cheats: Object.fromEntries(cheatKeys.map((k) => [k, bool(c[k], false)])) as unknown as Cheats,
     settings: {

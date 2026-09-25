@@ -70,6 +70,14 @@ export const LINES: Line[] = [
   { id: 'volunteer', speaker: 'employee', clean: 'That was a volunteer.' },
   { id: 'kevin', speaker: 'kid', clean: "Dude, you flattened Kevin. Somebody's gonna have to re-glue Kevin.", salty: 'Dude. You fucking flattened Kevin.' },
   { id: 'budget', speaker: 'witness', clean: 'The crowd is cardboard. The budget went on the cones.' },
+  // --- secrets out in the city (explore.ts)
+  { id: 's_jaywalker', speaker: 'employee', clean: 'Sir. The skate park is behind you. The skate park is behind you, sir.', tags: '[exasperated]' },
+  { id: 's_bridge', speaker: 'kid', clean: 'Why is he under the bridge? Why is he under the actual bridge?', salty: 'Why the fuck is he under the bridge?', tags: '[confused]' },
+  { id: 's_interstate', speaker: 'witness', clean: "He's on the interstate. He took the on-ramp. He used his blinker.", salty: "He's on the fucking interstate. He used his blinker.", tags: '[deadpan]' },
+  { id: 's_insurance', speaker: 'witness', clean: 'That car was parked. It was parked.', salty: 'That car was parked. It was fucking parked.', tags: '[incredulous]' },
+  { id: 's_apartment', speaker: 'kid', clean: "Dude, that's somebody's apartment!", salty: "Dude, that's somebody's fucking apartment!", tags: '[shocked]' },
+  { id: 's_returned', speaker: 'employee', clean: "We found him at the county line. He says he's still in the skate park. Spiritually.", tags: '[tired]' },
+  { id: 's_fell', speaker: 'filmer', clean: 'Where did he go? He just... fell off the world.', tags: '[bewildered]' },
   // --- the rider himself
   { id: 'r_whoa', speaker: 'rider', clean: 'Whoa whoa whoa WHOA—', tags: '[panicked]' },
   { id: 'r_got_it', speaker: 'rider', clean: 'I got it! I got it! I do not got it!', tags: '[strained]' },
@@ -112,6 +120,14 @@ export const BARKS: Bark[] = [
   { event: 'cones', lines: ['cones'], priority: 35 },
   { event: 'valet', lines: ['valet'], priority: 80 },
   { event: 'cutout', lines: ['kevin', 'volunteer', 'budget'], priority: 60 },
+  // Secrets always get their line (priority 90: skips the spacing and the budget, interrupts chatter).
+  { event: 'secret_jaywalker', lines: ['s_jaywalker'], priority: 90 },
+  { event: 'secret_bridge', lines: ['s_bridge'], priority: 90 },
+  { event: 'secret_interstate', lines: ['s_interstate'], priority: 90 },
+  { event: 'secret_insurance', lines: ['s_insurance'], priority: 90 },
+  { event: 'secret_apartment', lines: ['s_apartment'], priority: 90 },
+  { event: 'secret_returned', lines: ['s_returned'], priority: 90 },
+  { event: 'fell_off_map', lines: ['s_fell'], priority: 90 },
 ];
 
 /** The rider's own exclamations (short, own cooldown — they're effort sounds, not commentary). */

@@ -107,7 +107,7 @@ export class Hud {
     el.classList.toggle(name, on);
   }
 
-  toast(title: string, sub = '', kind: 'goal' | 'cheat' | 'info' = 'goal') {
+  toast(title: string, sub = '', kind: 'goal' | 'cheat' | 'info' | 'secret' = 'goal') {
     const t = h('div', `hud-toast ${kind}`, this.toasts);
     h('div', 'hud-toast-title', t, title);
     if (sub) h('div', 'hud-toast-sub', t, sub);

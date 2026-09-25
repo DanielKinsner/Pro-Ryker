@@ -19,6 +19,10 @@ describe('save sanitising', () => {
     expect(s.best).toBe(0);
     expect(s.runs).toBe(0);
   });
+  it('old saves get an empty secrets list; junk entries are dropped', () => {
+    expect(sanitize({ best: 1234 }).secrets).toEqual([]);
+    expect(sanitize({ secrets: ['interstate', 3, { x: 1 }] }).secrets).toEqual(['interstate']);
+  });
   it('preserves old saves and accepts only a boolean First Ride completion flag', () => {
     expect(sanitize({ best: 1234 }).introCompleted).toBe(false);
     expect(sanitize({ introCompleted: 'true' }).introCompleted).toBe(false);

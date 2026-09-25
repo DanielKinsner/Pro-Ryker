@@ -29,6 +29,10 @@ export interface GameEvents {
   combo_banked: { score: number; tricks: number; multiplier: number; names: string[] };
   combo_lost: { score: number; reason: string };
   gap: { id: string; name: string; points: number };
+  /** An easter egg out in the city (explore.ts). `first` = never found on this save before. */
+  secret: { id: string; name: string; points: number; first: boolean };
+  /** Safety net: something dropped below the world and was put back. */
+  fell_off_map: {};
   letter: { letter: string; index: number };
   prop_hit: { kind: string; id: number; speed: number };
   goal_complete: { id: string; name: string };

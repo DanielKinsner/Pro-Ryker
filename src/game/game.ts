@@ -13,6 +13,7 @@ import type { RiderRig } from '../rider/rig';
 import { RiderController } from '../rider/rider';
 import { TrickSystem } from './tricks';
 import { GOALS, CHEAT_UNLOCKS, TAPE_POS } from './goals';
+import { Explore } from './explore';
 import type { ChaseCam } from '../render/camera';
 
 export type Mode = 'career' | 'free' | 'practice';
@@ -31,6 +32,7 @@ export class Game {
   vehicle: Vehicle;
   rider: RiderController;
   tricks: TrickSystem;
+  explore: Explore;
   save: SaveData;
   mode: Mode = 'career';
   running = false;
@@ -69,6 +71,7 @@ export class Game {
     this.vehicle = new Vehicle(phys);
     this.rider = new RiderController(rig, this.vehicle, ryker, scene, phys, this.events);
     this.tricks = new TrickSystem(this.vehicle, this.rider, park.rails, this.events);
+    this.explore = new Explore(this);
     this.wire();
     this.buildCollectibles();
     this.applyCheats();
@@ -174,6 +177,7 @@ export class Game {
     this.lettersTaken.clear();
     this.conesDown.clear();
     this.runGoals.clear();
+    this.explore.reset();
     for (const c of this.collectibles) {
       c.taken = c.kind === 'tape' ? this.save.goals.includes('tape') : false;
       c.mesh.visible = !c.taken;
@@ -198,8 +202,10 @@ export class Game {
     this.onRunEnd?.(score);
   }
 
-  respawn(x: number, z: number, yawDeg: number) {
-    const y = this.park.heightAt(x, z);
+  respawn(x: number, z: number, yawDeg: number, yHint?: number) {
+    // With a height hint (a safe spot up on the highway or the on-ramp), find the surface under it;
+    // otherwise it's the park's ground.
+    const y = yHint === undefined ? this.park.heightAt(x, z) : (this.phys.groundHeight(x, z, yHint + 1.5) ?? yHint);
     this.vehicle.spawn(x, y, z, yawDeg);
     this.rider.reset();
     this.tricks.reset();
@@ -215,7 +221,7 @@ export class Game {
   }
 
   respawnSafe() {
-    this.respawn(this.safe.pos.x, this.safe.pos.z, this.safe.yaw);
+    this.respawn(this.safe.pos.x, this.safe.pos.z, this.safe.yaw, this.safe.pos.y);
   }
 
   // ---------------------------------------------------------------- fixed step
@@ -300,6 +306,7 @@ export class Game {
     }
 
     this.checkCollectibles();
+    this.explore.step(dt);
   }
 
   // ---------------------------------------------------------------- render

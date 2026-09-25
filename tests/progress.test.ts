@@ -13,7 +13,7 @@ function fixture(demo: boolean, mode: Mode) {
     tricks: { score: 0, lose: vi.fn(), onRecovered: vi.fn(), combo: { active: false } },
     save: sanitize({ best: 1000, bestCombo: 500, runs: 2, bails: 1, dragMetres: 4, goals: ['score1'] }),
     runGoals: new Set(), lettersTaken: new Set(), conesDown: new Set(), collectibles: [],
-    props: null, respawn: vi.fn(),
+    props: null, respawn: vi.fn(), explore: { reset: vi.fn() },
   }) as Game;
   (game as unknown as { wire(): void }).wire();
   return { game, store };

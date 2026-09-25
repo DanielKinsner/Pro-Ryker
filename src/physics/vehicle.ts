@@ -876,6 +876,22 @@ export class Vehicle {
     return false;
   }
 
+  /** Tags of the static things the chassis, nose or rider collider are touching now ('car', 'building', …). */
+  staticContactTags(out = new Set<string>()) {
+    const w = this.phys.world;
+    for (const c of [this.chassis, this.nose, this.riderCol]) {
+      if (!c.isEnabled()) continue;
+      w.contactPairsWith(c, (other) => {
+        const tag = this.phys.tags.get(other.handle);
+        if (!tag || other.parent()?.handle === this.body.handle) return;
+        w.contactPair(c, other, (m) => {
+          if (m.numContacts() > 0) out.add(tag.kind);
+        });
+      });
+    }
+    return out;
+  }
+
   /** Is the chassis/nose/rider collider in actual contact with static geometry or props? */
   chassisTouching() {
     const w = this.phys.world;

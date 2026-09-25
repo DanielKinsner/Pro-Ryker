@@ -360,6 +360,11 @@
 .hud-toast.cheat {
   background: #ffd23f;
 }
+.hud-toast.secret {
+  background: #141414;
+  color: #ffd23f;
+  border-color: #ffd23f;
+}
 .hud-toast.out {
   opacity: 0;
   transform: translateX(40px) rotate(-1.5deg);
@@ -376,6 +381,13 @@
 .hud-toast.cheat .hud-toast-title::before {
   content: 'UNLOCKED: ';
   color: #e3242b;
+}
+.hud-toast.secret .hud-toast-title::before {
+  content: 'SECRET: ';
+  color: #e3242b;
+}
+.hud-toast.secret .hud-toast-sub {
+  color: #f3eee4;
 }
 .hud-toast-sub {
   font: 12px 'Space Mono', monospace;

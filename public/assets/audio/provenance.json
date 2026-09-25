@@ -565,5 +565,60 @@
     "source": "ElevenLabs TTS eleven_v3 (Roger)",
     "text": "The crowd is cardboard. The budget went on the cones.",
     "created": "2026-09-25T17:26:26.515Z"
+  },
+  "vo/s_bridge.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Why the fuck is he under the bridge?",
+    "created": "2026-09-25T21:25:06.049Z"
+  },
+  "vo/s_bridge.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Why is he under the bridge? Why is he under the actual bridge?",
+    "created": "2026-09-25T21:25:06.572Z"
+  },
+  "vo/s_jaywalker.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Dave)",
+    "text": "Sir. The skate park is behind you. The skate park is behind you, sir.",
+    "created": "2026-09-25T21:25:06.821Z"
+  },
+  "vo/s_interstate.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "He's on the fucking interstate. He used his blinker.",
+    "created": "2026-09-25T21:25:07.994Z"
+  },
+  "vo/s_interstate.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "He's on the interstate. He took the on-ramp. He used his blinker.",
+    "created": "2026-09-25T21:25:08.051Z"
+  },
+  "vo/s_insurance.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "That car was parked. It was parked.",
+    "created": "2026-09-25T21:25:08.117Z"
+  },
+  "vo/s_apartment.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Dude, that's somebody's apartment!",
+    "created": "2026-09-25T21:25:09.257Z"
+  },
+  "vo/s_apartment.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Will)",
+    "text": "Dude, that's somebody's fucking apartment!",
+    "created": "2026-09-25T21:25:09.568Z"
+  },
+  "vo/s_insurance.salty.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Roger)",
+    "text": "That car was parked. It was fucking parked.",
+    "created": "2026-09-25T21:25:09.570Z"
+  },
+  "vo/s_fell.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Laura)",
+    "text": "Where did he go? He just... fell off the world.",
+    "created": "2026-09-25T21:25:11.225Z"
+  },
+  "vo/s_returned.mp3": {
+    "source": "ElevenLabs TTS eleven_v3 (Dave)",
+    "text": "We found him at the county line. He says he's still in the skate park. Spiritually.",
+    "created": "2026-09-25T21:25:20.309Z"
   }
 }

@@ -3,6 +3,7 @@ import type { Game, Mode } from '../game/game';
 import { GOALS, CHEAT_UNLOCKS } from '../game/goals';
 import type { SaveData, Cheats } from '../core/save';
 import { GAPS } from '../park/layout';
+import { SECRETS } from '../game/explore';
 
 // Menus: title → main menu → run; pause; results; goals; cheats; options; the original footage.
 // Keyboard (arrows/WASD + Enter/Space, Esc/Backspace), gamepad (d-pad/stick + A/B) and mouse.
@@ -302,6 +303,10 @@ export class Menus {
     el('div', 'm-kicker', p, `GAPS FOUND ${this.save.gaps.length}/${GAPS.length}`);
     const gaps = el('div', 'm-gaps', p);
     for (const g of GAPS) el('span', `m-gap${this.save.gaps.includes(g.id) ? ' got' : ''}`, gaps, this.save.gaps.includes(g.id) ? g.name : '???');
+    const found = SECRETS.filter((s) => this.save.secrets.includes(s.id));
+    el('div', 'm-kicker', p, `SECRETS FOUND ${found.length}/${SECRETS.length}${found.length ? '' : ' · THERE IS NO FENCE'}`);
+    const secrets = el('div', 'm-gaps', p);
+    for (const s of SECRETS) el('span', `m-gap${this.save.secrets.includes(s.id) ? ' got' : ''}`, secrets, this.save.secrets.includes(s.id) ? s.name : '???');
     this.list(p, [{ label: 'BACK', action: () => this.back() }]);
   }
 

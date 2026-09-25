@@ -184,6 +184,9 @@ export class ComedyDirector {
       this.bark(e.vehicleMoving ? 'detached_moving' : 'detached', 1.0);
     });
     ev.on('helmet_off', () => this.bark('helmet', 1.4));
+    // A beat after the crash/arrival so the rider's own yelp gets out first.
+    ev.on('secret', (e) => this.bark(`secret_${e.id}`, 0.8));
+    ev.on('fell_off_map', () => this.bark('fell_off_map', 0.3));
     ev.on('ragdoll_settled', () => this.bark('settled'));
     ev.on('empty_bike_settled', (e) => {
       if (e.inParkingBay && e.upright) this.bark('valet');
@@ -233,7 +236,7 @@ export class ComedyDirector {
     const busyFail = this.recentBails.length >= 3 ? 0.5 : 1; // dial it down after repeated early failures
     if (b.chance !== undefined && Math.random() > b.chance * busyFail) return;
     if (b.chance === undefined && busyFail < 1 && Math.random() > 0.6) return;
-    const gap = b.priority >= 70 ? 4 : 9;
+    const gap = b.priority >= 90 ? 0 : b.priority >= 70 ? 4 : 9;
     if (t - this.lastSpectator < gap) return;
     const budget = this.game.mode === 'career' ? 8 : 10;
     if (this.spoken >= budget && b.priority < 80) return;

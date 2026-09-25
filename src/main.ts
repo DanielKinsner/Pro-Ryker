@@ -119,6 +119,8 @@ async function boot() {
   };
   game.onGoal = (_id, name) => hud.toast(name, '', 'goal');
   game.onCheatUnlocked = (name, desc) => hud.toast(name, desc, 'cheat');
+  game.explore.onSecret = (s) => hud.toast(s.name, s.sub, 'secret');
+  game.events.on('fell_off_map', () => hud.toast('FELL OFF THE MAP', 'Put back where you started.', 'info'));
   const replay = new Replay(game, stage, ui);
   const fx = new Fx(stage.scene, game);
   const attract = new Attract(game);
